@@ -77,19 +77,56 @@ App.Views.Home = Backbone.View.extend({
     this.collection.on('change:wins', this.updateLosses, this);
   },
 
-  updateLosses: function(model) {
-    var winnerIndex = this.collection.indexOf(model);
+  updateLosses: function(winnerModel) {
+    var winnerIndex = this.collection.indexOf(winnerModel);
     var otherModel = this.collection.at(Math.abs(1 - winnerIndex));
     otherModel.set('losses', otherModel.get('losses') + 1);
+    this.eloRating(winnerIndex);
     otherModel.save();
     this.render();
   },
 
-  selectMenuItem: function(menuItem) {
-    $('.navbar .nav li').removeClass('active');
-    if (menuItem) {
-      $('.' + menuItem).addClass('active');
+
+
+  eloRating: function(winnerIndex) {
+
+    var kFactor = 16;
+  
+    
+    if (winnerIndex == 0) {
+      // A won
+      var ratingA = this.collection.at(0).get('rating');
+      var ratingB = this.collection.at(1).get('rating');
+    
+      var scoreA = this.collection.at(0).get('wins');
+      var scoreB = this.collection.at(1).get('wins');
+
+      var expectedA = 1.0 / (1.0 + Math.pow(10, ((ratingA - ratingB) / 400)));
+      var expectedB = 1.0 / (1.0 + Math.pow(10, ((ratingA - ratingB) / 400)));
+
+      var newRatingA = ratingA + (kFactor * expectedA);
+      var newRatingB = ratingB - (kFactor * expectedA);
+
+      this.collection.at(0).set('rating', Math.round(newRatingA));
+      this.collection.at(1).set('rating', Math.round(newRatingB));
+    } else {
+      // B won
+      var ratingA = this.collection.at(0).get('rating');
+      var ratingB = this.collection.at(1).get('rating');
+    
+      var scoreA = this.collection.at(0).get('wins');
+      var scoreB = this.collection.at(1).get('wins');
+
+      var expectedA = 1.0 / (1.0 + Math.pow(10, ((ratingB - ratingA) / 400)));
+      var expectedB = 1.0 / (1.0 + Math.pow(10, ((ratingB - ratingA) / 400)));
+
+      var newRatingA = ratingA - (kFactor * expectedA);
+      var newRatingB = ratingB + (kFactor * expectedA);
+
+      this.collection.at(0).set('rating', Math.round(newRatingA));
+      this.collection.at(1).set('rating', Math.round(newRatingB));
     }
+    
   },
 
   render: function() {
@@ -108,6 +145,13 @@ App.Views.Home = Backbone.View.extend({
       characterThumbnailView.$el.addClass('offset3');
     }
     this.$el.append(characterThumbnailView.render().el);
+  },
+
+  selectMenuItem: function(menuItem) {
+    $('.navbar .nav li').removeClass('active');
+    if (menuItem) {
+      $('.' + menuItem).addClass('active');
+    }
   }
 
 });
