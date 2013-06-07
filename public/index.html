@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Employee Directory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<div class="navbar navbar-masthead">
+    <div class="navbar-inner">
+        <a class="brand" href="#">EVE's Top Model</a>
+        <form class="navbar-form pull-left">
+            <input type="text" class="span3 search-query" placeholder="Search">
+            <button class="btn btn-primary" type="submit">
+                <i class="icon-search icon-white"></i>
+            </button>
+        </form>
+        <ul class="nav">
+            <li class="home-menu"><a href="#">Home</a></li>
+            <li class="top10-menu"><a href="#top10">Top 10</a></li>
+            <li class="add-menu"><a href="#add">Add Character</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="container">
+    <br/>
+
+    <div class="row-fluid">
+        <div class="span12" id="content"></div>
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; Christophe Coenraets 2013. <a href="http://twitter.com/ccoenraets">Follow me</a> on Twitter.</p>
+    </footer>
+
+</div>
+
+<script id="characters-template" type="text/template">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Rating</th>
+            <th>Wins</th>
+            <th>Losses</th>
+        </tr>
+    </thead>
+</script>
+
+<script id="character-template" type="text/template">
+    <td><img src="<%= image %>" height="128px" width="128px"></td>
+    <td><a href="#characters/<%= name %>"><%= name %><a></td>
+    <td><%= rating %></td>
+    <td><%= wins %></td>
+    <td><%= losses %></td>
+</script>
+
+<script id="home-template" type="text/template">
+    <div class="hero-unit" style="padding-bottom: 20px;">
+        <div class="row-fluid">
+            <div class="span5">
+                <img src="img/logo.png">
+            </div>
+
+            <div class="span7">
+                <h2>Welcome to Employee Directory</h2>
+                <p>Employee Directory is a sample app that demonstrates how to build modern web applications using different frameworks. This version is built with <a href="http://backbonejs.org/">Backbone.js</a> and
+                <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a>.</p>
+            </div>
+        </div>
+        <div class="row-fluid" style="padding-top:30px;">
+            Home Page
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <h2>Try It</h2>
+
+            <p>Enter a few characters in the Search Box in the upper right corner of the screen, and select an employee. In
+                the Employee view, you can navigate up and down the Org Chart by clicking either the Manager link,
+                or one of the Direct Reports in the sidebar on the right of the screen.</p>
+
+            <p><a id="showMeBtn" class="btn" href="#">Show Me &raquo;</a></p>
+        </div>
+        <div class="span4">
+            <h2>Get the Code</h2>
+
+            <p>The source code for this application is maintained in <a
+                    href="https://github.com/ccoenraets/backbone-directory">this GitHub repository</a>. The repository includes several adapters to use the application with different data persistence solutions: in-memory store, REST API, REST with JSONP, Node.js, MongoDB, etc.</p>
+
+            <p><a class="btn" href="https://github.com/ccoenraets/directory-backbone-bootstrap/zipball/master">Download &raquo;</a></p>
+        </div>
+        <div class="span4">
+            <h2>Get More</h2>
+            <p>The Employee Directory use case is simple enough to be easily understandable. It's also not entirely trivial and provides a good playground to test frameworks in a real-life context. Other versions of the application built with other frameworks are available on the author's blog.<p>
+            <p><a class="btn" href="http://coenraets.org">Visit the Blog</a></p>
+        </div>
+    </div>
+</script>
+
+<script id="add-character-template" type="text/template">
+    <div class="well">
+        <form>
+            <label>Add Character</label>
+            <div class="input-append">
+                <input name="addcharacter" type="text">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            <br>
+            <span class="help-block"></span>
+            <label class="radio inline">
+                <input type="radio" name="genderRadios" id="femaleRadio" value="female">
+                Female
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="genderRadios" id="maleRadio" value="male">
+                Male
+            </label>
+        </form>
+    </div>
+</script>
+
+<script id="character-summary-template" type="text/template">
+    <div class="lead">
+        <%= name %>
+    </div>
+    <div class="alert alert-info">
+        Wins: <%= wins %>, Losses: <%= losses %>
+    </div>
+    <img class="img img-polaroid" src="<%= image %>">
+</script>
+
+<script src="lib/jquery-1.9.1.min.js"></script>
+<script src="lib/underscore-min.js"></script>
+<script src="lib/backbone-min.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+
+<script src="js/app.js"></script>
+<script src="js/views/navbar.js"></script>
+<script src="js/views/home.js"></script>
+<script src="js/views/addcharacter.js"></script>
+<script src="js/views/topcharacters.js"></script>
+<script src="js/views/contact.js"></script>
+<script src="js/views/characterlist.js"></script>
+<script src="js/views/characterview.js"></script>
+
+<!-- SELECT ONE (AND ONLY ONE) OF THE DATA PERSISTENCE SOLUTIONS BELOW -->
+
+<!-- Uncomment the script below to access the application data using an in-memory data store -->
+
+<!-- Uncomment the script below to access the application data using RESTful services. Open model-rest.js and adjust the URL attributes to reflect your URL endpoints. -->
+<script src="js/models/model-rest.js"></script>
+
+<!-- Uncomment the script below to access the application data using RESTful services with JSONP. Open model-rest.js and adjust the URL attributes to reflect your REST endpoints. -->
+<!--<script src="js/models/model-rest-jsonp.js"></script>-->
+
+<!-- Uncomment the two scripts below to use Parse.com as the data persistence layer. -->
+<!--<script src="lib/parse-1.2.2.min.js"></script>-->
+<!--<script src="js/models/model-parse-com.js"></script>-->
+
+</body>
+</html>
