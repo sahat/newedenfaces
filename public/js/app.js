@@ -14,7 +14,9 @@ window.template = function(id) {
 // Character Model
 App.Models.Character = Backbone.Model.extend({
 
-  urlRoot:"http://localhost:3000/characters"
+  urlRoot:"http://localhost:3000/characters",
+
+  idAttribute: '_id'
 
 });
 
@@ -52,7 +54,7 @@ App.Views.Characters = Backbone.View.extend({
     }
   },
 
-  addOne: function(character) {
+  addOne: function(character, index) {
     // create new character view
     var characterView = new App.Views.Character({ model: character });
     // apend to <tbody>
@@ -65,6 +67,10 @@ App.Views.Characters = Backbone.View.extend({
 // Home View
 App.Views.Home = Backbone.View.extend({
 
+  tagName: 'ul',
+
+  className: 'thumbnails',
+
   template: template('home-template'),
 
   selectMenuItem: function(menuItem) {
@@ -76,6 +82,52 @@ App.Views.Home = Backbone.View.extend({
 
   render: function() {
     this.$el.html(this.template());
+    this.collection.reset(this.collection.shuffle(), { silent: true });
+    var twoChars = new Backbone.Collection(this.collection.slice(0,2));
+    twoChars.each(this.addOne, this);
+    return this;
+  },
+
+  addOne: function(character, index) {
+    var characterThumbnailView = new App.Views.CharacterThumbnail({ model: character });
+    
+    // add bootstrap offset3 to the first thumbnail
+    if (index == 0) {
+      characterThumbnailView.$el.addClass('offset3');
+    }
+    this.$el.append(characterThumbnailView.render().el);
+  }
+
+});
+
+
+// Character View
+App.Views.CharacterThumbnail = Backbone.View.extend({
+
+  tagName: 'li',
+
+  className: 'span3',
+
+  template: template('character-thumbnail-template'),
+
+  initialize: function() {
+    this.listenTo(this.model,'save', this.render);
+  },
+
+  events: {
+    'click img': 'winner'
+  },
+
+  winner: function() {
+    console.log('current wins: ', this.model.get('wins'));
+    this.model.set('wins', this.model.get('wins') + 1);
+    console.log('now wins: ', this.model.get('wins'));
+    console.log(this.model.toJSON());
+    this.model.save({wins: this.model.get('wins')});
+  },
+
+  render: function () {
+    this.$el.html(this.template(this.model.toJSON()));
     return this;
   }
 
@@ -103,6 +155,7 @@ App.Views.Character = Backbone.View.extend({
   }
 
 });
+
 
 // Character Summary View
 App.Views.CharacterSummary = Backbone.View.extend({
@@ -164,14 +217,23 @@ App.Router = Backbone.Router.extend({
   },
 
   home: function () {
-    var homeView = new App.Views.Home();
-    homeView.selectMenuItem('home-menu');
-    $('#content').html(homeView.render().el);
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      success: function(data) {
+
+        var homeView = new App.Views.Home({
+          collection: characters
+        });
+
+        $('#content').html(homeView.render().el);
+
+        homeView.selectMenuItem('home-menu');
+      }
+    });
   },
 
   topCharacters: function() {
     var characters = new App.Collections.Characters();
-    var self = this;
     characters.fetch({
       success: function(data) {
 

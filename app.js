@@ -54,6 +54,16 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+app.put('/characters/:id', function(req, res) {
+  Character.findById(req.body._id, function(err, character) {
+    character.wins = req.body.wins;
+    character.rating = req.body.rating;
+    character.save(function(err) {
+      res.send(200);
+    });
+  });
+});
+
 app.get('/characters', function(req, res) {
   Character.find(function(err, characters) {
     res.send(characters);
@@ -61,7 +71,12 @@ app.get('/characters', function(req, res) {
 });
 
 app.post('/characters', function(req, res) {
+  console.log('creating a new char');
+});
 
+
+app.post('/characters/:name', function(req, res) {
+  console.log(req.params.name);
 });
 
 app.get('/characters/:name', function(req, res) {
