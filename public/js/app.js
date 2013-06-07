@@ -119,10 +119,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   },
 
   winner: function() {
-    console.log('current wins: ', this.model.get('wins'));
     this.model.set('wins', this.model.get('wins') + 1);
-    console.log('now wins: ', this.model.get('wins'));
-    console.log(this.model.toJSON());
     this.model.save({wins: this.model.get('wins')});
   },
 
@@ -170,6 +167,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
   },
 
   render: function () {
+    console.log(this.model.attributes)
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   }
@@ -255,8 +253,11 @@ App.Router = Backbone.Router.extend({
   },
 
   characterDetails: function (name) {
-    var character = new App.Models.Character({ id: name });
+    var character = new App.Models.Character({ _id: name });
     character.fetch({
+      error: function(err) {
+        console.log(err, 'error');
+      },
       success: function(data) {
         var characterSummaryView = new App.Views.CharacterSummary({ model: data });
         $('#content').html(characterSummaryView.render().el);
