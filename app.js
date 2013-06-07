@@ -58,6 +58,7 @@ if ('development' == app.get('env')) {
 app.put('/characters/:id', function(req, res) {
   Character.findById(req.body._id, function(err, character) {
     character.wins = req.body.wins;
+    character.losses = req.body.losses;
     character.rating = req.body.rating;
     character.save(function(err) {
       res.send(200);

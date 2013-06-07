@@ -81,6 +81,7 @@ App.Views.Home = Backbone.View.extend({
     var winnerIndex = this.collection.indexOf(model);
     var otherModel = this.collection.at(Math.abs(1 - winnerIndex));
     otherModel.set('losses', otherModel.get('losses') + 1);
+    otherModel.save();
     this.render();
   },
 
@@ -131,7 +132,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   winner: function() {
     this.model.set('wins', this.model.get('wins') + 1);
-    this.model.save({wins: this.model.get('wins')});
+    this.model.save();
   },
 
   render: function () {
