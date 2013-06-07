@@ -73,6 +73,17 @@ App.Views.Home = Backbone.View.extend({
 
   template: template('home-template'),
 
+  initialize: function() {
+    this.collection.on('change:wins', this.updateLosses, this);
+  },
+
+  updateLosses: function(model) {
+    var winnerIndex = this.collection.indexOf(model);
+    var otherModel = this.collection.at(Math.abs(1 - winnerIndex));
+    otherModel.set('losses', otherModel.get('losses') + 1);
+    this.render();
+  },
+
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
     if (menuItem) {
@@ -101,7 +112,7 @@ App.Views.Home = Backbone.View.extend({
 });
 
 
-// Character View
+// Character Thumbnail on the Home Page View
 App.Views.CharacterThumbnail = Backbone.View.extend({
 
   tagName: 'li',
@@ -111,7 +122,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   template: template('character-thumbnail-template'),
 
   initialize: function() {
-    this.listenTo(this.model,'save', this.render);
+    this.model.on('change', this.render, this);
   },
 
   events: {
