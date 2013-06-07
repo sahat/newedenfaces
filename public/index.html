@@ -81,6 +81,7 @@
     <div><strong><%= name %></strong></div>
     <div>Wins: <%= wins %></div>
     <div>Losses: <%= losses %></div>
+    <div>Rating: <%= rating %></div>
 </script>
 
 <script id="add-character-template" type="text/template">
@@ -88,19 +89,9 @@
         <form>
             <label>Add Character</label>
             <div class="input-append">
-                <input name="addcharacter" type="text">
+                <input name="addcharacter" type="text" autofocus>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-            <br>
-            <span class="help-block"></span>
-            <label class="radio inline">
-                <input type="radio" name="genderRadios" id="femaleRadio" value="female">
-                Female
-            </label>
-            <label class="radio inline">
-                <input type="radio" name="genderRadios" id="maleRadio" value="male">
-                Male
-            </label>
         </form>
     </div>
 </script>

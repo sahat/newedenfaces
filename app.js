@@ -33,7 +33,7 @@ var Character = mongoose.model('Character', {
   race: String,
   gender: String,
   bloodline: String,
-  rating: { type: Number, default: 0 },
+  rating: { type: Number, default: 1400 },
   wins: { type: Number, default: 0 },
   losses: { type: Number, default: 0 }
 });
@@ -73,8 +73,7 @@ app.get('/characters', function(req, res) {
 });
 
 app.post('/characters', function(req, res) {
-  var characterName = req.body.name;
-  var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + characterName;
+  var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + req.body.name;
 
   // get character id from name
   request.get({ url: characterIdUrl }, function(e, r, body) {
@@ -94,19 +93,19 @@ app.post('/characters', function(req, res) {
         parser.parseString(body, function(err, response) {
           var race = response.eveapi.result[0].race[0];
           var bloodline = response.eveapi.result[0].bloodline[0];
-
+          var characterName = response.eveapi.result[0].characterName[0];
           // TODO: Check if character is already in the DB
           // save to DB
           var character = new Character({
             characterId: characterId,
             name: characterName,
+            race: race,
+            bloodline: bloodline,
             image32: image32,
             image64: image64,
             image128: image64,
             image256: image256,
-            image512: image512,
-            race: race,
-            bloodline: bloodline
+            image512: image512
           });
 
           character.save(function(err) {

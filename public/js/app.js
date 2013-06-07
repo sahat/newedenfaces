@@ -91,13 +91,12 @@ App.Views.Home = Backbone.View.extend({
   eloRating: function(winnerIndex) {
 
     var kFactor = 16;
-  
-    
+
     if (winnerIndex == 0) {
       // A won
       var ratingA = this.collection.at(0).get('rating');
       var ratingB = this.collection.at(1).get('rating');
-    
+  
       var scoreA = this.collection.at(0).get('wins');
       var scoreB = this.collection.at(1).get('wins');
 
