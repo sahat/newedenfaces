@@ -31,6 +31,7 @@ var Character = mongoose.model('Character', {
   image256: String,
   image512: String,
   race: String,
+  gender: String,
   bloodline: String,
   rating: { type: Number, default: 0 },
   wins: { type: Number, default: 0 },
@@ -71,29 +72,7 @@ app.get('/characters', function(req, res) {
 });
 
 app.post('/characters', function(req, res) {
-  console.log('creating a new char');
-});
-
-
-app.post('/characters/:name', function(req, res) {
-  console.log(req.params.name);
-});
-
-app.get('/characters/:name', function(req, res) {
-  var name = req.params.name.replace(/[-+]/g, ' ');
-  Character.findOne({ name: name }, function(err, character) {
-    res.send(character);
-  });
-});
-
-
-// app.get('/add', function(req, res) {
-//   res.render('add');
-// });
-
-
-app.post('/add', function(req, res) {
-  var characterName = req.body.charName || 'Nova Kierra';
+  var characterName = req.body.name;
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + characterName;
 
   // get character id from name
@@ -138,6 +117,28 @@ app.post('/add', function(req, res) {
 
     });
   });
+});
+
+
+app.post('/characters/:name', function(req, res) {
+  console.log(req.params.name);
+});
+
+app.get('/characters/:name', function(req, res) {
+  var name = req.params.name.replace(/[-+]/g, ' ');
+  Character.findOne({ name: name }, function(err, character) {
+    res.send(character);
+  });
+});
+
+
+// app.get('/add', function(req, res) {
+//   res.render('add');
+// });
+
+
+app.post('/add', function(req, res) {
+  
 });
 
 http.createServer(app).listen(app.get('port'), function(){

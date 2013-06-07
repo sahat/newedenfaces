@@ -192,7 +192,15 @@ App.Views.AddCharacter = Backbone.View.extend({
   submit: function(e) {
     e.preventDefault();
     console.log("clicked on add character button");
-    console.log(this.$('input[name=addcharacter]').val());
+    
+    var newCharacter = new App.Models.Character({
+      name: this.$('input[name=addcharacter]').val()
+    });
+
+    console.log(newCharacter.toJSON());
+
+    newCharacter.save();
+
     Backbone.history.navigate('#', true);
   },
 
