@@ -252,11 +252,9 @@ App.Views.AddCharacter = Backbone.View.extend({
       name: this.$('input[name=addcharacter]').val()
     });
 
-    console.log(newCharacter.toJSON());
-
-    newCharacter.save();
-
-    Backbone.history.navigate('#', true);
+    newCharacter.save(null, {success: function() {
+      Backbone.history.navigate('#', { trigger: true });
+    }});
   },
 
   selectMenuItem: function(menuItem) {
