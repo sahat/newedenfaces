@@ -52,3 +52,6 @@ html, body {
   line-height: 1.25;
 }
 
+.page-header {
+  margin: 20px 0 0;
+}

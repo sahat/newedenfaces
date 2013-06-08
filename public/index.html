@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <title>EVE's Top Model</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -45,8 +43,15 @@
 </div>
 
 <div class="footer">
-    <div class="lead pagination-centered">Top 10</div>
+    <div class="page-header pagination-centered">
+        <h1>Leaderboard <small>Top 10 Highest Rated</small></h1>
+    </div>        
     <div id="leaderboard"></div>
+    <small>
+        <span class="span12">
+            EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to [insert your name or site name] to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, [insert name or site name]. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
+        </span>
+    </small>
 </div>
 
 
@@ -63,7 +68,7 @@
 
 <script id="leaderboard-item-template" type="text/template">
     <a href="#characters/<%= name %>">
-        <img class="img-rounded" src="<%= image64 %>">
+        <img class="img-circle" src="<%= image64 %>">
     </a>
 </script>
 
