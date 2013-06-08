@@ -1,6 +1,27 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
 @import 'select2.css';
+ 
+html, body {
+  height: 100%;
+}
+
+#wrap {
+  min-height: 100%;
+}
+
+#content {
+  overflow:auto;
+  padding-bottom:251px;
+}
+
+.footer {
+  position: relative;
+  margin-top: -251px;
+  height: 250px;
+  background-color: #f1f1f1;
+  border-top: 1px solid #e5e5e5;
+}
 
 .signin-box h2 {
   font-size: 16px;
@@ -31,4 +52,3 @@
   line-height: 1.25;
 }
 
-.thumbnails > a:

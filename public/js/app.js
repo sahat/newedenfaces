@@ -159,7 +159,7 @@ App.Views.Leaderboard = Backbone.View.extend({
 
   tagName: 'ul',
 
-  className: 'thumbnails',
+  className: 'inline pagination-centered',
 
   render: function () {
     this.collection.each(function(character) {
@@ -335,10 +335,7 @@ App.Router = Backbone.Router.extend({
         });
 
         $('#content').html(homeView.render().el);
-
-        $('#content').append('<div class="lead pagination-centered">Top 10</div><hr>');
-        $('#content').append(leaderboardView.render().el);
-        $('#content').append('<hr class="soften">');
+        $('.footer #leaderboard').html(leaderboardView.render().el);
         homeView.selectMenuItem('home-menu');
       }
     });
