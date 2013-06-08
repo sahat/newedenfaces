@@ -261,12 +261,41 @@ App.Views.CharacterSummary = Backbone.View.extend({
 });
 
 
+// Search View
+App.Views.Search = Backbone.View.extend({
+  
+  el: $('.navbar'),
+
+  initialize: function() {
+    console.log(this.el)
+  },
+
+  events: {
+    'submit form': 'submit'
+  },
+
+  submit: function(e) {
+    e.preventDefault();
+
+    var input = this.$el.find('input').val();
+
+    var match = this.collection.where({ name: input });
+
+    if (match) {
+      Backbone.history.navigate('#characters/' + input, { trigger: true });
+    } else {
+      console.log('no match, got: ' + input);
+    }
+  }
+
+});
+
 // Add Character View
 App.Views.AddCharacter = Backbone.View.extend({
 
   template: template('add-character-template'),
 
-  events:{
+  events: {
     "submit form":"submit"
   },
 
@@ -313,6 +342,19 @@ App.Views.AddCharacter = Backbone.View.extend({
 });
 
 App.Router = Backbone.Router.extend({
+
+  initialize: function() {
+    
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      success: function(data) {
+
+        var searchView = new App.Views.Search({
+          collection: characters
+        });
+      }
+    });
+  },
 
   routes: {
     '':                 'home',
