@@ -41,12 +41,6 @@
         <div class="span12" id="content"></div>
     </div>
 
-    <hr>
-
-    <footer>
-        <p>&copy; Christophe Coenraets 2013. <a href="http://twitter.com/ccoenraets">Follow me</a> on Twitter.</p>
-    </footer>
-
 </div>
 
 <script id="home-template" type="text/template">
@@ -60,6 +54,11 @@
     <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>"><%= name %></div>
 </script>
 
+<script id="leaderboard-item-template" type="text/template">
+    <a href="#characters/<%= name %>" class="thumbnail">
+        <img src="<%= image64 %>">
+    </a>
+</script>
 
 <script id="menu-leaderboard-template" type="text/template">
     <ul class="nav nav-tabs nav-tabs-google">
@@ -116,9 +115,7 @@
     </div>
 </script>
 
-<div class="well">
-    add leaderboard
-</div>
+
 <script src="lib/jquery-1.9.1.min.js"></script>
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>

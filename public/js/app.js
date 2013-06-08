@@ -154,6 +154,38 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 });
 
 
+// leaderboard view on home page
+App.Views.Leaderboard = Backbone.View.extend({
+
+  tagName: 'ul',
+
+  className: 'thumbnails',
+
+  render: function () {
+    this.collection.each(function(character) {
+      var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
+      this.$el.append(leaderboardItemView.render().el);
+    }, this);
+    return this;
+  }
+
+});
+
+// individual leaderboard item
+App.Views.LeaderboardItem = Backbone.View.extend({
+
+  tagName: 'li',
+
+  template: template('leaderboard-item-template'),
+
+  render: function () {
+    this.$el.html(this.template(this.model.toJSON()));
+    return this;
+  }
+
+});
+
+
 // Character View
 App.Views.Character = Backbone.View.extend({
 
@@ -298,8 +330,15 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
 
+        var leaderboardView = new App.Views.Leaderboard({
+          collection: characters
+        });
+
         $('#content').html(homeView.render().el);
-        
+
+        $('#content').append('<div class="lead pagination-centered">Top 10</div><hr>');
+        $('#content').append(leaderboardView.render().el);
+        $('#content').append('<hr class="soften">');
         homeView.selectMenuItem('home-menu');
       }
     });
