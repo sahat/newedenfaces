@@ -78,6 +78,10 @@ app.post('/characters', function(req, res) {
   // get character id from name
   request.get({ url: characterIdUrl }, function(e, r, body) {
     parser.parseString(body, function(err, response) {
+      if (response.eveapi.error) {
+        return res.send(404);
+      };
+
       var characterId = response.eveapi.result[0].rowset[0].row[0].$.characterID;
       var image32 = 'https://image.eveonline.com/Character/' + characterId + '_32.jpg';
       var image64 = 'https://image.eveonline.com/Character/' + characterId + '_64.jpg';
@@ -91,6 +95,9 @@ app.post('/characters', function(req, res) {
       // get character info: race, bloodline, etc.
       request.get({ url: characterInfoUrl }, function(e, r, body) {
         parser.parseString(body, function(err, response) {
+          if (response.eveapi.error) {
+            return res.send(404);
+          };
           var race = response.eveapi.result[0].race[0];
           var bloodline = response.eveapi.result[0].bloodline[0];
           var characterName = response.eveapi.result[0].characterName[0];

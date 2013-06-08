@@ -243,15 +243,30 @@ App.Views.AddCharacter = Backbone.View.extend({
 
   submit: function(e) {
     e.preventDefault();
-    console.log("clicked on add character button");
     
     var newCharacter = new App.Models.Character({
       name: this.$('input[name=addcharacter]').val()
     });
+    
+    var helpBlock = this.$el.find('.help-block');
+    var controlGroup = this.$el.find('.control-group');
+    var inputField = this.$el.find('input');
+    var submitBtn = this.$el.find('button');
 
-    newCharacter.save(null, {success: function() {
-      Backbone.history.navigate('#', { trigger: true });
-    }});
+    submitBtn.button('loading');
+
+    newCharacter.save(null, {
+      success: function() {
+        Backbone.history.navigate('#', { trigger: true });
+      },
+      error: function() {
+        controlGroup.addClass('error');
+        submitBtn.removeClass('btn-primary').addClass('btn-danger');
+        submitBtn.button('reset');
+        helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
+        inputField.focus();
+      }
+    });
   },
 
   selectMenuItem: function(menuItem) {

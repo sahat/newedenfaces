@@ -88,12 +88,16 @@
         <h2>Add Character</h2>
         <form>
             <fieldset>
-                <label for="addcharacter">Character Name</label>
-                <div class="input-append">
-                    <input name="addcharacter" type="text" autofocus>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="control-group">
+                    <label for="addcharacter">Character Name</label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input name="addcharacter" type="text" autofocus>
+                            <button type="submit" class="btn btn-primary" data-loading-text="Loading">Submit</button>
+                        </div>
+                        <span class="help-block"></span>
+                    </div>
                 </div>
-                <span class="help-block">Duplicate characters will be ignored</span>
             </fieldset>
         </form>
     </div>
