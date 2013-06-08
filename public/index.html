@@ -34,12 +34,10 @@
     </div>
 </div>
 
-
 <div class="container">
     <br/>
 
     <div class="row-fluid">
-        <p class="lead pagination-centered">Click on the portrait. Select your favorite.</p>
         <div class="span12" id="content"></div>
     </div>
 
@@ -51,39 +49,50 @@
 
 </div>
 
-<script id="characters-template" type="text/template">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Rating</th>
-            <th>Wins</th>
-            <th>Losses</th>
-        </tr>
-    </thead>
-</script>
-
-<script id="character-template" type="text/template">
-    <td><img src="<%= image256 %>"></td>
-    <td><a href="#characters/<%= name %>"><%= name %><a></td>
-    <td><%= rating %></td>
-    <td><%= wins %></td>
-    <td><%= losses %></td>
-</script>
-
 <script id="home-template" type="text/template">
-
+    <p class="lead pagination-centered">Click on the portrait. Select your favorite.</p>
 </script>
 
 <script id="character-thumbnail-template" type="text/template">
     <a href="#" class="thumbnail">
         <img src="<%= image256 %>" >
     </a>
-    <div><strong><%= name %></strong></div>
-    <div>Wins: <span class="text-success"><%= wins %></span></div>
-    <div>Losses: <span class="text-error"><%= losses %></span></div>
-    <div>Rating: <%= rating %></div>
+    <div class="lead"><a href="#" rel="tooltip" title="Some text"><%= name %></a></div>
+
+    <dl class="dl-horizontal">
+        <dt>Wins</dt>
+        <dd><%= wins %></dd>
+        <dt>Losses</dt>
+        <dd><%= losses %></dd>
+        <dd>Rating</dd>
+        <dt><%= rating %></dt>
+    </dl>
 </script>
+
+
+
+
+<script id="menu-leaderboard-template" type="text/template">
+    <ul class="nav nav-tabs nav-tabs-google">
+        <li class="active"><a href="#">Overall</a></li>
+        <li><a href="#leaderboard/amarr">Amarr</a></li>
+        <li><a href="#leaderboard/caldari">Caldari</a></li>
+        <li><a href="#leaderboard/gallente">Gallente</a></li>
+        <li><a href="#leaderboard/minmatar">Minmatar</a></li>
+    </ul>
+</script>
+
+<script id="character-template" type="text/template">
+    <a class="pull-left" href="#">
+        <img class="media-object" src="<%= image64 %>">
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading"><a href="#characters/<%= name %>"><%= name %></a></h4>
+        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
+    </div>
+</script>
+
+
 
 <script id="add-character-template" type="text/template">
     <div class="well signin-box">
@@ -95,6 +104,7 @@
                     <input name="addcharacter" type="text" autofocus>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
+                <span class="help-block">Duplicate characters will be ignored</span>
             </fieldset>
         </form>
     </div>
@@ -116,7 +126,7 @@
 <script src="lib/jquery-1.9.1.min.js"></script>
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
-<script src="bootstrap/js/bootstrap.js"></script>
+<script src="lib/bootstrap.min.js"></script>
 
 <script src="js/app.js"></script>
 <script src="js/views/navbar.js"></script>
@@ -126,20 +136,5 @@
 <script src="js/views/contact.js"></script>
 <script src="js/views/characterlist.js"></script>
 <script src="js/views/characterview.js"></script>
-
-<!-- SELECT ONE (AND ONLY ONE) OF THE DATA PERSISTENCE SOLUTIONS BELOW -->
-
-<!-- Uncomment the script below to access the application data using an in-memory data store -->
-
-<!-- Uncomment the script below to access the application data using RESTful services. Open model-rest.js and adjust the URL attributes to reflect your URL endpoints. -->
-<script src="js/models/model-rest.js"></script>
-
-<!-- Uncomment the script below to access the application data using RESTful services with JSONP. Open model-rest.js and adjust the URL attributes to reflect your REST endpoints. -->
-<!--<script src="js/models/model-rest-jsonp.js"></script>-->
-
-<!-- Uncomment the two scripts below to use Parse.com as the data persistence layer. -->
-<!--<script src="lib/parse-1.2.2.min.js"></script>-->
-<!--<script src="js/models/model-parse-com.js"></script>-->
-
 </body>
 </html>

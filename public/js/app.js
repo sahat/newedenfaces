@@ -30,40 +30,6 @@ App.Collections.Characters = Backbone.Collection.extend({
 });
 
 
-// Characters Collection View
-App.Views.Characters = Backbone.View.extend({
-
-  tagName: 'table',
-
-  className: 'table table-striped',
-
-  template: template('characters-template'),
-
-  render: function() {
-    // render an empty table
-    this.$el.html(this.template());
-    // build a <tbody> with rows of characters
-    this.collection.each(this.addOne, this);
-    return this;
-  },
-
-  selectMenuItem: function(menuItem) {
-    $('.navbar .nav li').removeClass('active');
-    if (menuItem) {
-      $('.' + menuItem).addClass('active');
-    }
-  },
-
-  addOne: function(character, index) {
-    // create new character view
-    var characterView = new App.Views.Character({ model: character });
-    // apend to <tbody>
-    this.$el.append(characterView.render().el);
-  }
-
-});
-
-
 // Home View
 App.Views.Home = Backbone.View.extend({
 
@@ -189,7 +155,9 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 // Character View
 App.Views.Character = Backbone.View.extend({
 
-  tagName: 'tr',
+  tagName: 'li',
+
+  className: 'media',
 
   template: template('character-template'),
 
@@ -208,6 +176,36 @@ App.Views.Character = Backbone.View.extend({
 
 });
 
+// Characters Collection View
+App.Views.Characters = Backbone.View.extend({
+
+  tagName: 'ul',
+
+  className: 'media-list',
+
+  template: template('menu-leaderboard-template'),
+
+  render: function() {
+    $('#content').html(this.template());
+    this.collection.each(this.addOne, this);
+    return this;
+  },
+
+  selectMenuItem: function(menuItem) {
+    $('.navbar .nav li').removeClass('active');
+    if (menuItem) {
+      $('.' + menuItem).addClass('active');
+    }
+  },
+
+  addOne: function(character, index) {
+    // create new character view
+    var characterView = new App.Views.Character({ model: character });
+    // apend to <tbody>
+    this.$el.append(characterView.render().el);
+  }
+
+});
 
 // Character Summary View
 App.Views.CharacterSummary = Backbone.View.extend({
@@ -285,7 +283,7 @@ App.Router = Backbone.Router.extend({
         });
 
         $('#content').html(homeView.render().el);
-
+        $("[rel='tooltip']").tooltip();
         homeView.selectMenuItem('home-menu');
       }
     });
@@ -300,7 +298,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
 
-        $('#content').html(charactersView.render().el);
+        $('#content').append(charactersView.render().el);
 
         charactersView.selectMenuItem('top10-menu');
       }
@@ -335,6 +333,8 @@ Backbone.history.start();
 })();
 
 $(document).on("ready", function () {
+
+
     // App.loadTemplates(["HomeView", "AddCharacterView", "TopCharactersView", "ContactView", "NavBarView", "CharacterView", "CharacterListItemView"],
     //   function () {
     //       App.router = new App.Router();
