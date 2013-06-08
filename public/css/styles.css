@@ -1,3 +1,18 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
 @import 'select2.css';
+.signin-box h2 {
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 17px;
+  height: 16px;
+  margin: 0 0 19px;
+}
+
+.signin-box label {
+  color: #222;
+  margin: 0 0 5px;
+  display: block;
+  font-weight: bold;
+  font-size: 13px;
+}

@@ -39,6 +39,7 @@
     <br/>
 
     <div class="row-fluid">
+        <p class="lead pagination-centered">Click on the portrait. Select your favorite.</p>
         <div class="span12" id="content"></div>
     </div>
 
@@ -79,19 +80,22 @@
         <img src="<%= image256 %>" >
     </a>
     <div><strong><%= name %></strong></div>
-    <div>Wins: <%= wins %></div>
-    <div>Losses: <%= losses %></div>
+    <div>Wins: <span class="text-success"><%= wins %></span></div>
+    <div>Losses: <span class="text-error"><%= losses %></span></div>
     <div>Rating: <%= rating %></div>
 </script>
 
 <script id="add-character-template" type="text/template">
-    <div class="well">
+    <div class="well signin-box">
+        <h2>Add Character</h2>
         <form>
-            <label>Add Character</label>
-            <div class="input-append">
-                <input name="addcharacter" type="text" autofocus>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+            <fieldset>
+                <label for="addcharacter">Character Name</label>
+                <div class="input-append">
+                    <input name="addcharacter" type="text" autofocus>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </fieldset>
         </form>
     </div>
 </script>
@@ -103,9 +107,12 @@
     <div class="alert alert-info">
         Wins: <%= wins %>, Losses: <%= losses %>
     </div>
-    <img class="img img-polaroid" src="<%= image %>">
+    <img class="img img-polaroid" src="<%= image256 %>">
 </script>
 
+<div class="well">
+    add leaderboard
+</div>
 <script src="lib/jquery-1.9.1.min.js"></script>
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
