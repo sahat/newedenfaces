@@ -15,6 +15,11 @@
 
 <body>
 
+<div>
+    <dt></dt>
+    <dd></dd>
+</div>
+
 <div id="wrap">
 
     <div class="navbar navbar-masthead">
@@ -132,7 +137,11 @@
     <a href="#">
         <img class="img-polaroid" src="<%= image512 %>" >
     </a>
-    <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>"><%= name %></div>
+    <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
+        <img src="../img/<%= race %>.png" width="40px">
+        <%= name %>
+    </div>
+
 </script>
 
 <script id="leaderboard-item-template" type="text/template">
