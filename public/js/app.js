@@ -220,7 +220,6 @@ App.Views.CharacterSummary = Backbone.View.extend({
   },
 
   render: function () {
-    console.log(this.model.attributes)
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   }
@@ -283,7 +282,9 @@ App.Router = Backbone.Router.extend({
         });
 
         $('#content').html(homeView.render().el);
-        $("[rel='tooltip']").tooltip();
+        $("[rel='tooltip']").tooltip({
+          placement: 'bottom'
+        });
         homeView.selectMenuItem('home-menu');
       }
     });

@@ -57,19 +57,8 @@
     <a href="#" class="thumbnail">
         <img src="<%= image256 %>" >
     </a>
-    <div class="lead"><a href="#" rel="tooltip" title="Some text"><%= name %></a></div>
-
-    <dl class="dl-horizontal">
-        <dt>Wins</dt>
-        <dd><%= wins %></dd>
-        <dt>Losses</dt>
-        <dd><%= losses %></dd>
-        <dd>Rating</dd>
-        <dt><%= rating %></dt>
-    </dl>
+    <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>"><%= name %></div>
 </script>
-
-
 
 
 <script id="menu-leaderboard-template" type="text/template">
@@ -111,13 +100,16 @@
 </script>
 
 <script id="character-summary-template" type="text/template">
-    <div class="lead">
-        <%= name %>
-    </div>
-    <div class="alert alert-info">
-        Wins: <%= wins %>, Losses: <%= losses %>
-    </div>
+    <p class="jumbotron"><%= name %></p>
     <img class="img img-polaroid" src="<%= image256 %>">
+    <div class="popover right">
+        <div class="arrow"></div>
+        <h3 class="popover-title pagination-centered">Rating</h3>
+        <div class="popover-content pagination-centered">
+            <h1><%= rating %></h1>
+            Wins: <strong><%= wins %></strong> Losses: <strong><%= losses %></strong>
+        </div>
+    </div>
 </script>
 
 <div class="well">

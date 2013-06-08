@@ -1,6 +1,7 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
 @import 'select2.css';
+
 .signin-box h2 {
   font-size: 16px;
   font-weight: normal;
@@ -15,4 +16,17 @@
   display: block;
   font-weight: bold;
   font-size: 13px;
+}
+
+.popover {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+}
+
+.jumbotron {
+  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+  font-size: 40px;
+  font-weight: 200;
+  line-height: 1.25;
 }
