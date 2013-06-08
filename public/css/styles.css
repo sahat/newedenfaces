@@ -12,13 +12,13 @@ html, body {
 
 #content {
   overflow:auto;
-  padding-bottom:251px;
+  padding-bottom:220px;
 }
 
 .footer {
   position: relative;
-  margin-top: -251px;
-  height: 250px;
+  margin-top: -221px;
+  height: 220px;
   background-color: #f1f1f1;
   border-top: 1px solid #e5e5e5;
 }
@@ -54,4 +54,22 @@ html, body {
 
 .page-header {
   margin: 20px 0 0;
+}
+
+.nav-pills > li > a:hover, .nav-pills > li > a:focus {
+  background-color: #4d90fe;
+  color: #fff;
+}
+
+.img-polaroid:hover {
+  border-color: #4d90fe;
+}
+
+.nav-tabs > li, .nav-pills > li {
+  float: none;
+  display: inline-block;
+}
+
+.nav-tabs, .nav-pills {
+  text-align: center;
 }
