@@ -99,6 +99,8 @@ App.Views.Home = Backbone.View.extend({
     this.collection.reset(this.collection.shuffle(), { silent: true });
     var twoChars = new Backbone.Collection(this.collection.slice(0,2));
     twoChars.each(this.addOne, this);
+    // re-instantiate tooltip per each new entries
+    this.$('.lead').tooltip({ placement: 'bottom' });
     return this;
   },
 
@@ -243,7 +245,7 @@ App.Views.AddCharacter = Backbone.View.extend({
 
   submit: function(e) {
     e.preventDefault();
-    
+
     var newCharacter = new App.Models.Character({
       name: this.$('input[name=addcharacter]').val()
     });
@@ -297,9 +299,7 @@ App.Router = Backbone.Router.extend({
         });
 
         $('#content').html(homeView.render().el);
-        $("[rel='tooltip']").tooltip({
-          placement: 'bottom'
-        });
+        
         homeView.selectMenuItem('home-menu');
       }
     });
