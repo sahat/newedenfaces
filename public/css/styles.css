@@ -1,9 +1,12 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
 @import 'select2.css';
+@import url(http://fonts.googleapis.com/css?family=Monsieur+La+Doulaise|Cinzel+Decorative:400,700,900);
+
  
 html, body {
   height: 100%;
+
 }
 
 #wrap {
@@ -13,6 +16,10 @@ html, body {
 #content {
   overflow:auto;
   padding-bottom:220px;
+}
+
+.container {
+
 }
 
 .footer {
@@ -54,6 +61,7 @@ html, body {
 
 .page-header {
   margin: 20px 0 0;
+  font-family: 'Cinzel Decorative', cursive;
 }
 
 .nav-pills > li > a:hover, .nav-pills > li > a:focus {
@@ -72,4 +80,15 @@ html, body {
 
 .nav-tabs, .nav-pills {
   text-align: center;
+}
+
+.img-polaroid:active {
+  position: relative;
+  top: 1px;
+}
+
+.img-polaroid {
+  webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }

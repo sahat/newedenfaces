@@ -109,7 +109,7 @@ App.Views.Home = Backbone.View.extend({
     
     // add bootstrap offset3 to the first thumbnail
     if (index == 0) {
-      characterThumbnailView.$el.addClass('offset3');
+      characterThumbnailView.$el.addClass('offset1');
     }
     this.$el.append(characterThumbnailView.render().el);
   },
@@ -129,7 +129,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   tagName: 'li',
 
-  className: 'span3',
+  className: 'span5',
 
   template: template('character-thumbnail-template'),
 
