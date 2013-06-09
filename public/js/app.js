@@ -152,11 +152,15 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
     var losses = this.model.get('losses');
 
     // catch for division by zero (new players)
-    if (isNaN(wins + losses)) return 0;
-
-    var winningPercentage = Math.round(100 * (wins / (wins + losses)));
-    this.$el.find('.bar').width(winningPercentage + '%');
-    this.$el.find('span').html(winningPercentage + '%');
+    if (isNaN(wins / (wins + losses))) {
+      this.$el.find('.bar').width('0%');
+      this.$el.find('span').html('0%').css('color','#111');
+    } else {
+      var winningPercentage = Math.round(100 * (wins / (wins + losses)));
+      this.$el.find('.bar').width(winningPercentage + '%');
+      this.$el.find('span').html(winningPercentage + '%');
+    }
+    
     return this;
   }
 
