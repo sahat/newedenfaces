@@ -16,8 +16,9 @@ html, body {
   padding-bottom:260px;
 }
 
-.container {
-
+.character-thumbnail {
+  cursor: hand; 
+  cursor: pointer;
 }
 
 .brand {
