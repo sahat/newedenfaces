@@ -205,7 +205,7 @@
 
 <script id="leaderboard-item-template" type="text/template">
     <a href="#characters/<%= name %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
-        <img class="thumb" src="<%= image64 %>">
+        <img src="<%= image64 %>">
     </a>
 </script>
 
@@ -216,7 +216,7 @@
 <script id="character-template" type="text/template">
     <span class="position pull-left"><%= position %></span>
     <a class="pull-left" href="#characters/<%= model.name %>">
-        <img class="media-object thumb" src="<%= model.image64 %>">
+        <img class="media-object" src="<%= model.image64 %>">
     </a>
     <div class="media-body">
         <h4 class="media-heading"><a href="#characters/<%= model.name %>"><%= model.name %></a></h4>

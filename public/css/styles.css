@@ -88,13 +88,22 @@ html, body {
   transition: 0.3s ease-in-out;
 }
 
-.thumb {
+.footer img {
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer img:hover {
+  transition: 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.thumb {
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .thumb:hover {
   transition: 0.3s ease-in-out;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid #4d90fe;
 }
 
 .img-polaroid:hover {
@@ -189,4 +198,6 @@ ul.inline>li {
   font-size: 40px;
   font-weight: 200;
   line-height: 1.25;
+  width: 65px;
+  text-align: center;
 }
