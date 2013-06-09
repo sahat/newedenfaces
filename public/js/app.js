@@ -154,15 +154,17 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 });
 
 
-// leaderboard view on home page
+// Footer leaderboard view on home page
 App.Views.Leaderboard = Backbone.View.extend({
 
   tagName: 'ul',
 
-  className: 'inline pagination-centered',
+  className: 'inline',
 
   render: function () {
-    this.collection.each(function(character) {
+    
+    var top10 = new Backbone.Collection(this.collection.slice(0,14));
+    top10.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
       this.$el.append(leaderboardItemView.render().el);
     }, this);

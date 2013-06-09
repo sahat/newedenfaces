@@ -1,8 +1,6 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
 @import 'select2.css';
-@import url(http://fonts.googleapis.com/css?family=Monsieur+La+Doulaise|Cinzel+Decorative:400,700,900);
-
  
 html, body {
   height: 100%;
@@ -15,7 +13,7 @@ html, body {
 
 #content {
   overflow:auto;
-  padding-bottom:220px;
+  padding-bottom:240px;
 }
 
 .container {
@@ -24,10 +22,26 @@ html, body {
 
 .footer {
   position: relative;
-  margin-top: -221px;
-  height: 220px;
-  background-color: #f1f1f1;
-  border-top: 1px solid #e5e5e5;
+  margin-top: -240px;
+  height: 240px;
+  background: url(../img/px_by_Gre3g.png);
+  color: #ccc;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+}
+
+.footer a {
+  color: #868686;
+}
+
+.footer a:hover,
+.footer a:focus, 
+.footer a:active {
+  transition: 0.3s ease-in-out;
+  color: #666;
+}
+
+.footer h1 {
+  color: #fff;
 }
 
 .signin-box h2 {
@@ -59,38 +73,49 @@ html, body {
   line-height: 1.25;
 }
 
-.page-header {
+#information {
+  margin-top: 20px;
+}
+
+.footer .page-header {
   margin: 20px 0 0;
-  font-family: 'Cinzel Decorative', cursive;
+  border-bottom: 0;
 }
 
 .nav-pills > li > a:hover, .nav-pills > li > a:focus {
   background-color: #4d90fe;
-  color: #fff;
+  color: #111;
+  transition: 0.3s ease-in-out;
+}
+
+.footer img {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer img:hover {
+  transition: 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .img-polaroid:hover {
-  border-color: #4d90fe;
+  transition: 0.3s ease-in-out;
+  border: 5px solid #4d90fe;
 }
 
-.nav-tabs > li, .nav-pills > li {
-  float: none;
-  display: inline-block;
-}
-
-.nav-tabs, .nav-pills {
-  text-align: center;
+.nav-tabs, .nav-pills a {
+  color: #fff;
 }
 
 .img-polaroid:active {
   position: relative;
-  top: 1px;
+  top: 3px;
 }
 
 .img-polaroid {
   webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+  border: 5px solid transparent;
 }
 
 #progress {
@@ -137,4 +162,13 @@ html, body {
   width: 20px;
   right: 0;
   clip: rect(-6px,22px,14px,10px);
-}  
+}
+
+#leaderboard ul.inline {
+ 
+}
+
+ul.inline>li {
+  padding-left: 0;
+  padding-bottom: 5px;
+}
