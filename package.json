@@ -1,5 +1,5 @@
 {
-  "name": "application-name",
+  "name": "eve_online",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "jade": "*",
     "request": "*",
     "xml2js": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "sendgrid": "*"
   }
 }

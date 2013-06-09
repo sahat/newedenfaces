@@ -125,44 +125,44 @@
         <h2>Feedback Form</h2>
         <form>
             <fieldset>
-                <div class="control-group">
-                    <label for="zzzzz">Character Name</label>
+                <div id="characterNameCG" class="control-group">
+                    <label for="characterName">Character Name</label>
                     <div class="controls">
-                        <input name="zzzz" type="text" autofocus>
-                        <span class="help-block"></span>
+                        <input name="characterName" type="text" autofocus>
+                        <span id="characterNameHelpBlock" class="help-block"></span>
                     </div>
                 </div>
 
-                <div class="control-group">
-                    <label for="zzzz">User Interface</label>
+                <div id="userInterfaceCG" class="control-group">
+                    <label for="uiRadios">User Interface</label>
                     <div class="controls">
                         <label class="radio">
-                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
+                            <input type="radio" name="uiRadios" value="Awesome">
                             Awesome
                         </label>
                         
                         <label class="radio">
-                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            <input type="radio" name="uiRadios" value="It's alright">
                             It&#39;s alright
                         </label>
 
                         <label class="radio">
-                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            <input type="radio" name="uiRadios" value="Meh, not for me">
                             Meh, not for me
                         </label>
 
-                        <span class="help-block"></span>
+                        <span id="userInterfaceHelpBlock" class="help-block"></span>
                     </div>
                 </div>
                 
-                <div class="control-group">
+                <div id="messageCG" class="control-group">
                     <label for="message">Message</label>
                     <div class="controls">
                         <textarea name="message" rows="5"></textarea>
                         <span class="help-block">I would appreciate any suggestions you have to improve this site.</span>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Send</button>
+                <button type="submit" class="btn btn-primary" data-loading-text="Sending">Send</button>
             </fieldset>
         </form>
         <div>Powered by <img src="img/sendgrid.png" width="70px"></div>

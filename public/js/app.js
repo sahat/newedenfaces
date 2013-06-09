@@ -158,6 +158,61 @@ App.Views.Feedback = Backbone.View.extend({
 
   template: template('feedback-template'),
 
+  events: {
+    'submit': 'submit'
+  },
+
+  submit: function(e) {
+    e.preventDefault();
+
+    var newCharacter = new App.Models.Character({
+      name: this.$('input[name=addcharacter]').val()
+    });
+
+    var characterName = this.$el.find('input[name=characterName]');
+    var characterNameHelpBlock = this.$el.find('#characterNameHelpBlock');
+
+    var userInterfaceRadios = $('form input[type=radio]:checked');
+    var userInterfaceHelpBlock = this.$el.find('#userInterfaceHelpBlock');
+
+
+    var characterNameCG = this.$el.find('#characterNameCG');
+    var userInterfaceCG = this.$el.find('#userInterfaceCG');
+    var messageCG = this.$el.find('#messageCG');
+
+    var message = $('textarea').val();
+   
+    var submitBtn = this.$el.find('button');
+
+    // validation error occured, find out which one
+    if (!characterName.val() || !userInterfaceRadios.length) {     
+      if (!characterName.val()) {
+      characterNameCG.addClass('error');
+      characterNameHelpBlock.text('This field cannot be blank');
+      characterName.focus();
+    }
+      if (!userInterfaceRadios.length) {
+        userInterfaceCG.addClass('error');
+        userInterfaceHelpBlock.text('Please select one of the choices');
+      }
+    } else {
+      submitBtn.button('loading');
+      // no validation errors, send data to the server
+      postData = {
+        characterName: characterName.val(),
+        uiRating: userInterfaceRadios.val(),
+        message: message
+      };
+
+      $.post('/feedback', postData ,function(data) {
+        submitBtn.button('reset');
+        localStorage.feedbackSent = true;
+        localStorage.feedbackNotice = '<div class="alert alert-success"><strong>Success!</strong> Thank you for the feedback.</div>';
+        $('#content').html(localStorage.feedbackNotice);
+      });
+    }
+  },
+
   render: function() {
     this.$el.html(this.template());
     return this;
@@ -405,9 +460,13 @@ App.Router = Backbone.Router.extend({
   },
 
   feedback: function() {
-    var feedbackView = new App.Views.Feedback();
-    $('#content').html(feedbackView.render().el);
-    feedbackView.selectMenuItem('home-menu');
+    if (localStorage.feedbackSent) {
+      $('#content').html(localStorage.feedbackNotice);
+    } else {
+      var feedbackView = new App.Views.Feedback();
+      $('#content').html(feedbackView.render().el);
+      feedbackView.selectMenuItem('home-menu');
+    }
   },
 
   topCharacters: function() {

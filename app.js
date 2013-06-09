@@ -11,7 +11,7 @@ var express = require('express'),
     request = require('request'),
     xml2js = require('xml2js'),
     mongoose = require('mongoose'),
-    sendgrid = require('sendgrid');
+    SendGrid = require('sendgrid').SendGrid;
 
 /**
  * App Initialization
@@ -145,8 +145,25 @@ app.get('/characters/:name', function(req, res) {
 // });
 
 
-app.post('/add', function(req, res) {
+app.post('/feedback', function(req, res) {
+  var sendgrid = new SendGrid('sahat', '');
+  var characterName = req.body.characterName;
+  var message = req.body.message;
+  var uiRating = req.body.uiRating;
+  var text = 'From: ' + characterName + '.' + 'User Interface: ' +
+              uiRating + '.' + 'Message: ' + message + '.';
   
+  sendgrid.send({
+    to: 'sakhat@gmail.com',
+    from: 'aura@neweden.com',
+    subject: 'Site Feedback',
+    text: text
+  }, function(success, message) {
+    if (!success) {
+      console.log(message);
+    }
+    res.send('Email has been sent successfully');
+  });
 });
 
 http.createServer(app).listen(app.get('port'), function(){
