@@ -188,9 +188,8 @@
     </ul>
 
     <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
-        <img src="../img/<%= race %>.png" width="40px">
+        <img src="../img/<%= race %>.png">
         <%= name %>
-        
     </div>
 
     <div class="text-center">
@@ -247,8 +246,13 @@
 </script>
 
 <script id="character-summary-template" type="text/template">
-    <p class="jumbotron"><%= name %></p>
-    <img class="img img-polaroid" src="<%= image256 %>">
+    <div class="jumbotron"><img src="../img/<%= race %>.png"><%= name %></div>
+    <ul class="inline">
+        <li><strong>Race:</strong> <%= race %></li>
+        <li><strong>Bloodline:</strong> <%= bloodline %></li>
+    </ul>
+
+    <img class="img" src="<%= image256 %>">
     <div class="popover right">
         <div class="arrow"></div>
         <h3 class="popover-title pagination-centered">Rating</h3>
@@ -257,7 +261,7 @@
             Wins: <strong><%= wins %></strong> Losses: <strong><%= losses %></strong>
         </div>
     </div>
-    <a href="https://gate.eveonline.com/Profile/<%= name %>">EVE Profile</a>
+    <a class="btn btn-warning btn-large" href="https://gate.eveonline.com/Profile/<%= name %>">EVE Profile</a>
 </script>
 
 
