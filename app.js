@@ -57,6 +57,37 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+
+app.get('/health', function(req, res){
+    res.send('1');
+});
+
+// OPENSHIFT Environment Variables
+var ipaddr  = process.env.OPENSHIFT_INTERNAL_IP;
+var port    = process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+
+if (typeof ipaddr === "undefined") {
+   console.warn('No OPENSHIFT_INTERNAL_IP environment variable');
+}
+
+function terminator(sig) {
+   if (typeof sig === "string") {
+      console.log('%s: Received %s - terminating Node server ...',
+                  Date(Date.now()), sig);
+      process.exit(1);
+   }
+   console.log('%s: Node server stopped.', Date(Date.now()) );
+}
+
+
+process.on('exit', function() { terminator(); });
+
+['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
+ 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
+].forEach(function(element, index, array) {
+    process.on(element, function() { terminator(element); });
+});
+
 app.put('/characters/:id', function(req, res) {
   Character.findById(req.body._id, function(err, character) {
     character.wins = req.body.wins;
@@ -172,6 +203,11 @@ app.post('/feedback', function(req, res) {
   });
 });
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+
+
+// http.createServer(app).listen(app.get('port'), function(){
+//   console.log('Express server listening on port ' + app.get('port'));
+// });
+app.listen(port, ipaddr, function(){
+  console.log('%s: Node (version: %s) %s started on %s:%d ...', Date(Date.now() ), process.version, process.argv[1], ipaddr, port);
 });
