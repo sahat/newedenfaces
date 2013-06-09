@@ -79,7 +79,7 @@ var NewEdenFaces = function() {
      * App Initialization
      */
     var parser = new xml2js.Parser();
-    mongoose.connect('localhost');
+    mongoose.connect('mongodb://sahat:newedenfaces@ds029638.mongolab.com:29638/newedenfaces');
 
     /**
      * DB Schema and Model
@@ -207,7 +207,7 @@ var NewEdenFaces = function() {
 
 
     app.post('/api/feedback', function(req, res) {
-      var sendgrid = new SendGrid('sahat', '');
+      var sendgrid = new SendGrid('sahat', 'sendgridEVE');
       var characterName = req.body.characterName;
       var message = req.body.message;
       var uiRating = req.body.uiRating;
