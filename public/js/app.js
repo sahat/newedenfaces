@@ -23,12 +23,6 @@ App.Models.Character = Backbone.Model.extend({
 // Characters Collection
 App.Collections.Characters = Backbone.Collection.extend({
 
-  comparator: function(characterA, characterB) {
-    if (characterA.get('rating') > characterB.get('rating')) return -1;
-    if (characterB.get('rating') > characterA.get('rating')) return 1;
-    return 0;
-  },
-
   model: App.Models.Character,
 
   url: 'http://localhost:3000/characters'
@@ -242,11 +236,24 @@ App.Views.Leaderboard = Backbone.View.extend({
   className: 'inline',
 
   render: function() {
+
+    this.collection.comparator = function(characterA, characterB) {
+      if (characterA.get('rating') > characterB.get('rating')) return -1;
+      if (characterB.get('rating') > characterA.get('rating')) return 1;
+      return 0;
+    },
+
+    this.collection.sort({ silent: true });
+
     var top10 = new Backbone.Collection(this.collection.slice(0,14));
+    
+    delete this.collection.comparator;
+
     top10.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
       this.$el.append(leaderboardItemView.render().el);
     }, this);
+    
     return this;
   }
 
