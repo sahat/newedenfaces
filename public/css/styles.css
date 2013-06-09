@@ -1,7 +1,7 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
-@import 'select2.css';
- 
+@import url(http://fonts.googleapis.com/css?family=Sarina|Oleo+Script);
+
 html, body {
   height: 100%;
 
@@ -18,6 +18,22 @@ html, body {
 
 .container {
 
+}
+
+.brand {
+  transition: 0.3s ease-in-out;
+  color: #222 !important;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.7) !important;
+  background: url(../img/quafe.png) no-repeat 5px;
+  font-family: 'Oleo Script', cursive;
+  background-size: contain;
+  padding-left: 50px !important;
+}
+
+.brand:hover {
+  transition: 0.3s ease-in-out;
+  color: #34c3af !important;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.7) !important;
 }
 
 .footer {
