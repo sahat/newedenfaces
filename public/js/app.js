@@ -376,10 +376,6 @@ App.Views.Search = Backbone.View.extend({
   
   el: $('.navbar'),
 
-  initialize: function() {
-    console.log(this.el)
-  },
-
   events: {
     'submit form': 'submit'
   },
