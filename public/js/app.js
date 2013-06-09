@@ -550,25 +550,14 @@ Backbone.history.start();
 })();
 
 $(document).on("ready", function () {
-
-
-    // App.loadTemplates(["HomeView", "AddCharacterView", "TopCharactersView", "ContactView", "NavBarView", "CharacterView", "CharacterListItemView"],
-    //   function () {
-    //       App.router = new App.Router();
-    //       Backbone.history.start();
-
-    //   });
-
-    // $(document).on('click', 'a:not([data-bypass])', function(e){
-    //   href = $(this).prop('href')
-    //   root = location.protocol+'//'+location.host+'/'
-    //   if (root===href.slice(0,root.length)){
-    //     e.preventDefault();
-    //     Backbone.history.navigate(href.slice(root.length), true);
-    //   }
-    // });
-
-
+  $(document).on('click', 'a:not([data-bypass])', function(e){
+    href = $(this).prop('href')
+    root = location.protocol+'//'+location.host+'/'
+    if (root===href.slice(0,root.length)){
+      e.preventDefault();
+      Backbone.history.navigate(href.slice(root.length), true);
+    }
+  });
 });
 
 $(document).ajaxStart(function() {
