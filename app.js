@@ -18,7 +18,7 @@ var express = require('express'),
  */
 var app = express();
 var parser = new xml2js.Parser();
-mongoose.connect('localhost');
+mongoose.connect('mongodb://sahat:newedenfaces@ds029638.mongolab.com:29638/newedenfaces');
 
 /**
  * DB Schema and Model
