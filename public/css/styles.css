@@ -172,3 +172,19 @@ ul.inline>li {
   padding-left: 0;
   padding-bottom: 5px;
 }
+
+.amarr {
+  border-color: #ffdb8f;
+}
+
+.minmatar {
+  border-color: #63220d;
+}
+
+.gallente {
+  border-color: #2a6354;
+}
+
+.caldari {
+  border-color: #2c73ae;
+}

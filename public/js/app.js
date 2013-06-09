@@ -23,9 +23,15 @@ App.Models.Character = Backbone.Model.extend({
 // Characters Collection
 App.Collections.Characters = Backbone.Collection.extend({
 
-    model: App.Models.Character,
+  comparator: function(characterA, characterB) {
+    if (characterA.get('rating') > characterB.get('rating')) return -1;
+    if (characterB.get('rating') > characterA.get('rating')) return 1;
+    return 0;
+  },
 
-    url: 'http://localhost:3000/characters'
+  model: App.Models.Character,
+
+  url: 'http://localhost:3000/characters'
 
 });
 
