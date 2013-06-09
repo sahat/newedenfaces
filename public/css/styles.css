@@ -176,6 +176,7 @@ ul.inline>li {
 .progress .bar {
   text-align: left;
   font-size: 11px;
+  font-weight: bold;
 }
 
 .progress .bar span {
