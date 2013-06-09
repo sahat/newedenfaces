@@ -178,12 +178,22 @@
     <a href="#">
         <img class="img-polaroid" src="<%= image512 %>" >
     </a>
+
+    <ul class="inline pagination-centered">
+        <li><strong>Race:</strong> <%= race %></li>
+        <li><strong>Bloodline:</strong> <%= bloodline %></li>
+    </ul>
+
     <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
         <img src="../img/<%= race %>.png" width="40px">
         <%= name %>
         
     </div>
-    <strong>Winning Percentage</strong>
+
+    <div class="text-center">
+        <strong>Winning Percentage</strong>
+    </div>
+    
     <div class="progress progress-striped active">
         <div class="bar" style="width: 0%;"><span></span></div>
     </div>
