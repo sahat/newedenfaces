@@ -545,7 +545,7 @@ App.Router = Backbone.Router.extend({
 });
 
 var router = new App.Router();
-Backbone.history.start();
+Backbone.history.start({ pushState: true });
 
 })();
 
