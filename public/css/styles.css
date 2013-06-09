@@ -66,6 +66,11 @@ html, body {
   width: 200px;
 }
 
+.profile-button {
+  margin-top: 10px;
+  margin-left: 70px;
+}
+
 .jumbotron {
   text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
   font-size: 30px;
