@@ -35,6 +35,7 @@
                 <li class="home-menu"><a href="#">Home</a></li>
                 <li class="top10-menu"><a href="#top10">Top 10</a></li>
                 <li class="add-menu"><a href="#add">Add Character</a></li>
+                <li class="feedback-menu"><a href="#feedback">Feedback</a></li>
             </ul>
         </div>
     </div>
@@ -119,18 +120,10 @@
   </div>
 </div>
 
-<div id="feedback" class="modal hide fade" tabindex="-1" role="dialog">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3>Feedback</h3>
-  </div>
-  <div class="modal-body">
-    <p>Send feedback to sakhat@gmail.com</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
-  </div>
-</div>
+<script id="feedback-template" type="text/template">
+    <p class="lead pagination-centered">Click on the portrait. Select your favorite.</p>
+</script>
+
 
 <script id="home-template" type="text/template">
     <p class="lead pagination-centered">Click on the portrait. Select your favorite.</p>
@@ -148,7 +141,7 @@
 </script>
 
 <script id="leaderboard-item-template" type="text/template">
-    <a href="#characters/<%= name %>">
+    <a href="#characters/<%= name %>" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
         <img src="<%= image64 %>">
     </a>
 </script>

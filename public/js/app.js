@@ -154,6 +154,25 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 });
 
 
+App.Views.Feedback = Backbone.View.extend({
+
+  template: template('feedback-template'),
+
+  render: function() {
+    this.$el.html(this.template());
+    return this;
+  },
+
+  selectMenuItem: function(menuItem) {
+    $('.navbar .nav li').removeClass('active');
+    if (menuItem) {
+      $('.' + menuItem).addClass('active');
+    }
+  }
+
+});
+
+
 // Footer leaderboard view on home page
 App.Views.Leaderboard = Backbone.View.extend({
 
@@ -161,7 +180,7 @@ App.Views.Leaderboard = Backbone.View.extend({
 
   className: 'inline',
 
-  render: function () {
+  render: function() {
     
     var top10 = new Backbone.Collection(this.collection.slice(0,14));
     top10.each(function(character) {
@@ -181,6 +200,8 @@ App.Views.LeaderboardItem = Backbone.View.extend({
   template: template('leaderboard-item-template'),
 
   render: function () {
+    console.log(this.el);
+    this.$el.tooltip();
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   }
@@ -359,13 +380,14 @@ App.Router = Backbone.Router.extend({
   },
 
   routes: {
-    '':                 'home',
-    'top10':            'topCharacters',
-    'add':              'addCharacter',
-    'characters/:name': 'characterDetails'
+    '':                   'home',
+    'top10':              'topCharacters',
+    'add':                'addCharacter',
+    'characters/:name':   'characterDetails',
+    'feedback':           'feedback'
   },
 
-  home: function () {
+  home: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
       success: function(data) {
@@ -383,6 +405,12 @@ App.Router = Backbone.Router.extend({
         homeView.selectMenuItem('home-menu');
       }
     });
+  },
+
+  feedback: function() {
+    var feedbackView = new App.Views.Feedback();
+    $('#content').html(feedbackView.render().el);
+    feedbackView.selectMenuItem('home-menu');
   },
 
   topCharacters: function() {
