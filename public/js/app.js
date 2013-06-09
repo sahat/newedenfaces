@@ -413,14 +413,16 @@ App.Views.AddCharacter = Backbone.View.extend({
   submit: function(e) {
     e.preventDefault();
 
-    var newCharacter = new App.Models.Character({
-      name: this.$('input[name=addcharacter]').val()
-    });
-    
+   
+
     var helpBlock = this.$el.find('.help-block');
     var controlGroup = this.$el.find('.control-group');
     var inputField = this.$el.find('input');
     var submitBtn = this.$el.find('button');
+
+    var newCharacter = new App.Models.Character({
+      name: inputField.val()
+    });
 
     submitBtn.button('loading');
 

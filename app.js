@@ -166,12 +166,15 @@ var NewEdenFaces = function() {
           // get character info: race, bloodline, etc.
           request.get({ url: characterInfoUrl }, function(e, r, body) {
             parser.parseString(body, function(err, response) {
+              
               if (response.eveapi.error) {
                 return res.send(404);
               };
+
+              var characterName = response.eveapi.result[0].characterName[0];
               var race = response.eveapi.result[0].race[0];
               var bloodline = response.eveapi.result[0].bloodline[0];
-              var characterName = response.eveapi.result[0].characterName[0];
+              
               // TODO: Check if character is already in the DB
               // save to DB
               var character = new Character({
