@@ -216,6 +216,24 @@ var NewEdenFaces = function() {
     });
 
 
+    app.get('/health', function(req, res) {
+      res.send(1);
+    });
+
+    app.get('/env', function(req, res) {
+        var content = 'Version: ' + process.version + '\n<br/>\n' +
+                      'Env: {<br/>\n<pre>';
+        //  Add env entries.
+        for (var k in process.env) {
+           content += '   ' + k + ': ' + process.env[k] + '\n';
+        }
+        content += '}\n</pre><br/>\n'
+        res.send('<html>\n' +
+                 '  <head><title>Node.js Process Env</title></head>\n' +
+                 '  <body>\n<br/>\n' + content + '</body>\n</html>');
+    };
+
+
     app.post('/characters/:name', function(req, res) {
       console.log(req.params.name);
     });
