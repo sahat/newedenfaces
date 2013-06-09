@@ -10,7 +10,8 @@ var express = require('express'),
     path = require('path'),
     request = require('request'),
     xml2js = require('xml2js'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    sendgrid = require('sendgrid');
 
 /**
  * App Initialization
