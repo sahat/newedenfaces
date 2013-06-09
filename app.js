@@ -79,7 +79,7 @@ var NewEdenFaces = function() {
      * App Initialization
      */
     var parser = new xml2js.Parser();
-    mongoose.connect('mongodb://sahat:newedenfaces@ds029638.mongolab.com:29638/newedenfaces');
+    mongoose.connect('localhost');
 
     /**
      * DB Schema and Model
@@ -249,27 +249,27 @@ var NewEdenFaces = function() {
   };
 
   /**
-     *  Initializes the sample application.
-     */
-    self.initialize = function() {
-        self.setupVariables();
-        self.setupTerminationHandlers();
+   *  Initializes the sample application.
+   */
+  self.initialize = function() {
+    self.setupVariables();
+    self.setupTerminationHandlers();
 
-        // Create the express server and routes.
-        self.initializeServer();
-    };
+    // Create the express server and routes.
+    self.initializeServer();
+  };
 
 
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                        Date(Date.now() ), self.ipaddress, self.port);
-        });
-    };
+  /**
+   *  Start the server (starts up the sample application).
+   */
+  self.start = function() {
+    //  Start the app on the specific interface (and port).
+    app.listen(self.port, self.ipaddress, function() {
+        console.log('%s: Node server started on %s:%d ...',
+                    Date(Date.now() ), self.ipaddress, self.port);
+    });
+  };  
 };
 
 var zapp = new NewEdenFaces();
