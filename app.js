@@ -119,7 +119,7 @@ var NewEdenFaces = function() {
     }
 
     //  Add handlers for the app (from the routes).
-    app.put('/characters/:id', function(req, res) {
+    app.put('/api/characters/:id', function(req, res) {
       Character.findById(req.body._id, function(err, character) {
         character.wins = req.body.wins;
         character.losses = req.body.losses;
@@ -130,13 +130,13 @@ var NewEdenFaces = function() {
       });
     });
 
-    app.get('/characters', function(req, res) {
+    app.get('/api/characters', function(req, res) {
       Character.find(function(err, characters) {
         res.send(characters);
       });
     });
 
-    app.post('/characters', function(req, res) {
+    app.post('/api/characters', function(req, res) {
       var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + req.body.name;
 
       // get character id from name
@@ -198,11 +198,7 @@ var NewEdenFaces = function() {
     });
 
 
-    app.post('/characters/:name', function(req, res) {
-      console.log(req.params.name);
-    });
-
-    app.get('/characters/:name', function(req, res) {
+    app.get('/api/characters/:name', function(req, res) {
       var name = req.params.name.replace(/[-+]/g, ' ');
       Character.findOne({ name: name }, function(err, character) {
         res.send(character);
@@ -210,7 +206,7 @@ var NewEdenFaces = function() {
     });
 
 
-    app.post('/feedback', function(req, res) {
+    app.post('/api/feedback', function(req, res) {
       var sendgrid = new SendGrid('sahat', '');
       var characterName = req.body.characterName;
       var message = req.body.message;
@@ -230,6 +226,28 @@ var NewEdenFaces = function() {
         res.send('Email has been sent successfully');
       });
     });
+
+
+    // PushState redirects
+    // 
+    app.get('/add', function(req, res) {
+      res.redirect('/#add');
+    });
+
+    app.get('/feedback', function(req, res) {
+      res.redirect('/#feedback');
+    });
+
+    app.get('/top100', function(req, res) {
+      res.redirect('/#top100');
+    });
+
+    app.get('/characters/:name', function(req, res) {
+      res.redirect('/#characters/' + req.params.name);
+    });
+
+
+
   };
 
   /**
