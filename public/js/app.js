@@ -14,7 +14,7 @@ window.template = function(id) {
 // Character Model
 App.Models.Character = Backbone.Model.extend({
 
-  urlRoot:"http://localhost:3000/characters",
+  urlRoot:"/characters",
 
   idAttribute: '_id'
 
@@ -25,7 +25,7 @@ App.Collections.Characters = Backbone.Collection.extend({
 
   model: App.Models.Character,
 
-  url: 'http://localhost:3000/characters'
+  url: '/characters'
 
 });
 
