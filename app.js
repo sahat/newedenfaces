@@ -246,8 +246,6 @@ var NewEdenFaces = function() {
       res.redirect('/#characters/' + req.params.name);
     });
 
-
-
   };
 
   /**
