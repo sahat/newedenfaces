@@ -154,8 +154,9 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
     // catch for division by zero (new players)
     if (isNaN(wins + losses)) return 0;
 
-    var winningPercentage = 100 * (wins / (wins + losses));
+    var winningPercentage = Math.round(100 * (wins / (wins + losses)));
     this.$el.find('.bar').width(winningPercentage + '%');
+    this.$el.find('span').html(winningPercentage + '%');
     return this;
   }
 

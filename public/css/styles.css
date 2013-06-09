@@ -172,3 +172,14 @@ ul.inline>li {
   padding-left: 0;
   padding-bottom: 5px;
 }
+
+.progress .bar {
+  text-align: left;
+  font-size: 11px;
+}
+
+.progress .bar span {
+  position: absolute;
+  margin-top: -5px;
+  margin-left: 1px;
+}
