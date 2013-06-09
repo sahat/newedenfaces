@@ -26,7 +26,7 @@
 
     <div class="navbar navbar-masthead">
         <div class="navbar-inner">
-            <a class="brand" href="#">New Eden Faces</a>
+            <a class="brand" href="/">New Eden Faces</a>
             <form class="navbar-form pull-left">
                 <input type="text" class="span3 search-query" placeholder="Search">
                 <button class="btn btn-primary" type="submit">
@@ -206,7 +206,7 @@
 </script>
 
 <script id="leaderboard-item-template" type="text/template">
-    <a href="#characters/<%= name %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
+    <a href="/characters/<%= name %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
         <img src="<%= image64 %>">
     </a>
 </script>
@@ -217,11 +217,11 @@
 
 <script id="character-template" type="text/template">
     <span class="position pull-left"><%= position %></span>
-    <a class="pull-left" href="#characters/<%= model.name %>">
+    <a class="pull-left" href="/characters/<%= model.name %>">
         <img class="media-object" src="<%= model.image64 %>">
     </a>
     <div class="media-body">
-        <h4 class="media-heading"><a href="#characters/<%= model.name %>"><%= model.name %></a></h4>
+        <h4 class="media-heading"><a href="/characters/<%= model.name %>"><%= model.name %></a></h4>
         <p>
             <strong>Race:</strong> <%= model.race %>
             <br>
