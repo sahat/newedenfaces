@@ -88,11 +88,11 @@ html, body {
   transition: 0.3s ease-in-out;
 }
 
-.footer img {
+.thumb {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.footer img:hover {
+.thumb:hover {
   transition: 0.3s ease-in-out;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
@@ -183,4 +183,10 @@ ul.inline>li {
   position: absolute;
   margin-top: -5px;
   margin-left: 1px;
+}
+
+.position {
+  font-size: 40px;
+  font-weight: 200;
+  line-height: 1.25;
 }

@@ -33,7 +33,7 @@
             </form>
             <ul class="nav">
                 <li class="home-menu"><a href="#">Home</a></li>
-                <li class="top10-menu"><a href="#top10">Top 10</a></li>
+                <li class="top100-menu"><a href="#top100">Top 100</a></li>
                 <li class="add-menu"><a href="#add">Add Character</a></li>
                 <li class="feedback-menu"><a href="#feedback">Feedback</a></li>
             </ul>
@@ -165,7 +165,10 @@
                 <button type="submit" class="btn btn-primary" data-loading-text="Sending">Send</button>
             </fieldset>
         </form>
-        <div>Powered by <img src="img/sendgrid.png" width="70px"></div>
+        <div>Powered by SendGrid.
+            <br>
+            <img src="img/sendgrid.png" width="80px">
+        </div>
     </div>
 </script>
 
@@ -193,7 +196,7 @@
     <div class="text-center">
         <strong>Winning Percentage</strong>
     </div>
-    
+
     <div class="progress progress-striped active">
         <div class="bar" style="width: 0%;"><span></span></div>
     </div>
@@ -202,26 +205,21 @@
 
 <script id="leaderboard-item-template" type="text/template">
     <a href="#characters/<%= name %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
-        <img src="<%= image64 %>">
+        <img class="thumb" src="<%= image64 %>">
     </a>
 </script>
 
 <script id="menu-leaderboard-template" type="text/template">
-    <ul class="nav nav-tabs nav-tabs-google">
-        <li class="active"><a href="#">Overall</a></li>
-        <li><a href="#leaderboard/amarr">Amarr</a></li>
-        <li><a href="#leaderboard/caldari">Caldari</a></li>
-        <li><a href="#leaderboard/gallente">Gallente</a></li>
-        <li><a href="#leaderboard/minmatar">Minmatar</a></li>
-    </ul>
+
 </script>
 
 <script id="character-template" type="text/template">
-    <a class="pull-left" href="#">
-        <img class="media-object" src="<%= image64 %>">
+    <span class="position pull-left"><%= position %></span>
+    <a class="pull-left" href="#characters/<%= model.name %>">
+        <img class="media-object thumb" src="<%= model.image64 %>">
     </a>
     <div class="media-body">
-        <h4 class="media-heading"><a href="#characters/<%= name %>"><%= name %></a></h4>
+        <h4 class="media-heading"><a href="#characters/<%= model.name %>"><%= model.name %></a></h4>
         <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
     </div>
 </script>

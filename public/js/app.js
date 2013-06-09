@@ -254,11 +254,11 @@ App.Views.Leaderboard = Backbone.View.extend({
 
     this.collection.sort({ silent: true });
 
-    var top10 = new Backbone.Collection(this.collection.slice(0,14));
+    var top14 = new Backbone.Collection(this.collection.slice(0,14));
     
     delete this.collection.comparator;
 
-    top10.each(function(character) {
+    top14.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
       this.$el.append(leaderboardItemView.render().el);
     }, this);
@@ -292,16 +292,13 @@ App.Views.Character = Backbone.View.extend({
 
   template: template('character-template'),
 
-  events: {
-    'click button': 'showAlert'
-  },
-
-  showAlert: function() {
-    alert('you clicked on ' + this.model.get('name'));
-  },
-
   render: function () {
-    this.$el.html(this.template(this.model.toJSON()));
+    var data = {
+      model: this.model.toJSON(),
+      position: this.options.position
+    }
+
+    this.$el.html(this.template(data));
     return this;
   }
 
@@ -316,12 +313,6 @@ App.Views.Characters = Backbone.View.extend({
 
   template: template('menu-leaderboard-template'),
 
-  render: function() {
-    $('#content').html(this.template());
-    this.collection.each(this.addOne, this);
-    return this;
-  },
-
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
     if (menuItem) {
@@ -331,9 +322,28 @@ App.Views.Characters = Backbone.View.extend({
 
   addOne: function(character, index) {
     // create new character view
-    var characterView = new App.Views.Character({ model: character });
+    var characterView = new App.Views.Character({ model: character, position: index + 1 });
     // apend to <tbody>
     this.$el.append(characterView.render().el);
+  },
+
+  render: function() {
+
+    this.collection.comparator = function(characterA, characterB) {
+      if (characterA.get('rating') > characterB.get('rating')) return -1;
+      if (characterB.get('rating') > characterA.get('rating')) return 1;
+      return 0;
+    },
+
+    this.collection.sort({ silent: true });
+
+    var top100 = new Backbone.Collection(this.collection.slice(0,100));
+    
+    delete this.collection.comparator;
+
+    $('#content').html(this.template());
+    top100.each(this.addOne, this);
+    return this;
   }
 
 });
@@ -455,7 +465,7 @@ App.Router = Backbone.Router.extend({
 
   routes: {
     '':                   'home',
-    'top10':              'topCharacters',
+    'top100':             'topCharacters',
     'add':                'addCharacter',
     'characters/:name':   'characterDetails',
     'feedback':           'feedback'
@@ -493,6 +503,7 @@ App.Router = Backbone.Router.extend({
 
   topCharacters: function() {
     var characters = new App.Collections.Characters();
+
     characters.fetch({
       success: function(data) {
 
@@ -502,7 +513,7 @@ App.Router = Backbone.Router.extend({
 
         $('#content').append(charactersView.render().el);
 
-        charactersView.selectMenuItem('top10-menu');
+        charactersView.selectMenuItem('top100-menu');
       }
     });
   },
