@@ -160,7 +160,6 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
       this.$el.find('.bar').width(winningPercentage + '%');
       this.$el.find('span').html(winningPercentage + '%');
     }
-    
     return this;
   }
 
