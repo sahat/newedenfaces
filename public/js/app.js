@@ -428,6 +428,7 @@ App.Views.AddCharacter = Backbone.View.extend({
 
     newCharacter.save(null, {
       success: function() {
+        console.log(inputField);
         Backbone.history.navigate('#', { trigger: true });
       },
       error: function(model, response) {
