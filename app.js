@@ -74,6 +74,9 @@ app.get('/characters', function(req, res) {
 });
 
 app.post('/characters', function(req, res) {
+  
+
+
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + req.body.name;
 
   // get character id from name
@@ -90,6 +93,13 @@ app.post('/characters', function(req, res) {
       var image256 = 'https://image.eveonline.com/Character/' + characterId + '_256.jpg';
       var image512 = 'https://image.eveonline.com/Character/' + characterId + '_512.jpg';
 
+      // check if already exists
+      Character.findOne({'characterId': characterId }, function(err, character) {
+        if (character) {
+          return res.send(409);
+        }
+      });
+      // otherwise proceed
 
       var characterInfoUrl = 'https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=' + characterId;
 
@@ -138,11 +148,6 @@ app.get('/characters/:name', function(req, res) {
     res.send(character);
   });
 });
-
-
-// app.get('/add', function(req, res) {
-//   res.render('add');
-// });
 
 
 app.post('/feedback', function(req, res) {

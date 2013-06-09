@@ -22,7 +22,7 @@ html, body {
 
 .brand {
   transition: 0.3s ease-in-out;
-  color: #222 !important;
+  color: #333 !important;
   text-shadow: 1px 1px 0px rgba(255,255,255,0.7) !important;
   background: url(../img/quafe.png) no-repeat 5px;
   font-family: 'Oleo Script', cursive;

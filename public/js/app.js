@@ -429,12 +429,17 @@ App.Views.AddCharacter = Backbone.View.extend({
       success: function() {
         Backbone.history.navigate('#', { trigger: true });
       },
-      error: function() {
+      error: function(model, response) {
         controlGroup.addClass('error');
         submitBtn.removeClass('btn-primary').addClass('btn-danger');
         submitBtn.button('reset');
-        helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
         inputField.focus();
+
+        if (response.status == 409) {
+            helpBlock.html('<a href="#characters/' + inputField.val() + '">' + inputField.val() + '</a> is already in our system.');
+        } else {
+            helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
+        }
       }
     });
   },
