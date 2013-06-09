@@ -121,7 +121,52 @@
 </div>
 
 <script id="feedback-template" type="text/template">
-    <p class="lead pagination-centered">Click on the portrait. Select your favorite.</p>
+    <div class="well signin-box">
+        <h2>Feedback Form</h2>
+        <form>
+            <fieldset>
+                <div class="control-group">
+                    <label for="zzzzz">Character Name</label>
+                    <div class="controls">
+                        <input name="zzzz" type="text" autofocus>
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="zzzz">User Interface</label>
+                    <div class="controls">
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
+                            Awesome
+                        </label>
+                        
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            It&#39;s alright
+                        </label>
+
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            Meh, not for me
+                        </label>
+
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="message">Message</label>
+                    <div class="controls">
+                        <textarea name="message" rows="5"></textarea>
+                        <span class="help-block">I would appreciate any suggestions you have to improve this site.</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </fieldset>
+        </form>
+        <div>Powered by <img src="img/sendgrid.png" width="70px"></div>
+    </div>
 </script>
 
 
@@ -141,7 +186,7 @@
 </script>
 
 <script id="leaderboard-item-template" type="text/template">
-    <a href="#characters/<%= name %>" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
+    <a href="#characters/<%= name %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
         <img src="<%= image64 %>">
     </a>
 </script>

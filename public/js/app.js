@@ -181,7 +181,6 @@ App.Views.Leaderboard = Backbone.View.extend({
   className: 'inline',
 
   render: function() {
-    
     var top10 = new Backbone.Collection(this.collection.slice(0,14));
     top10.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
@@ -200,8 +199,6 @@ App.Views.LeaderboardItem = Backbone.View.extend({
   template: template('leaderboard-item-template'),
 
   render: function () {
-    console.log(this.el);
-    this.$el.tooltip();
     this.$el.html(this.template(this.model.toJSON()));
     return this;
   }

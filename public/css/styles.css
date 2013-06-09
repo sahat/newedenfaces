@@ -52,7 +52,7 @@ html, body {
   margin: 0 0 19px;
 }
 
-.signin-box label {
+.control-group > label {
   color: #222;
   margin: 0 0 5px;
   display: block;
