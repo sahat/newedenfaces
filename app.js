@@ -153,6 +153,8 @@ var NewEdenFaces = function() {
           var image256 = 'https://image.eveonline.com/Character/' + characterId + '_256.jpg';
           var image512 = 'https://image.eveonline.com/Character/' + characterId + '_512.jpg';
 
+          console.log(characterId);
+
           // check if already exists
           Character.findOne({'characterId': characterId }, function(err, character) {
             if (character) {
@@ -175,6 +177,8 @@ var NewEdenFaces = function() {
               var race = response.eveapi.result[0].race[0];
               var bloodline = response.eveapi.result[0].bloodline[0];
               
+              console.log(characterName);
+
               // TODO: Check if character is already in the DB
               // save to DB
               var character = new Character({
