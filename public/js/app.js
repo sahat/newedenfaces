@@ -148,18 +148,6 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
-    var wins = this.model.get('wins');
-    var losses = this.model.get('losses');
-
-    // catch for division by zero (new players)
-    if (isNaN(wins / (wins + losses))) {
-      this.$el.find('.bar').width('0%');
-      this.$el.find('span').html('0%').css('color','#111');
-    } else {
-      var winningPercentage = Math.round(100 * (wins / (wins + losses)));
-      this.$el.find('.bar').width(winningPercentage + '%');
-      this.$el.find('span').html(winningPercentage + '%');
-    }
     return this;
   }
 
