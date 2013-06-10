@@ -137,7 +137,10 @@ var NewEdenFaces = function() {
     });
 
     app.post('/api/characters', function(req, res) {
-      var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + req.body.name;
+
+      var charNameInput = req.body.name;
+      charNameInput = charNameInput.replace(/\s/g, '%20');
+      var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
 
       // get character id from name
       request.get({ url: characterIdUrl }, function(e, r, body) {
