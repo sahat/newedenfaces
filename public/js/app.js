@@ -438,7 +438,7 @@ App.Views.AddCharacter = Backbone.View.extend({
         inputField.focus();
 
         if (response.status == 409) {
-            helpBlock.html('<a href="#characters/' + inputField.val() + '">' + inputField.val() + '</a> is already in our system.');
+            helpBlock.html('<a href="/characters/' + inputField.val() + '">' + inputField.val() + '</a> is already in our system.');
         } else {
             helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
         }
