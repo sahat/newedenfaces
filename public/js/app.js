@@ -216,7 +216,7 @@ App.Views.Feedback = Backbone.View.extend({
         message: message
       };
 
-      $.post('/feedback', postData ,function(data) {
+      $.post('/api/feedback', postData ,function(data) {
         submitBtn.button('reset');
         localStorage.feedbackSent = true;
         localStorage.feedbackNotice = '<div class="alert alert-success"><strong>Success!</strong> Thank you for the feedback.</div>';
