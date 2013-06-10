@@ -49,6 +49,12 @@ App.Views.Home = Backbone.View.extend({
     otherModel.set('losses', otherModel.get('losses') + 1);
     this.eloRating(winnerIndex);
     otherModel.save();
+    
+    // remove 2 contestants per each vote
+    this.collection.shift();
+    this.collection.shift();
+    console.log(this.collection);
+    
     this.render();
   },
 
@@ -95,11 +101,12 @@ App.Views.Home = Backbone.View.extend({
   },
 
   render: function() {
+
     this.$el.html(this.template());
-    this.collection.reset(this.collection.shuffle(), { silent: true });
+    
     var twoChars = new Backbone.Collection(this.collection.slice(0,2));
     twoChars.each(this.addOne, this);
-    // re-instantiate tooltip per each new entries
+
     this.$('.lead').tooltip({ placement: 'bottom' });
     return this;
   },
@@ -472,7 +479,7 @@ App.Router = Backbone.Router.extend({
       success: function(data) {
 
         var homeView = new App.Views.Home({
-          collection: characters
+          collection: new Backbone.Collection(data.shuffle())
         });
 
         var leaderboardView = new App.Views.Leaderboard({
