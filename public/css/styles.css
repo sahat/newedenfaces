@@ -224,3 +224,7 @@ ul.inline>li {
   width: 65px;
   text-align: center;
 }
+
+.input-large {
+  width: 185px;
+}
