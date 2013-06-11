@@ -16,10 +16,43 @@ html, body {
   padding-bottom:260px;
 }
 
+.img-polaroid:active {
+  position: relative;
+  top: 3px;
+}
+.img-polaroid:hover {
+  transition: 0.3s ease-in-out;
+  border: 5px solid #4d90fe;
+}
+
+
+.img-polaroid {
+  webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: 5px solid transparent;
+}
+
 .character-thumbnail {
+  margin-bottom: 10px;
   cursor: hand; 
   cursor: pointer;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
 }
+
+
+.character-thumbnail:hover {
+  -webkit-box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
+  -moz-box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
+  box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
 
 .brand {
   transition: 0.3s ease-in-out;
@@ -129,25 +162,9 @@ html, body {
   border: 1px solid #4d90fe;
 }
 
-.img-polaroid:hover {
-  transition: 0.3s ease-in-out;
-  border: 5px solid #4d90fe;
-}
 
 .nav-tabs, .nav-pills a {
   color: #fff;
-}
-
-.img-polaroid:active {
-  position: relative;
-  top: 3px;
-}
-
-.img-polaroid {
-  webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  border: 5px solid transparent;
 }
 
 #progress {
