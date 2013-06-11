@@ -262,29 +262,22 @@
             Wins: <strong><%= wins %></strong> Losses: <strong><%= losses %></strong>
         </div>
     </div>
-    <div class="popover right">
-        <div class="arrow"></div>
-        <h3 class="popover-title pagination-centered">User Rating</h3>
-        <div class="popover-content pagination-centered">
-            <h1>0.5</h1>
-        </div>
-    </div>
     
-
-        <form>
-            <fieldset>
-                <div class="control-group">
-                    <label for="ratecharacter">Rate the character</label>
-                    <div class="controls">
-                        <div class="input-append">
-                            <input class="input-large name="ratecharacter" type="text" placeholder="Decimal number 0 through 10" autofocus>
-                            <button type="submit" class="btn btn-primary" data-loading-text="Loading">Rate</button>
-                        </div>
-                        <span class="help-block"></span>
+    <h2>8.5 <small>user rating</small></h2>
+    <form>
+        <fieldset>
+            <div class="control-group">
+                <label for="ratecharacter">Rate the character above</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input class="input-large name="ratecharacter" type="text" placeholder="Decimal number 0 through 10" autofocus>
+                        <button type="submit" class="btn btn-primary" data-loading-text="Loading">Rate</button>
                     </div>
+                    <span class="help-block"></span>
                 </div>
-            </fieldset>
-        </form>
+            </div>
+        </fieldset>
+    </form>
 
 
             <div id="disqus_thread"></div>
