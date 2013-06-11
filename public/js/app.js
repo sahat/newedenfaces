@@ -349,16 +349,48 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
   template: template('character-summary-template'),
 
+  initialize: function() {
+    this.model.on('change:userRatingVotes', this.updateAverage, this);
+  },
+
+  events: {
+    'submit form': 'submit'
+  },
+
+  updateAverage: function() {
+    this.options.averageRating = this.model.get('userRating') / this.model.get('userRatingVotes');
+    this.$el.find('#averageRating').text(this.options.averageRating.toFixed(2));
+  },
+
+  submit: function(e) {
+    e.preventDefault();
+
+    var input = this.$el.find('input').val();
+
+    this.model.set('userRating', this.model.get('userRating') + parseFloat(input));
+    this.model.set('userRatingVotes', this.model.get('userRatingVotes') + 1);
+
+    console.log(this.model.get('userRating'));
+  },
+
+  
+
+  render: function () {
+
+    var data = {
+      model: this.model.toJSON(),
+      averageRating: this.options.averageRating
+    }
+
+    this.$el.html(this.template(data));
+    return this;
+  },
+
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
     if (menuItem) {
       $('.' + menuItem).addClass('active');
     }
-  },
-
-  render: function () {
-    this.$el.html(this.template(this.model.toJSON()));
-    return this;
   }
 
 });
@@ -370,7 +402,7 @@ App.Views.Search = Backbone.View.extend({
   el: $('.navbar'),
 
   initialize: function() {
-    $('.typeahead').typeahead({
+    $('#search').typeahead({
       source: this.collection.pluck('name')
     });
   },
@@ -549,7 +581,12 @@ App.Router = Backbone.Router.extend({
         console.log(err, 'error');
       },
       success: function(data) {
-        var characterSummaryView = new App.Views.CharacterSummary({ model: data });
+        console.log(data);
+        var averageRating = data.get('userRating') / data.get('userRatingVotes');
+
+        if (isNaN(averageRating)) averageRating = 0;
+
+        var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating });
         $('#content').html(characterSummaryView.render().el);
         characterSummaryView.selectMenuItem();
       }

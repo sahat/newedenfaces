@@ -245,25 +245,25 @@
 </script>
 
 <script id="character-summary-template" type="text/template">
-    <div class="jumbotron"><img src="../img/<%= race %>.png"><%= name %>
+    <div class="jumbotron"><img src="../img/<%= model.race %>.png"><%= model.name %>
         <a class="btn btn-inverse btn-small" href="https://gate.eveonline.com/Profile/<%= name %>">EVE Profile</a>
     </div>
     <ul class="inline">
-        <li><strong>Race:</strong> <%= race %></li>
-        <li><strong>Bloodline:</strong> <%= bloodline %></li>
+        <li><strong>Race:</strong> <%= model.race %></li>
+        <li><strong>Bloodline:</strong> <%= model.bloodline %></li>
     </ul>
 
-    <img class="img" src="<%= image256 %>">
+    <img class="img-polaroid character-thumbnail" src="<%= model.image256 %>">
     <div class="popover right">
         <div class="arrow"></div>
         <h3 class="popover-title pagination-centered">Elo Rating</h3>
         <div class="popover-content pagination-centered">
-            <h1><%= rating %></h1>
-            Wins: <strong><%= wins %></strong> Losses: <strong><%= losses %></strong>
+            <h1><%= model.rating %></h1>
+            Wins: <strong><%= model.wins %></strong> Losses: <strong><%= model.losses %></strong>
         </div>
     </div>
     
-    <h2>8.5 <small>user rating</small></h2>
+    <h2><span id="averageRating"><%= averageRating %></span> <small>user rating</small></h2>
     <form>
         <fieldset>
             <div class="control-group">

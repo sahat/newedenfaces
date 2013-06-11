@@ -99,8 +99,8 @@ var NewEdenFaces = function() {
       rating: { type: Number, default: 1400 },
       wins: { type: Number, default: 0 },
       losses: { type: Number, default: 0 },
-      user_rating: { type: Number, default: 0 },
-      user_rating_votes: { type: Number, default: 0 }
+      userRating: { type: Number, default: 0 },
+      userRatingVotes: { type: Number, default: 0 }
     });
 
 
