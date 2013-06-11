@@ -365,17 +365,23 @@ App.Views.CharacterSummary = Backbone.View.extend({
   submit: function(e) {
     e.preventDefault();
 
-    var input = this.$el.find('input').val();
+    var input = this.$el.find('input');
 
-    this.model.set('userRating', this.model.get('userRating') + parseFloat(input));
+    this.model.set('userRating', this.model.get('userRating') + parseFloat(input.val()));
     this.model.set('userRatingVotes', this.model.get('userRatingVotes') + 1);
+    this.model.save();
 
-    console.log(this.model.get('userRating'));
+    // TODO refactor into a function
+    input.val("You've already voted!");
+    input.prop('disabled', true);
+    this.$el.find('button').prop('disabled', true);
+    localStorage[this.model.get('characterId')] = 'TRUE';
   },
 
   
 
   render: function () {
+
 
     var data = {
       model: this.model.toJSON(),
@@ -383,6 +389,16 @@ App.Views.CharacterSummary = Backbone.View.extend({
     }
 
     this.$el.html(this.template(data));
+
+    // Must be after we render content, or else it won't find the DOM elements
+    if (localStorage[this.model.get('characterId')] == 'TRUE') {
+      console.log('true story')
+      var input = this.$el.find('input');
+      console.log(input);
+      input.val("You've already voted!");
+      input.prop('disabled', true);
+      this.$el.find('button').prop('disabled', true);
+    }
     return this;
   },
 
@@ -586,7 +602,7 @@ App.Router = Backbone.Router.extend({
 
         if (isNaN(averageRating)) averageRating = 0;
 
-        var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating });
+        var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating.toFixed(2) });
         $('#content').html(characterSummaryView.render().el);
         characterSummaryView.selectMenuItem();
       }
