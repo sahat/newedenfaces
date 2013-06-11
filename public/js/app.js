@@ -360,6 +360,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
   updateAverage: function() {
     this.options.averageRating = this.model.get('userRating') / this.model.get('userRatingVotes');
     this.$el.find('#averageRating').text(this.options.averageRating.toFixed(2));
+    this.$el.find('#voteCount').text(this.model.get('userRatingVotes'));
   },
 
   submit: function(e) {
