@@ -1,6 +1,7 @@
 @import 'bootstrap.min.css';
 @import 'todc-bootstrap.css';
-@import url(http://fonts.googleapis.com/css?family=Sarina|Oleo+Script);
+@import url(http://fonts.googleapis.com/css?family=Lovers+Quarrel|Tangerine|Six+Caps|Miss+Fajardose);
+
 
 html, body {
   height: 100%;
@@ -79,17 +80,14 @@ html, body {
 .brand {
   transition: 0.3s ease-in-out;
   color: #333 !important;
-  text-shadow: 2px 2px 3px rgba(0,0,0,0.2) !important;
-  background: url(../img/quafe.png) no-repeat 5px;
-  font-family: 'Oleo Script', cursive;
-  background-size: contain;
-  padding-left: 50px !important;
+  font-family: 'Lovers Quarrel', cursive;font-size: 40px !important;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4) !important;
 }
 
 .brand:hover {
   transition: 0.3s ease-in-out;
   color: #34c3af !important;
-  text-shadow: 2px 2px 3px rgba(255,255,255,0.8) !important;
+  text-shadow: 1px 1px 3px rgba(52, 195, 175, 1.0) !important;
 }
 
 .footer {
