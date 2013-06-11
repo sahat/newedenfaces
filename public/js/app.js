@@ -369,10 +369,20 @@ App.Views.CharacterSummary = Backbone.View.extend({
     var controlGroup = this.$el.find('.control-group');
     var helpBlock = this.$el.find('.help-block');
     if (isNaN(input.val())) {
-        helpBlock.text('Please enter a valid number.');
-        controlGroup.addClass('error');
-        input.val();
-        input.focus();
+      helpBlock.text('Please enter a valid number.');
+      controlGroup.addClass('error');
+      input.val();
+      input.focus();
+    } else if (parseInt(input.val()) < 0) {
+      helpBlock.text('Rating cannot be less than 0.');
+      controlGroup.addClass('error');
+      input.val();
+      input.focus();
+    } else if (parseInt(input.val()) > 10) {
+      helpBlock.text('Rating cannot be greater than 10.');
+      controlGroup.addClass('error');
+      input.val();
+      input.focus();
     } else {
       helpBlock.text('');
       controlGroup.removeClass('error');
@@ -402,14 +412,14 @@ App.Views.CharacterSummary = Backbone.View.extend({
     this.$el.html(this.template(data));
 
     // Must be after we render content, or else it won't find the DOM elements
-    // if (localStorage[this.model.get('characterId')] == 'TRUE') {
-    //   console.log('true story')
-    //   var input = this.$el.find('input');
-    //   console.log(input);
-    //   input.val("You've already voted!");
-    //   input.prop('disabled', true);
-    //   this.$el.find('button').prop('disabled', true);
-    // }
+    if (localStorage[this.model.get('characterId')] == 'TRUE') {
+      console.log('true story')
+      var input = this.$el.find('input');
+      console.log(input);
+      input.val("You've already voted!");
+      input.prop('disabled', true);
+      this.$el.find('button').prop('disabled', true);
+    }
     return this;
   },
 
