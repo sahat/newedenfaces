@@ -7,6 +7,7 @@ var express = require('express'),
     http = require('http'),
     fs = require('fs'),
     path = require('path'),
+    config = require('./config.js'),
     request = require('request'),
     xml2js = require('xml2js'),
     mongoose = require('mongoose'),
@@ -79,7 +80,7 @@ var NewEdenFaces = function() {
      * App Initialization
      */
     var parser = new xml2js.Parser();
-    mongoose.connect('mongodb://sahat:newedenfaces@ds029638.mongolab.com:29638/newedenfaces');
+    mongoose.connect(config.mongoose);
 
     /**
      * DB Schema and Model
@@ -208,16 +209,15 @@ var NewEdenFaces = function() {
     });
 
 
-    app.get('/api/characters/:name', function(req, res) {
-      var name = req.params.name.replace(/[-+]/g, ' ');
-      Character.findOne({ name: name }, function(err, character) {
+    app.get('/api/characters/:id', function(req, res) {
+      Character.findOne({ characterId: req.params.id }, function(err, character) {
         res.send(character);
       });
     });
 
 
     app.post('/api/feedback', function(req, res) {
-      var sendgrid = new SendGrid('sahat', 'sendgridEVE');
+      var sendgrid = new SendGrid(config.sendgrid_user, config.sendgrid_key);
       var characterName = req.body.characterName;
       var message = req.body.message;
       var uiRating = req.body.uiRating;
@@ -252,8 +252,8 @@ var NewEdenFaces = function() {
       res.redirect('/#top100');
     });
 
-    app.get('/characters/:name', function(req, res) {
-      res.redirect('/#characters/' + req.params.name);
+    app.get('/characters/:id', function(req, res) {
+      res.redirect('/#characters/' + req.params.id);
     });
 
   };
@@ -263,7 +263,9 @@ var NewEdenFaces = function() {
    */
   self.initialize = function() {
     self.setupVariables();
-    self.setupTerminationHandlers();
+    
+
+    //self.setupTerminationHandlers();
 
     // Create the express server and routes.
     self.initializeServer();
