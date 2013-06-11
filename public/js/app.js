@@ -369,6 +369,12 @@ App.Views.Search = Backbone.View.extend({
 
   el: $('.navbar'),
 
+  initialize: function() {
+    $('.typeahead').typeahead({
+      source: this.collection.pluck('name')
+    });
+  },
+
   events: {
     'submit form': 'submit'
   },
