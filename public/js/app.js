@@ -366,16 +366,27 @@ App.Views.CharacterSummary = Backbone.View.extend({
     e.preventDefault();
 
     var input = this.$el.find('input');
+    var controlGroup = this.$el.find('.control-group');
+    var helpBlock = this.$el.find('.help-block');
+    if (isNaN(input.val())) {
+        helpBlock.text('Please enter a valid number.');
+        controlGroup.addClass('error');
+        input.val();
+        input.focus();
+    } else {
+      helpBlock.text('');
+      controlGroup.removeClass('error');
 
-    this.model.set('userRating', this.model.get('userRating') + parseFloat(input.val()));
-    this.model.set('userRatingVotes', this.model.get('userRatingVotes') + 1);
-    this.model.save();
+      this.model.set('userRating', this.model.get('userRating') + parseFloat(input.val()));
+      this.model.set('userRatingVotes', this.model.get('userRatingVotes') + 1);
+      this.model.save();
 
-    // TODO refactor into a function
-    input.val("You've already voted!");
-    input.prop('disabled', true);
-    this.$el.find('button').prop('disabled', true);
-    localStorage[this.model.get('characterId')] = 'TRUE';
+      // TODO refactor into a function
+      input.val("You've already voted!");
+      input.prop('disabled', true);
+      this.$el.find('button').prop('disabled', true);
+      localStorage[this.model.get('characterId')] = 'TRUE';
+    }
   },
 
   
@@ -391,14 +402,14 @@ App.Views.CharacterSummary = Backbone.View.extend({
     this.$el.html(this.template(data));
 
     // Must be after we render content, or else it won't find the DOM elements
-    if (localStorage[this.model.get('characterId')] == 'TRUE') {
-      console.log('true story')
-      var input = this.$el.find('input');
-      console.log(input);
-      input.val("You've already voted!");
-      input.prop('disabled', true);
-      this.$el.find('button').prop('disabled', true);
-    }
+    // if (localStorage[this.model.get('characterId')] == 'TRUE') {
+    //   console.log('true story')
+    //   var input = this.$el.find('input');
+    //   console.log(input);
+    //   input.val("You've already voted!");
+    //   input.prop('disabled', true);
+    //   this.$el.find('button').prop('disabled', true);
+    // }
     return this;
   },
 
