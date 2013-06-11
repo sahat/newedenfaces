@@ -382,6 +382,10 @@ App.Views.Search = Backbone.View.extend({
       return model.get('name').toLowerCase() === input.toLowerCase();
     });
 
+    if (!queryMatch.length) {
+      return;
+    }
+
     var characterId = queryMatch[0].get('characterId');
 
     if (characterId) {
