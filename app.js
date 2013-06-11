@@ -127,6 +127,8 @@ var NewEdenFaces = function() {
         character.wins = req.body.wins;
         character.losses = req.body.losses;
         character.rating = req.body.rating;
+        character.userRating = req.body.userRating;
+        character.userRatingVotes = req.body.userRatingVotes;
         character.save(function(err) {
           res.send(200);
         });
