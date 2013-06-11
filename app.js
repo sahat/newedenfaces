@@ -162,7 +162,7 @@ var NewEdenFaces = function() {
           // check if already exists
           Character.findOne({'characterId': characterId }, function(err, character) {
             if (character) {
-              return res.send(409);
+              return res.send(409, { characterId: character.characterId });
             }
           });
           // otherwise proceed
