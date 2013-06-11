@@ -13,8 +13,7 @@ html, body {
 }
 
 #content {
-  overflow:auto;
-  padding-bottom:260px;
+  padding-bottom: 20px;
 }
 
 .img-polaroid:active {
@@ -91,8 +90,6 @@ html, body {
 }
 
 .footer {
-  position: relative;
-  margin-top: -240px;
   height: 240px;
   background: url(../img/px_by_Gre3g.png);
   color: #ccc;
