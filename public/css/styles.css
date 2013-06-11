@@ -81,6 +81,7 @@ html, body {
   position: relative;
   display: inline-block;
   width: 200px;
+  z-index: 0;
 }
 
 .profile-button {
