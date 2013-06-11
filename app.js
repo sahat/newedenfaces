@@ -98,7 +98,9 @@ var NewEdenFaces = function() {
       bloodline: String,
       rating: { type: Number, default: 1400 },
       wins: { type: Number, default: 0 },
-      losses: { type: Number, default: 0 }
+      losses: { type: Number, default: 0 },
+      user_rating: { type: Number, default: 0 },
+      user_rating_votes: { type: Number, default: 0 }
     });
 
 
