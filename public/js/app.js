@@ -53,8 +53,6 @@ App.Views.Home = Backbone.View.extend({
     // remove 2 contestants per each vote
     this.collection.shift();
     this.collection.shift();
-    console.log(this.collection);
-    
     this.render();
   },
 
@@ -368,7 +366,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
 // Search View
 App.Views.Search = Backbone.View.extend({
-  
+
   el: $('.navbar'),
 
   events: {
@@ -380,10 +378,14 @@ App.Views.Search = Backbone.View.extend({
 
     var input = this.$el.find('input').val();
 
-    var match = this.collection.where({ name: input });
+    var queryMatch = this.collection.filter(function(model) {
+      return model.get('name').toLowerCase() === input.toLowerCase();
+    });
 
-    if (match) {
-      Backbone.history.navigate('#characters/' + input, { trigger: true });
+    var characterId = queryMatch[0].get('characterId');
+
+    if (characterId) {
+      Backbone.history.navigate('/characters/' + characterId, { trigger: true });
     } else {
       console.log('no match, got: ' + input);
     }
