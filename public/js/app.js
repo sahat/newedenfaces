@@ -434,8 +434,12 @@ App.Views.AddCharacter = Backbone.View.extend({
         submitBtn.button('reset');
         inputField.focus();
 
+        // I've made so that the server returns a character id object with 409 error
+        // we need character id to create a url linkback to that existing character
+        var characterId = response.responseJSON.characterId;
+
         if (response.status == 409) {
-            helpBlock.html('<a href="/characters/' + inputField.val() + '">' + inputField.val() + '</a> is already in our system.');
+            helpBlock.html('<a href="/characters/' + characterId + '">' + model.get('name') + '</a> is already in our system.');
         } else {
             helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
         }
@@ -471,7 +475,7 @@ App.Router = Backbone.Router.extend({
     '':                   'home',
     'top100':             'topCharacters',
     'add':                'addCharacter',
-    'characters/:name':   'characterDetails',
+    'characters/:id':     'characterDetails',
     'feedback':           'feedback'
   },
 
@@ -528,8 +532,8 @@ App.Router = Backbone.Router.extend({
     $('#content').html(addCharacterView.render().el);
   },
 
-  characterDetails: function (name) {
-    var character = new App.Models.Character({ _id: name });
+  characterDetails: function (id) {
+    var character = new App.Models.Character({ _id: id });
     character.fetch({
       error: function(err) {
         console.log(err, 'error');
