@@ -349,7 +349,7 @@ App.Views.Characters = Backbone.View.extend({
 
     this.collection.sort({ silent: true });
 
-    var top100 = new Backbone.Collection(this.collection.slice(0,100));
+    var top100 = new Backbone.Collection(this.collection.slice(1100,1500));
     
     delete this.collection.comparator;
 
@@ -374,12 +374,12 @@ App.Views.CharacterSummary = Backbone.View.extend({
     'click #report': 'reportPlayer'
   },
 
-  reportPlayer: function() {
+  reportPlayer: function(e) {
     var self = this;
     console.log(localStorage['reported-'+this.model.get('characterId')])
 
     $.post('/api/report', this.model.toJSON(), function(data) {
-      $('#report').attr('disabled', true);
+      self.$el.find('#report').attr('disabled', true);
       localStorage['reported-' + self.model.get('characterId')] = 'True';
     });
   },
@@ -449,10 +449,10 @@ App.Views.CharacterSummary = Backbone.View.extend({
       this.$el.find('button').prop('disabled', true);
     }
 
-    if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
-      console.log('already reported');
-      this.$el.find('#report').attr('disabled', true);
-    }
+    // if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
+    //   console.log('already reported');
+    //   this.$el.find('#report').disable();
+    // }
 
     return this;
   },

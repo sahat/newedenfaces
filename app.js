@@ -137,11 +137,11 @@ var NewEdenFaces = function() {
           Character.remove({ _id: req.body._id }, function (err) {
             if (err) return res.send(500, err);
             console.log('Character has been removed');
-            res.send(200);
+            res.send(200, {'message': 'Character has been removed'});
           });
         } else {
           character.save(function(err) {
-            res.send(200);
+            res.send(200, {'message': 'Character has been reported++'});
           });
         }
       });
