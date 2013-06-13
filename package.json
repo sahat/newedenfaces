@@ -21,6 +21,8 @@
     "request": "*",
     "xml2js": "*",
     "mongoose": "*",
-    "sendgrid": "*"
+    "sendgrid": "*",
+    "mongodb": "*",
+    "gridfs-stream": "*"
   }
 }

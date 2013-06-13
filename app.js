@@ -11,6 +11,7 @@ var express = require('express'),
     request = require('request'),
     xml2js = require('xml2js'),
     mongoose = require('mongoose'),
+    Grid = require('gridfs-stream'),
     SendGrid = require('sendgrid').SendGrid;
 
 
@@ -80,7 +81,7 @@ var NewEdenFaces = function() {
      * App Initialization
      */
     var parser = new xml2js.Parser();
-    mongoose.connect(config.mongoose);
+    mongoose.connect('localhost');
 
     /**
      * DB Schema and Model
@@ -88,6 +89,12 @@ var NewEdenFaces = function() {
     var Character = mongoose.model('Character', {
       characterId: { type: String, unique: true },
       name: String,
+      img32: Buffer,
+      img64: Buffer,
+      img128: Buffer,
+      img256: Buffer,
+      img512: Buffer,
+      img1024: Buffer,
       image32: String,
       image64: String,
       image128: String,
@@ -133,7 +140,7 @@ var NewEdenFaces = function() {
         character.reportCount += 1;
         
         if (character.reportCount >= 5) {
-          // remove character from DB
+          // remove character from DateB
           Character.remove({ _id: req.body._id }, function (err) {
             if (err) return res.send(500, err);
             console.log('Character has been removed');
@@ -145,6 +152,50 @@ var NewEdenFaces = function() {
           });
         }
       });
+    });
+
+    app.post('/api/grid', function(req, res) {
+      var url = 'https://image.eveonline.com/Character/' +
+      req.body.characterId + '_' + req.body.size + '.jpg';
+      var filename = path.join(__dirname, url.replace(/^.*[\\\/]/, ''));
+      
+      var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+      var writestream = gfs.createWriteStream({ filename: filename });
+
+      var imageStream = request(url).pipe(fs.createWriteStream(filename));
+      
+      imageStream.on('close', function() {
+        fs.createReadStream(filename).pipe(writestream);
+        res.send('KOSHER');
+      });
+
+    });
+
+    app.get('/api/gridfs/:characterId/:size', function(req, res) {
+      var url = 'https://image.eveonline.com/Character/' +
+      req.params.characterId + '_' + req.params.size + '.jpg';
+      
+      var filename = path.join(__dirname, url.replace(/^.*[\\\/]/, ''));
+      var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+      var writestream = gfs.createWriteStream({ filename: filename });
+      
+      request(url).pipe(fs.createWriteStream(filename));
+      
+      fs.createReadStream(filename).on('open', function() {
+        fs.createReadStream(filename).pipe(writestream);
+      });
+      // 
+      
+      var readstream = gfs.createReadStream({
+        filename: filename
+      });
+
+      readstream.pipe(res);
+
+
+      //fs.createReadStream(filename).pipe(request.get(url));
+      
+        
     });
 
     //  Add handlers for the app (from the routes).
@@ -166,6 +217,7 @@ var NewEdenFaces = function() {
         res.send(characters);
       });
     });
+
 
     app.post('/api/characters', function(req, res) {
 
