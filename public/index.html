@@ -37,7 +37,6 @@
             <ul class="nav">
                 <li class="home-menu"><a href="/">Home</a></li>
                 <li class="top100-menu"><a href="/top100">Top 100</a></li>
-                <li class="azlist-menu"><a href="/azlist">A-Z List</a></li>
                 <li class="add-menu"><a href="/add">Add Character</a></li>
                 <li class="feedback-menu"><a href="/feedback">Feedback</a></li>
             </ul>
@@ -249,7 +248,7 @@
 <script id="character-summary-template" type="text/template">
     <div class="jumbotron"><img src="../img/<%= model.race %>.png"><%= model.name %>
         <a class="btn btn-inverse btn-small" href="https://gate.eveonline.com/Profile/<%= model.name %>">EVE Profile</a>
-        <input type="submit" id="report" class="btn btn-warning btn-small" value="Report">
+        <button id="report" class="btn btn-warning btn-small">Report</button>
     </div>
     <ul class="inline">
         <li><strong>Race:</strong> <%= model.race %></li>
