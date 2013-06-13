@@ -151,6 +151,8 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   template: template('character-thumbnail-template'),
 
   initialize: function() {
+    // replace by a fixed height container
+    this.$el.html('LOADING...');
     this.model.on('change', this.render, this);
   },
 
@@ -312,6 +314,8 @@ App.Views.Character = Backbone.View.extend({
 
 });
 
+
+
 // Characters Collection View
 App.Views.Characters = Backbone.View.extend({
 
@@ -377,7 +381,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
     $.post('/api/report', this.model.toJSON(), function(data) {
       $('#report').attr('disabled', true);
       localStorage['reported-' + self.model.get('characterId')] = 'True';
-    });  
+    });
   },
 
   updateAverage: function() {
@@ -591,22 +595,40 @@ App.Router = Backbone.Router.extend({
 
   home: function() {
     var characters = new App.Collections.Characters();
-    characters.fetch({
-      success: function(data) {
+    
+    // initialize view here
+    // pass in dummy empty collection
+    // var homeView = new App.Views.Home({
+    //   collection: new Backbone.Collection()
+    // });
+    // 
+    if (App.Views.homeView) {
+      console.log('reusing homeview');
+      $('#content').html(App.Views.homeView.render().el);
+      App.Views.homeView.selectMenuItem('home-menu');
+    } else {
+      console.log('not reusing home');
+      characters.fetch({
+        success: function(data) {
 
-        var homeView = new App.Views.Home({
-          collection: new Backbone.Collection(data.shuffle())
-        });
+          //reset collection here
+          App.Views.homeView = new App.Views.Home({
+            collection: new Backbone.Collection(data.shuffle())
+          });
 
-        var leaderboardView = new App.Views.Leaderboard({
-          collection: characters
-        });
 
-        $('#content').html(homeView.render().el);
-        $('.footer #leaderboard').html(leaderboardView.render().el);
-        homeView.selectMenuItem('home-menu');
-      }
-    });
+          App.Views.leaderboardView = new App.Views.Leaderboard({
+            collection: characters
+          });
+
+          $('#content').html(App.Views.homeView.render().el);
+          $('.footer #leaderboard').html(App.Views.leaderboardView.render().el);
+          App.Views.homeView.selectMenuItem('home-menu');
+        }
+      });
+    }
+
+    
   },
 
   feedback: function() {
@@ -632,23 +654,6 @@ App.Router = Backbone.Router.extend({
         $('#content').append(charactersView.render().el);
 
         charactersView.selectMenuItem('top100-menu');
-      }
-    });
-  },
-
-  alphabeticalCharacters: function() {
-    var characters = new App.Collections.Characters();
-
-    characters.fetch({
-      success: function(data) {
-
-        var alphabeticalCharactersView = new App.Views.AlphabeticalCharacters({
-          collection: characters
-        });
-
-        //$('#content').append(charactersView.render().el);
-
-        //charactersView.selectMenuItem('top100-menu');
       }
     });
   },
