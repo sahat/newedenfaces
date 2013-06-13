@@ -449,10 +449,10 @@ App.Views.CharacterSummary = Backbone.View.extend({
       this.$el.find('button').prop('disabled', true);
     }
 
-    // if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
-    //   console.log('already reported');
-    //   this.$el.find('#report').disable();
-    // }
+    if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
+      console.log('already reported');
+      this.$el.find('#report').disable();
+    }
 
     return this;
   },
