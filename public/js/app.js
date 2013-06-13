@@ -366,7 +366,18 @@ App.Views.CharacterSummary = Backbone.View.extend({
   },
 
   events: {
-    'submit form': 'submit'
+    'submit form': 'submit',
+    'click #report': 'reportPlayer'
+  },
+
+  reportPlayer: function() {
+    var self = this;
+    console.log(localStorage['reported-'+this.model.get('characterId')])
+
+    $.post('/api/report', this.model.toJSON(), function(data) {
+      $('#report').attr('disabled', true);
+      localStorage['reported-' + self.model.get('characterId')] = 'True';
+    });  
   },
 
   updateAverage: function() {
@@ -408,7 +419,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
       input.val("You've already voted!");
       input.prop('disabled', true);
       this.$el.find('button').prop('disabled', true);
-      localStorage[this.model.get('characterId')] = 'TRUE';
+      localStorage[this.model.get('characterId')] = 'True';
     }
   },
 
@@ -425,7 +436,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
     this.$el.html(this.template(data));
 
     // Must be after we render content, or else it won't find the DOM elements
-    if (localStorage[this.model.get('characterId')] == 'TRUE') {
+    if (localStorage[this.model.get('characterId')] == 'True') {
       console.log('true story')
       var input = this.$el.find('input');
       console.log(input);
@@ -433,6 +444,12 @@ App.Views.CharacterSummary = Backbone.View.extend({
       input.prop('disabled', true);
       this.$el.find('button').prop('disabled', true);
     }
+
+    if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
+      console.log('already reported');
+      this.$el.find('#report').attr('disabled', true);
+    }
+
     return this;
   },
 
@@ -566,6 +583,7 @@ App.Router = Backbone.Router.extend({
   routes: {
     '':                   'home',
     'top100':             'topCharacters',
+    'azlist':             'alphabeticalCharacters',
     'add':                'addCharacter',
     'characters/:id':     'characterDetails',
     'feedback':           'feedback'
@@ -614,6 +632,23 @@ App.Router = Backbone.Router.extend({
         $('#content').append(charactersView.render().el);
 
         charactersView.selectMenuItem('top100-menu');
+      }
+    });
+  },
+
+  alphabeticalCharacters: function() {
+    var characters = new App.Collections.Characters();
+
+    characters.fetch({
+      success: function(data) {
+
+        var alphabeticalCharactersView = new App.Views.AlphabeticalCharacters({
+          collection: characters
+        });
+
+        //$('#content').append(charactersView.render().el);
+
+        //charactersView.selectMenuItem('top100-menu');
       }
     });
   },
