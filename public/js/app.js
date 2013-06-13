@@ -30,7 +30,7 @@ App.Collections.Characters = Backbone.Collection.extend({
 });
 
 
-// Home View
+// Home View (Main view)
 App.Views.Home = Backbone.View.extend({
 
   tagName: 'ul',
@@ -39,8 +39,20 @@ App.Views.Home = Backbone.View.extend({
 
   template: template('home-template'),
 
+  events: {
+  },
+
   initialize: function() {
+    _.bindAll(this);
+    Mousetrap.bind('s', this.skip);
     this.collection.on('change:wins', this.updateLosses, this);
+  },
+
+  skip: function() {
+    console.log('skipping...')
+    this.collection.shift();
+    this.collection.shift();
+    this.render();
   },
 
   updateLosses: function(winnerModel) {
