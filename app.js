@@ -128,8 +128,23 @@ var NewEdenFaces = function() {
     // That endpoint is also used on the home page where most people spend their time,
     // so checking an if-statement thousands of times is redundant
     app.post('/api/report', function(req, res) {
-      var characterId = req.body.characterId;
-      res.send(200);
+      Character.findById(req.body._id, function(err, character) {
+        
+        character.reportCount += 1;
+        
+        if (character.reportCount >= 5) {
+          // remove character from DB
+          Character.remove({ _id: req.body._id }, function (err) {
+            if (err) return res.send(500, err);
+            console.log('Character has been removed');
+            res.send(200);
+          });
+        } else {
+          character.save(function(err) {
+            res.send(200);
+          });
+        }
+      });
     });
 
     //  Add handlers for the app (from the routes).
