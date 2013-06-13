@@ -167,6 +167,9 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
+    this.$el.find('img').on('dragstart', function(e) {
+      e.preventDefault();
+    });
     return this;
   }
 
