@@ -122,6 +122,16 @@ var NewEdenFaces = function() {
       app.use(express.errorHandler());
     }
 
+    // report endpoint
+    // I could add an if-statement to api/characters/:id instead that will get
+    // checked everytime is model saved on backbone, but that will cause performance issues
+    // That endpoint is also used on the home page where most people spend their time,
+    // so checking an if-statement thousands of times is redundant
+    app.post('/api/report', function(req, res) {
+      var characterId = req.body.characterId;
+      res.send(200);
+    });
+
     //  Add handlers for the app (from the routes).
     app.put('/api/characters/:id', function(req, res) {
       Character.findById(req.body._id, function(err, character) {
