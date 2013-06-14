@@ -201,9 +201,15 @@ var NewEdenFaces = function() {
           return res.send(500, 'Error in accessing the database');
         }
       
-        if (!req.body.wins || !req.body.losses || !req.body.rating) {
-          console.log('Wins, Losses or Rating is empty or null.')
-          return res.send(500, 'One of the character attributes is NULL');
+        if (!req.body.wins) {
+          console.log('Wins is empty or null');
+          return res.send(500, err);
+        } else if (!req.body.losses) {
+          console.log('Losses is empty or null');
+          return res.send(500, err);
+        } else if (!req.body.rating) {
+          console.log('Rating is empty or null');
+          return res.send(500, err);
         }
 
         character.wins = req.body.wins;
