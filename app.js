@@ -162,6 +162,173 @@ var NewEdenFaces = function() {
       });
     });
 
+    app.get('/api/grid/update/:characterId', function(req, res) {
+      async.parallel({
+        one: function(callback){
+          var image32 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_32.jpg';
+          var filename32 = image32.replace(/^.*[\\\/]/, '');
+          var filepath32 = path.join(__dirname, filename32);
+          var writestream32 = gfs.createWriteStream({ filename: filename32 });
+          var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
+
+          imageStream32.on('close', function(err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, 'File error has occured');
+            }
+            gfs.remove({ filename: filename32 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success!');
+              var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
+              gridstream.on('close', function(err) {
+                fs.unlink(filepath32);
+                callback(null, filename32);
+              });
+            });
+          });
+        },
+        two: function(callback) {
+          var image64 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_64.jpg';
+          var filename64 = image64.replace(/^.*[\\\/]/, '');
+          var filepath64 = path.join(__dirname, filename64);
+          var writestream64 = gfs.createWriteStream({ filename: filename64 });
+          var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
+
+          imageStream64.on('close', function(err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, 'File error has occured');
+            }
+            gfs.remove({ filename: filename64 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success!');
+              var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
+              gridstream.on('close', function(err) {
+                fs.unlink(filepath64);
+                callback(null, filename64);
+              });
+            });
+          });
+        },
+        three: function(callback){
+          var image128 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_128.jpg'; 
+          var filename128 = image128.replace(/^.*[\\\/]/, '');
+          var filepath128 = path.join(__dirname, filename128);
+          var writestream128 = gfs.createWriteStream({ filename: filename128 });
+          var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
+
+          imageStream128.on('close', function(err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, 'File error has occured');
+            }
+            gfs.remove({ filename: filename128 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success!');
+              var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
+              gridstream.on('close', function(err) {
+                fs.unlink(filepath128);
+                callback(null, filename128);
+              });
+            });
+
+            
+          });
+        },
+        four: function(callback){
+          var image256 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_256.jpg'; 
+          var filename256 = image256.replace(/^.*[\\\/]/, '');
+          var filepath256 = path.join(__dirname, filename256);
+          var writestream256 = gfs.createWriteStream({ filename: filename256 });
+          var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
+
+          imageStream256.on('close', function(err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, 'File error has occured');
+            }
+            gfs.remove({ filename: filename256 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success!');
+              var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
+              gridstream.on('close', function(err) {
+                fs.unlink(filepath256);
+                callback(null, filename256);
+              });
+            });
+          });
+        },
+        five: function(callback){
+          var image512 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_512.jpg';
+          var filename512 = image512.replace(/^.*[\\\/]/, '');
+          var filepath512 = path.join(__dirname, filename512);
+          var writestream512 = gfs.createWriteStream({ filename: filename512 });
+          var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
+
+          imageStream512.on('close', function(err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, 'File error has occured');
+            }
+            gfs.remove({ filename: filename512 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success!');
+              var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
+              gridstream.on('close', function(err) {
+                fs.unlink(filepath512);
+                callback(null, filename512);
+              });
+            });
+
+          });
+        }
+      },
+      function(err, results) {
+        if (err) {
+          console.log(err);
+          return res.send(500, err);
+        }
+        console.log(results.five);
+
+        var filename32 = results.one;
+        var filename64 = results.two;
+        var filename128 = results.three;
+        var filename256 = results.four;
+        var filename512 = results.five;
+
+        Character.findOne({ characterId: req.params.characterId }, function(err, character) {
+          character.image32 = '/api/grid/' + filename32;
+          character.image64 = '/api/grid/' + filename64;
+          character.image128 ='/api/grid/' + filename128;
+          character.image256 = '/api/grid/' + filename256;
+          character.image512 = '/api/grid/' + filename512;
+
+          character.save(function(err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, 'Error while saving new character to database');
+            }
+            res.send(character);
+          });
+        });
+
+      });
+    });
 
     app.post('/api/grid', function(req, res) {
       var url = 'https://image.eveonline.com/Character/' + req.body.characterId + '_' + req.body.size + '.jpg';

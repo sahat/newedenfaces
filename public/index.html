@@ -248,6 +248,7 @@
 <script id="character-summary-template" type="text/template">
     <div class="jumbotron"><img src="../img/<%= model.race %>.png"><%= model.name %>
         <a class="btn btn-inverse btn-small" href="https://gate.eveonline.com/Profile/<%= model.name %>">EVE Profile</a>
+        <button id="update" class="btn btn-primary btn-small">Update Avatar</button>
         <button id="report" class="btn btn-warning btn-small">Report</button>
     </div>
     <ul class="inline">
@@ -258,9 +259,9 @@
     <img class="img-polaroid character-thumbnail" src="<%= model.image256 %>">
     <div class="popover right">
         <div class="arrow"></div>
-        <h3 class="popover-title pagination-centered">Elo Rating</h3>
+        <h3 class="popover-title pagination-centered">W/L Percentage</h3>
         <div class="popover-content pagination-centered">
-            <h1><%= model.rating %></h1>
+            <h1><%= WLRatio %>%</h1>
             Wins: <strong><%= model.wins %></strong> Losses: <strong><%= model.losses %></strong>
         </div>
     </div>
