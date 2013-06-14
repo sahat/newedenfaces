@@ -187,7 +187,7 @@ var NewEdenFaces = function() {
       Character.findById(req.body._id, function(err, character) {
         if (err) return res.send(500, 'Error in accessing the database');
       
-        if (!req.body.wins || !req.body.losses || !req.body.rating || !req.body.userRating || !req.body.userRatingVotes) {
+        if (!req.body.wins || !req.body.losses || !req.body.rating) {
           return res.send(500, 'One of the character attributes is NULL');
         }
 
