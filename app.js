@@ -82,19 +82,13 @@ var NewEdenFaces = function() {
      */
     var parser = new xml2js.Parser();
     mongoose.connect('localhost');
-
+    var gfs = Grid(mongoose.connection.db, mongoose.mongo);
     /**
      * DB Schema and Model
      */
     var Character = mongoose.model('Character', {
       characterId: { type: String, unique: true },
       name: String,
-      img32: Buffer,
-      img64: Buffer,
-      img128: Buffer,
-      img256: Buffer,
-      img512: Buffer,
-      img1024: Buffer,
       image32: String,
       image64: String,
       image128: String,
@@ -119,6 +113,8 @@ var NewEdenFaces = function() {
     app.use(express.favicon(__dirname + '/public/favicon.ico')); 
     app.use(express.favicon());
     app.use(express.logger('dev'));
+    app.use(express.compress());
+    app.use(express.staticCache());
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
@@ -154,9 +150,9 @@ var NewEdenFaces = function() {
       });
     });
 
+
     app.post('/api/grid', function(req, res) {
-      var url = 'https://image.eveonline.com/Character/' +
-      req.body.characterId + '_' + req.body.size + '.jpg';
+      var url = 'https://image.eveonline.com/Character/' + req.body.characterId + '_' + req.body.size + '.jpg';
       var filename = url.replace(/^.*[\\\/]/, '');
       var filepath = path.join(__dirname, filename);
 
@@ -164,13 +160,14 @@ var NewEdenFaces = function() {
       var writestream = gfs.createWriteStream({ filename: filename });
 
       var imageStream = request(url).pipe(fs.createWriteStream(filepath));
-      
+
       imageStream.on('close', function() {
         fs.createReadStream(filepath).pipe(writestream);
         res.send('KOSHER');
       });
 
     });
+
 
     app.get('/api/grid/:filename', function(req, res) {
       var filename = req.params.filename;
@@ -221,8 +218,60 @@ var NewEdenFaces = function() {
           var image128 = 'https://image.eveonline.com/Character/' + characterId + '_128.jpg';
           var image256 = 'https://image.eveonline.com/Character/' + characterId + '_256.jpg';
           var image512 = 'https://image.eveonline.com/Character/' + characterId + '_512.jpg';
+          
+          // GRIDFS
+          // 
+          
+          var filename32 = image32.replace(/^.*[\\\/]/, '');
+          var filepath32 = path.join(__dirname, filename32);
+          var writestream32 = gfs.createWriteStream({ filename: filename32 });
+          var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
 
-          console.log(characterId);
+          imageStream32.on('close', function() {
+            fs.createReadStream(filepath32).pipe(writestream32);
+            fs.unlink(filepath32);
+          });
+
+          var filename64 = image64.replace(/^.*[\\\/]/, '');
+          var filepath64 = path.join(__dirname, filename64);
+          var writestream64 = gfs.createWriteStream({ filename: filename64 });
+          var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
+
+          imageStream64.on('close', function() {
+            fs.createReadStream(filepath64).pipe(writestream64);
+            fs.unlink(filepath64);
+          });
+
+          var filename128 = image128.replace(/^.*[\\\/]/, '');
+          var filepath128 = path.join(__dirname, filename128);
+          var writestream128 = gfs.createWriteStream({ filename: filename128 });
+          var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
+
+          imageStream128.on('close', function() {
+            fs.createReadStream(filepath128).pipe(writestream128);
+            fs.unlink(filepath128);
+          });
+
+          var filename256 = image256.replace(/^.*[\\\/]/, '');
+          var filepath256 = path.join(__dirname, filename256);
+          var writestream256 = gfs.createWriteStream({ filename: filename256 });
+          var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
+
+          imageStream256.on('close', function() {
+            fs.createReadStream(filepath256).pipe(writestream256);
+            fs.unlink(filepath256);
+          });
+
+          var filename512 = image512.replace(/^.*[\\\/]/, '');
+          var filepath512 = path.join(__dirname, filename512);
+          var writestream512 = gfs.createWriteStream({ filename: filename512 });
+          var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
+
+          imageStream512.on('close', function() {
+            fs.createReadStream(filepath512).pipe(writestream512);
+            fs.unlink(filepath512);
+          });
+
 
           // check if already exists
           Character.findOne({'characterId': characterId }, function(err, character) {
@@ -255,16 +304,16 @@ var NewEdenFaces = function() {
                 name: characterName,
                 race: race,
                 bloodline: bloodline,
-                image32: image32,
-                image64: image64,
-                image128: image64,
-                image256: image256,
-                image512: image512
+                image32: '/api/grid/' + filename32,
+                image64: '/api/grid/' + filename64,
+                image128: '/api/grid/' + filename128,
+                image256: '/api/grid/' + filename256,
+                image512: '/api/grid/' + filename512
               });
 
               character.save(function(err) {
                 console.log('saved successfully');
-                res.send(character);
+                return res.send(character);
               });
             });
           });
