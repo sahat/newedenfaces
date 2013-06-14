@@ -162,7 +162,7 @@ var NewEdenFaces = function() {
       });
     });
 
-    app.get('/api/grid/update/:characterId', function(req, res) {
+    app.put('/api/grid/:characterId', function(req, res) {
       async.parallel({
         one: function(callback){
           var image32 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_32.jpg';
