@@ -16,7 +16,7 @@ App.Models.Character = Backbone.Model.extend({
 
   urlRoot:"/api/characters",
 
-  idAttribute: '_id'
+  idAttribute: 'characterId'
 
 });
 
@@ -672,7 +672,7 @@ App.Router = Backbone.Router.extend({
   },
 
   characterDetails: function (id) {
-    var character = new App.Models.Character({ _id: id });
+    var character = new App.Models.Character({ characterId: id });
     character.fetch({
       error: function(err) {
         console.log(err, 'error');
