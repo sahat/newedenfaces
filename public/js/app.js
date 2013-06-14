@@ -1,5 +1,7 @@
 (function() {
 
+var vent = _.extend({}, Backbone.Events);
+
 window.App = {
   Models: {},
   Views: {},
@@ -45,7 +47,7 @@ App.Views.Home = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this);
     Mousetrap.bind('s', this.skip);
-    this.collection.on('change:wins', this.updateLosses, this);
+    vent.on('game:over', this.gameover, this);
   },
 
   skip: function() {
@@ -55,16 +57,12 @@ App.Views.Home = Backbone.View.extend({
     this.render();
   },
 
-  updateLosses: function(winnerModel) {
-    var winnerIndex = this.collection.indexOf(winnerModel);
-    var otherModel = this.collection.at(Math.abs(1 - winnerIndex));
-    otherModel.set('losses', otherModel.get('losses') + 1);
-    this.eloRating(winnerIndex);
-    otherModel.save();
-  
+  gameover: function(winnerModel) {
+
     // remove 2 contestants per each vote
     this.collection.shift();
     this.collection.shift();
+
     this.render();
 
     if (this.collection.length < 2) {
@@ -72,52 +70,18 @@ App.Views.Home = Backbone.View.extend({
     }
   },
 
-
-
-  eloRating: function(winnerIndex) {
-
-    var kFactor = 16;
-
-    if (winnerIndex == 0) {
-      // A won
-      var ratingA = this.collection.at(0).get('rating');
-      var ratingB = this.collection.at(1).get('rating');
-  
-      var scoreA = this.collection.at(0).get('wins');
-      var scoreB = this.collection.at(1).get('wins');
-
-      var expectedA = 1.0 / (1.0 + Math.pow(10, ((ratingA - ratingB) / 400)));
-      var expectedB = 1.0 / (1.0 + Math.pow(10, ((ratingA - ratingB) / 400)));
-
-      var newRatingA = ratingA + (kFactor * expectedA);
-      var newRatingB = ratingB - (kFactor * expectedA);
-
-      this.collection.at(0).set('rating', Math.round(newRatingA));
-      this.collection.at(1).set('rating', Math.round(newRatingB));
-    } else {
-      // B won
-      var ratingA = this.collection.at(0).get('rating');
-      var ratingB = this.collection.at(1).get('rating');
-    
-      var scoreA = this.collection.at(0).get('wins');
-      var scoreB = this.collection.at(1).get('wins');
-
-      var expectedA = 1.0 / (1.0 + Math.pow(10, ((ratingB - ratingA) / 400)));
-      var expectedB = 1.0 / (1.0 + Math.pow(10, ((ratingB - ratingA) / 400)));
-
-      var newRatingA = ratingA - (kFactor * expectedA);
-      var newRatingB = ratingB + (kFactor * expectedA);
-
-      this.collection.at(0).set('rating', Math.round(newRatingA));
-      this.collection.at(1).set('rating', Math.round(newRatingB));
-    }
-    
-  },
-
   render: function() {
 
     this.$el.html(this.template());
     
+    // var sortedByVotes = this.collection.sortBy(function(m) {
+    //   var wins = m.get('wins');
+    //   var losses = m.get('losses');
+    //   var total = wins + losses;
+    //   return total;
+    // });
+    // sortedByVotes = new Backbone.Collection(sortedByVotes);
+
     var twoChars = new Backbone.Collection(this.collection.slice(0,2));
     twoChars.each(this.addOne, this);
 
@@ -155,9 +119,8 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   template: template('character-thumbnail-template'),
 
   initialize: function() {
-    // replace by a fixed height container
-    this.$el.html('LOADING...');
-    this.model.on('change', this.render, this);
+    vent.on('game:over', this.updateCount, this);
+    vent.on('game:over', this.render, this);
   },
 
   events: {
@@ -165,7 +128,18 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   },
 
   winner: function() {
-    this.model.set('wins', this.model.get('wins') + 1);
+    vent.trigger('game:over', this.model.id);
+  },
+
+  // Triggers both models, wins/losses are set accordingly
+  // The model that triggered the event is the winner's model
+  // Which is why it's in the updateCount argument list
+  updateCount: function(winnerId) {
+    if (this.model.id == winnerId) {
+      this.model.set('wins', this.model.get('wins') + 1);
+    } else {
+      this.model.set('losses', this.model.get('losses') + 1);
+    }
     this.model.save();
   },
 
@@ -264,8 +238,11 @@ App.Views.Leaderboard = Backbone.View.extend({
   render: function() {
 
     this.collection.comparator = function(characterA, characterB) {
-      if (characterA.get('rating') > characterB.get('rating')) return -1;
-      if (characterB.get('rating') > characterA.get('rating')) return 1;
+      winLossCharacterA = characterA.get('wins') / (characterA.get('wins') + characterA.get('losses')); 
+      winLossCharacterB = characterB.get('wins') / (characterB.get('wins') + characterB.get('losses')); 
+
+      if (winLossCharacterA > winLossCharacterB) return -1;
+      if (winLossCharacterB > winLossCharacterA) return 1;
       return 0;
     },
 
@@ -576,6 +553,8 @@ App.Views.AddCharacter = Backbone.View.extend({
 App.Router = Backbone.Router.extend({
 
   initialize: function() {
+
+    
     
     var characters = new App.Collections.Characters();
     characters.fetch({
