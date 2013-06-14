@@ -352,7 +352,7 @@ App.Views.Characters = Backbone.View.extend({
 
     this.collection.sort({ silent: true });
 
-    var top100 = new Backbone.Collection(this.collection.slice(1100,1500));
+    var top100 = new Backbone.Collection(this.collection.slice(0,100));
     
     delete this.collection.comparator;
 
