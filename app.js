@@ -186,11 +186,11 @@ var NewEdenFaces = function() {
     app.put('/api/characters/:id', function(req, res) {
       Character.findById(req.body._id, function(err, character) {
         if (err) return res.send(500, 'Error in accessing the database');
-        
-        if (!red.body.wins || !req.body.losses || !req.body.rating || !req.body.userRating || !req.body.userRatingVotes) {
+      
+        if (!req.body.wins || !req.body.losses || !req.body.rating || !req.body.userRating || !req.body.userRatingVotes) {
           return res.send(500, 'One of the character attributes is NULL');
         }
-        
+
         character.wins = req.body.wins;
         character.losses = req.body.losses;
         character.rating = req.body.rating;
