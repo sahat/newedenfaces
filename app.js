@@ -132,21 +132,30 @@ var NewEdenFaces = function() {
     // That endpoint is also used on the home page where most people spend their time,
     // so checking an if-statement thousands of times is redundant
     app.post('/api/report', function(req, res) {
-      Character.findById(req.body._id, function(err, character) {
-        if (err) return res.send(500, err);
+      Character.findOne({ characterId: req.body.characterId }, function(err, character) {
+        if (err) {
+          console.log(err);
+          return res.send(500, err);
+        }
 
         character.reportCount += 1;
         
-        if (character.reportCount >= 5) {
+        if (character.reportCount >= 10) {
           // remove character from DateB
-          Character.remove({ _id: req.body._id }, function (err) {
-            if (err) return res.send(500, err);
+          Character.remove({ characterId: req.body.characterId }, function (err) {
+            if (err) {
+              console.log(err);
+              return res.send(500, err);
+            }
             console.log('Character has been removed');
             res.send(200, {'message': 'Character has been removed'});
           });
         } else {
           character.save(function(err) {
-            if (err) return res.send(500, err);
+            if (err) {
+              console.log(err);
+              return res.send(500, err);
+            }
             res.send(200, {'message': 'Character has been reported++'});
           });
         }
@@ -186,10 +195,14 @@ var NewEdenFaces = function() {
 
     //  Add handlers for the app (from the routes).
     app.put('/api/characters/:id', function(req, res) {
-      Character.findById(req.body._id, function(err, character) {
-        if (err) return res.send(500, 'Error in accessing the database');
+      Character.findOne({ characterId: req.body.characterId }, function(err, character) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error in accessing the database');
+        }
       
         if (!req.body.wins || !req.body.losses || !req.body.rating) {
+          console.log('Wins, Losses or Rating is empty or null.')
           return res.send(500, 'One of the character attributes is NULL');
         }
 
@@ -199,7 +212,10 @@ var NewEdenFaces = function() {
         character.userRating = req.body.userRating;
         character.userRatingVotes = req.body.userRatingVotes;
         character.save(function(err) {
-          if (err) return res.send(500, err);
+          if (err) {
+            console.log(err);
+            return res.send(500, err);
+          }
           res.send(200);
         });
       });
@@ -207,7 +223,10 @@ var NewEdenFaces = function() {
 
     app.get('/api/characters', function(req, res) {
       Character.find(function(err, characters) {
-        if (err) return res.send(500, 'Error getting characters');
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error getting characters');
+        }
         res.send(characters);
       });
     });
@@ -224,10 +243,16 @@ var NewEdenFaces = function() {
         function(callback){
           // get character id from character name
           request.get({ url: characterIdUrl }, function(err, r, body) {
-            if (err) return res.send(500, 'Error in retrieving character id');
+            if (err) {
+              console.log(err);
+              return res.send(500, 'Error in retrieving character id');
+            }
 
             parser.parseString(body, function(err, response) {
-              if (response.eveapi.error) return res.send(404, 'Character name not found');
+              if (response.eveapi.error) {
+                console.log('Character name is not found');
+                return res.send(404, 'Character name is not found');
+              }
 
               var characterId = response.eveapi.result[0].rowset[0].row[0].$.characterID;
               var image32 = 'https://image.eveonline.com/Character/' + characterId + '_32.jpg';
@@ -239,7 +264,10 @@ var NewEdenFaces = function() {
 
               // check if character already exists
               Character.findOne({'characterId': characterId }, function(err, character) {
-                if (character) return res.send(409, { characterId: character.characterId });
+                if (character) {
+                  console.log('Character already exists');
+                  return res.send(409, { characterId: character.characterId });
+                }
                 callback(null, characterId, characterInfoUrl, image32, image64, image128, image256, image512);
               });
             });
@@ -255,7 +283,10 @@ var NewEdenFaces = function() {
               var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
 
               imageStream32.on('close', function(err) {
-                if (err) return res.send(500, 'File error has occured');
+                if (err) {
+                  console.log(err);
+                  return res.send(500, 'File error has occured');
+                }
                 var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
                 gridstream.on('close', function(err) {
                   fs.unlink(filepath32);
@@ -270,7 +301,10 @@ var NewEdenFaces = function() {
               var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
 
               imageStream64.on('close', function(err) {
-                if (err) return res.send(500, 'File error has occured');
+                if (err) {
+                  console.log(err);
+                  return res.send(500, 'File error has occured');
+                }
                 var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
                 gridstream.on('close', function(err) {
                   fs.unlink(filepath64);
@@ -285,7 +319,10 @@ var NewEdenFaces = function() {
               var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
 
               imageStream128.on('close', function(err) {
-                if (err) return res.send(500, 'File error has occured');
+                if (err) {
+                  console.log(err);
+                  return res.send(500, 'File error has occured');
+                }
                 var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
                 gridstream.on('close', function(err) {
                   fs.unlink(filepath128);
@@ -300,7 +337,10 @@ var NewEdenFaces = function() {
               var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
 
               imageStream256.on('close', function(err) {
-                if (err) return res.send(500, 'File error has occured');
+                if (err) {
+                  console.log(err);
+                  return res.send(500, 'File error has occured');
+                }
                 var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
                 gridstream.on('close', function(err) {
                   fs.unlink(filepath256);
@@ -315,7 +355,10 @@ var NewEdenFaces = function() {
               var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
 
               imageStream512.on('close', function(err) {
-                if (err) return res.send(500, 'File error has occured');
+                if (err) {
+                  console.log(err);
+                  return res.send(500, 'File error has occured');
+                }
                 var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
                 gridstream.on('close', function(err) {
                   fs.unlink(filepath512);
@@ -325,25 +368,35 @@ var NewEdenFaces = function() {
             }
           },
           function(err, results) {
-              // results is now equals to: {one: 1, two: 2}
+              if (err) {
+                console.log(err);
+                return res.send(500, err);
+              }
               var filename32 = results.one;
               var filename64 = results.two;
               var filename128 = results.three;
               var filename256 = results.four;
               var filename512 = results.five;
-              console.log(results);
               waterfallCallback(null, characterId, characterInfoUrl, filename32, filename64, filename128, filename256, filename512);
           });
         },
         function(characterId, characterInfoUrl, filename32, filename64, filename128, filename256, filename512, callback){
           // get character info: race, bloodline, etc.
-          console.log('parallel is over');
           request.get({ url: characterInfoUrl }, function(err, r, body) {
-            if (err) return res.send(500, 'Error in retrieving character information page');
+            if (err) {
+              console.log(err);
+              return res.send(500, 'Error in retrieving character information page');
+            }
 
             parser.parseString(body, function(err, response) {
-              if (err) return res.send(500, 'Error parsing XML');
-              if (response.eveapi.error) return res.send(404);
+              if (err) {
+                console.log(err);
+                return res.send(500, 'Error parsing XML');
+              }
+              if (response.eveapi.error) {
+                console.log('404 while getting character info');
+                return res.send(404);
+              }
           
               var characterName = response.eveapi.result[0].characterName[0];
               var race = response.eveapi.result[0].race[0];
@@ -361,10 +414,11 @@ var NewEdenFaces = function() {
                 image512: '/api/grid/' + filename512
               });
 
-              console.log(character);
-
               character.save(function(err) {
-                if (err) return res.send(500, 'Error while saving new character to database');
+                if (err) {
+                  console.log(err);
+                  return res.send(500, 'Error while saving new character to database');
+                }
                 res.send(character);
               });
               
@@ -378,7 +432,10 @@ var NewEdenFaces = function() {
 
     app.get('/api/characters/:id', function(req, res) {
       Character.findOne({ characterId: req.params.id }, function(err, character) {
-        if (err) return res.send(500, err);
+        if (err) {
+          console.log(err);
+          return res.send(500, err);
+        }
         res.send(character);
       });
     });
