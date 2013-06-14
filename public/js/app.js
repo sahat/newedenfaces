@@ -364,7 +364,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
       type: 'PUT',
       url: '/api/grid/' + this.model.get('characterId'),
       success: function() {
-        console.log('Avatar has been updated');
+        toastr.success('Avatar has been updated successfully. Please reload the page.');
       }
     });
   },
@@ -417,7 +417,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
       // TODO refactor into a function
       input.val("You've already voted!");
       input.prop('disabled', true);
-      this.$el.find('button').prop('disabled', true);
+      this.$el.find('#rateButton').prop('disabled', true);
       localStorage[this.model.get('characterId')] = 'True';
     }
   },
@@ -442,7 +442,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
       console.log(input);
       input.val("You've already voted!");
       input.prop('disabled', true);
-      this.$el.find('button').prop('disabled', true);
+      this.$el.find('#rateButton').prop('disabled', true);
     }
 
     if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
