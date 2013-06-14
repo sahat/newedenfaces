@@ -237,16 +237,19 @@ App.Views.Leaderboard = Backbone.View.extend({
 
   render: function() {
 
-    this.collection.comparator = function(characterA, characterB) {
-      winLossCharacterA = characterA.get('wins') / (characterA.get('wins') + characterA.get('losses')); 
-      winLossCharacterB = characterB.get('wins') / (characterB.get('wins') + characterB.get('losses')); 
+    // this.collection.comparator = function(characterA, characterB) {
+    //   winLossCharacterA = characterA.get('wins') / (characterA.get('wins') + characterA.get('losses')); 
+    //   winLossCharacterB = characterB.get('wins') / (characterB.get('wins') + characterB.get('losses')); 
+    //   console.log('win-loss-a', winLossCharacterA);
+    //   console.log('win-loss-b', winLossCharacterB);
+    //   if (winLossCharacterA > winLossCharacterB) return -1;
+    //   if (winLossCharacterB > winLossCharacterA) return 1;
+    //   return 0;
+    // },
 
-      if (winLossCharacterA > winLossCharacterB) return -1;
-      if (winLossCharacterB > winLossCharacterA) return 1;
-      return 0;
-    },
-
-    this.collection.sort({ silent: true });
+    this.collection = this.collection.sortBy(function(model) {
+      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+    });
 
     var top14 = new Backbone.Collection(this.collection.slice(0,14));
     
