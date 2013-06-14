@@ -61,11 +61,15 @@ App.Views.Home = Backbone.View.extend({
     otherModel.set('losses', otherModel.get('losses') + 1);
     this.eloRating(winnerIndex);
     otherModel.save();
-    
+  
     // remove 2 contestants per each vote
     this.collection.shift();
     this.collection.shift();
     this.render();
+
+    if (this.collection.length < 2) {
+      $('#content').html('<div class="alert alert-info">You have exhausted all characters. Refresh the page to start over.</div>')
+    }
   },
 
 
