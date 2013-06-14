@@ -328,17 +328,21 @@ App.Views.Characters = Backbone.View.extend({
 
   render: function() {
 
-    this.collection.comparator = function(characterA, characterB) {
-      if (characterA.get('rating') > characterB.get('rating')) return -1;
-      if (characterB.get('rating') > characterA.get('rating')) return 1;
-      return 0;
-    },
+    // this.collection.comparator = function(characterA, characterB) {
+    //   if (characterA.get('rating') > characterB.get('rating')) return -1;
+    //   if (characterB.get('rating') > characterA.get('rating')) return 1;
+    //   return 0;
+    // },
 
-    this.collection.sort({ silent: true });
+    // this.collection.sort({ silent: true });
+
+    this.collection = this.collection.sortBy(function(model) {
+      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+    });
 
     var top100 = new Backbone.Collection(this.collection.slice(0,100));
     
-    delete this.collection.comparator;
+    //delete this.collection.comparator;
 
     $('#content').html(this.template());
     top100.each(this.addOne, this);
