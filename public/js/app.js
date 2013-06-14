@@ -68,7 +68,7 @@ App.Views.Home = Backbone.View.extend({
     this.render();
 
     if (this.collection.length < 2) {
-      $('#content').html('<div class="alert alert-info">You have exhausted all characters. Refresh the page to start over.</div>')
+      $('#content').append('<div class="alert alert-info">You have exhausted all characters. Refresh the page to start over.</div>')
     }
   },
 
@@ -650,19 +650,22 @@ App.Router = Backbone.Router.extend({
 
   topCharacters: function() {
     var characters = new App.Collections.Characters();
-
-    characters.fetch({
-      success: function(data) {
-
-        var charactersView = new App.Views.Characters({
-          collection: characters
-        });
-
-        $('#content').append(charactersView.render().el);
-
-        charactersView.selectMenuItem('top100-menu');
-      }
-    });
+    if (App.Views.charactersView) {
+      console.log('reusing top100 view');
+      $('#content').html(App.Views.charactersView.render().el);
+      App.Views.charactersView.selectMenuItem('top100-menu');
+    } else {
+      console.log('not reusing top100 view');
+      characters.fetch({
+        success: function(data) {
+          App.Views.charactersView = new App.Views.Characters({
+            collection: characters
+          });
+          $('#content').html(App.Views.charactersView.render().el);
+          App.Views.charactersView.selectMenuItem('top100-menu');
+        }
+      });
+    }
   },
 
   addCharacter: function() {
