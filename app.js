@@ -368,13 +368,13 @@ var NewEdenFaces = function() {
           return res.send(500, 'Error in accessing the database');
         }
       
-        if (!req.body.wins) {
+        if (req.body.wins == null) {
           console.log('Wins is empty or null');
           return res.send(500, err);
-        } else if (!req.body.losses) {
+        } else if (req.body.losses == null) {
           console.log('Losses is empty or null');
           return res.send(500, err);
-        } else if (!req.body.rating) {
+        } else if (req.body.rating == null) {
           console.log('Rating is empty or null');
           return res.send(500, err);
         }
