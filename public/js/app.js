@@ -530,8 +530,6 @@ App.Views.AddCharacter = Backbone.View.extend({
   submit: function(e) {
     e.preventDefault();
 
-   
-
     var helpBlock = this.$el.find('.help-block');
     var controlGroup = this.$el.find('.control-group');
     var inputField = this.$el.find('input');
@@ -545,7 +543,6 @@ App.Views.AddCharacter = Backbone.View.extend({
 
     newCharacter.save(null, {
       success: function() {
-        console.log(inputField);
         Backbone.history.navigate('#', { trigger: true });
       },
       error: function(model, response) {
