@@ -458,7 +458,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
     if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
       console.log('already reported');
-      this.$el.find('#report').disable();
+      this.$el.find('#report').attr('disabled', true);
     }
 
     return this;
