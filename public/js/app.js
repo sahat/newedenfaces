@@ -359,7 +359,15 @@ App.Views.CharacterSummary = Backbone.View.extend({
     'click #update': 'updateAvatar'
   },
 
-  
+  updateAvatar: function() {
+    $.ajax({
+      type: 'PUT',
+      url: '/api/grid/' + this.model.get('characterId'),
+      success: function() {
+        console.log('Avatar has been updated');
+      }
+    });
+  },
 
   reportPlayer: function(e) {
     var self = this;
