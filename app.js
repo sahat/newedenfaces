@@ -133,7 +133,8 @@ var NewEdenFaces = function() {
     // so checking an if-statement thousands of times is redundant
     app.post('/api/report', function(req, res) {
       Character.findById(req.body._id, function(err, character) {
-        
+        if (err) return res.send(500, err);
+
         character.reportCount += 1;
         
         if (character.reportCount >= 5) {
@@ -145,6 +146,7 @@ var NewEdenFaces = function() {
           });
         } else {
           character.save(function(err) {
+            if (err) return res.send(500, err);
             res.send(200, {'message': 'Character has been reported++'});
           });
         }
@@ -164,7 +166,7 @@ var NewEdenFaces = function() {
 
       imageStream.on('close', function() {
         fs.createReadStream(filepath).pipe(writestream);
-        res.send('KOSHER');
+        res.send(200);
       });
 
     });
@@ -197,6 +199,7 @@ var NewEdenFaces = function() {
         character.userRating = req.body.userRating;
         character.userRatingVotes = req.body.userRatingVotes;
         character.save(function(err) {
+          if (err) return res.send(500, err);
           res.send(200);
         });
       });
@@ -204,6 +207,7 @@ var NewEdenFaces = function() {
 
     app.get('/api/characters', function(req, res) {
       Character.find(function(err, characters) {
+        if (err) return res.send(500, 'Error getting characters');
         res.send(characters);
       });
     });
@@ -374,6 +378,7 @@ var NewEdenFaces = function() {
 
     app.get('/api/characters/:id', function(req, res) {
       Character.findOne({ characterId: req.params.id }, function(err, character) {
+        if (err) return res.send(500, err);
         res.send(character);
       });
     });
