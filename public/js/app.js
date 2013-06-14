@@ -355,8 +355,11 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
   events: {
     'submit form': 'submit',
-    'click #report': 'reportPlayer'
+    'click #report': 'reportPlayer',
+    'click #update': 'updateAvatar'
   },
+
+  
 
   reportPlayer: function(e) {
     var self = this;
@@ -418,7 +421,8 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
     var data = {
       model: this.model.toJSON(),
-      averageRating: this.options.averageRating
+      averageRating: this.options.averageRating,
+      WLRatio: this.options.winLossRatio
     }
 
     this.$el.html(this.template(data));
@@ -657,12 +661,13 @@ App.Router = Backbone.Router.extend({
         console.log(err, 'error');
       },
       success: function(data) {
-        console.log(data);
         var averageRating = data.get('userRating') / data.get('userRatingVotes');
-
         if (isNaN(averageRating)) averageRating = 0;
 
-        var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating.toFixed(2) });
+        var winLossRatio = Math.floor(data.get('wins') / (data.get('wins') + data.get('losses')) * 100);
+        if (isNaN(winLossRatio)) winLossRatio = 0;
+
+        var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating.toFixed(2), winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
         characterSummaryView.selectMenuItem();
       }
