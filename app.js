@@ -157,45 +157,28 @@ var NewEdenFaces = function() {
     app.post('/api/grid', function(req, res) {
       var url = 'https://image.eveonline.com/Character/' +
       req.body.characterId + '_' + req.body.size + '.jpg';
-      var filename = path.join(__dirname, url.replace(/^.*[\\\/]/, ''));
-      
+      var filename = url.replace(/^.*[\\\/]/, '');
+      var filepath = path.join(__dirname, filename);
+
       var gfs = Grid(mongoose.connection.db, mongoose.mongo);
       var writestream = gfs.createWriteStream({ filename: filename });
 
-      var imageStream = request(url).pipe(fs.createWriteStream(filename));
+      var imageStream = request(url).pipe(fs.createWriteStream(filepath));
       
       imageStream.on('close', function() {
-        fs.createReadStream(filename).pipe(writestream);
+        fs.createReadStream(filepath).pipe(writestream);
         res.send('KOSHER');
       });
 
     });
 
-    app.get('/api/gridfs/:characterId/:size', function(req, res) {
-      var url = 'https://image.eveonline.com/Character/' +
-      req.params.characterId + '_' + req.params.size + '.jpg';
-      
-      var filename = path.join(__dirname, url.replace(/^.*[\\\/]/, ''));
+    app.get('/api/grid/:filename', function(req, res) {
+      var filename = req.params.filename;
       var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-      var writestream = gfs.createWriteStream({ filename: filename });
-      
-      request(url).pipe(fs.createWriteStream(filename));
-      
-      fs.createReadStream(filename).on('open', function() {
-        fs.createReadStream(filename).pipe(writestream);
-      });
-      // 
-      
       var readstream = gfs.createReadStream({
         filename: filename
       });
-
       readstream.pipe(res);
-
-
-      //fs.createReadStream(filename).pipe(request.get(url));
-      
-        
     });
 
     //  Add handlers for the app (from the routes).
