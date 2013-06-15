@@ -360,6 +360,27 @@ var NewEdenFaces = function() {
       });
     });
 
+
+    app.put('/api/winner/:characterId', function(req, res) {
+      Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
+        if (err) {
+          return res.send(500, err);
+          console.log('incrementing win count');
+          res.send(200);
+        }
+      });
+      
+    });
+
+    app.put('/api/loser/:characterId', function(req, res) {
+      Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
+        if (err) return res.send(500, err);
+        console.log('incrementing loss count');
+        res.send(200);
+      });
+      
+    });
+
     //  Add handlers for the app (from the routes).
     app.put('/api/characters/:id', function(req, res) {
       Character.findOne({ characterId: req.body.characterId }, function(err, character) {
@@ -378,9 +399,7 @@ var NewEdenFaces = function() {
           console.log('Rating is empty or null');
           return res.send(500, err);
         }
-
-        character.wins = req.body.wins;
-        character.losses = req.body.losses;
+        
         character.rating = req.body.rating;
         character.userRating = req.body.userRating;
         character.userRatingVotes = req.body.userRatingVotes;
