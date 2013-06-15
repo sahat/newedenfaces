@@ -1,7 +1,5 @@
 (function() {
 
-var vent = _.extend({}, Backbone.Events);
-
 window.App = {
   Models: {},
   Views: {},
@@ -47,7 +45,7 @@ App.Views.Home = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this);
     Mousetrap.bind('s', this.skip);
-    vent.on('game:over', this.gameover, this);
+    this.collection.on('change:wins', this.updateCount, this);
   },
 
   skip: function() {
@@ -57,9 +55,11 @@ App.Views.Home = Backbone.View.extend({
     this.render();
   },
 
-  gameover: function(winnerModel) {
-
-    // remove 2 contestants per each vote
+  updateCount: function(winningModel) {
+    var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
+    losingModel.set('losses', losingModel.get('losses') + 1);
+    losingModel.save();
+    
     this.collection.shift();
     this.collection.shift();
 
@@ -118,28 +118,12 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   template: template('character-thumbnail-template'),
 
-  initialize: function() {
-    vent.on('game:over', this.updateCount, this);
-    vent.on('game:over', this.render, this);
-  },
-
   events: {
     'click img': 'winner'
   },
 
   winner: function() {
-    vent.trigger('game:over', this.model.id);
-  },
-
-  // Triggers both models, wins/losses are set accordingly
-  // The model that triggered the event is the winner's model
-  // Which is why it's in the updateCount argument list
-  updateCount: function(winnerId) {
-    if (this.model.id == winnerId) {
-      this.model.set('wins', this.model.get('wins') + 1);
-    } else {
-      this.model.set('losses', this.model.get('losses') + 1);
-    }
+    this.model.set('wins', this.model.get('wins') + 1);
     this.model.save();
   },
 
