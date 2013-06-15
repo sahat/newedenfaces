@@ -114,8 +114,6 @@ var NewEdenFaces = function() {
     app.use(express.favicon(__dirname + '/public/favicon.ico')); 
     app.use(express.favicon());
     app.use(express.logger('dev'));
-    app.use(express.compress());
-    app.use(express.staticCache());
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
@@ -389,18 +387,6 @@ var NewEdenFaces = function() {
           return res.send(500, 'Error in accessing the database');
         }
       
-        if (req.body.wins == null) {
-          console.log('Wins is empty or null');
-          return res.send(500, err);
-        } else if (req.body.losses == null) {
-          console.log('Losses is empty or null');
-          return res.send(500, err);
-        } else if (req.body.rating == null) {
-          console.log('Rating is empty or null');
-          return res.send(500, err);
-        }
-        
-        character.rating = req.body.rating;
         character.userRating = req.body.userRating;
         character.userRatingVotes = req.body.userRatingVotes;
         character.save(function(err) {
