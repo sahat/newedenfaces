@@ -341,7 +341,7 @@ App.Views.Characters = Backbone.View.extend({
       return -model.get('wins');
     });
 
-    var top100 = new Backbone.Collection(this.collection.slice(0,1500));
+    var top100 = new Backbone.Collection(this.collection.slice(0,100));
     
     //delete this.collection.comparator;
 
