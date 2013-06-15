@@ -128,6 +128,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
     'click img': 'winner'
   },
 
+
   winner: function() {
     var self = this;
     $.ajax({
@@ -138,6 +139,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
       }
     });
   },
+
 
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
