@@ -62,7 +62,6 @@ App.Views.Home = Backbone.View.extend({
       url: '/api/loser/' + losingModel.get('characterId'),
       type: 'PUT',
       success: function(data) {
-        toastr.info('increased loser count');
       }
     });
 
@@ -134,7 +133,6 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
       url: '/api/winner/' + this.model.get('characterId'),
       type: 'PUT',
       success: function(data) {
-        toastr.info('increased wins count');
       }
     });
   },
