@@ -57,11 +57,12 @@ App.Views.Home = Backbone.View.extend({
 
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
-    losingModel.set('losses', losingModel.get('losses') + 1);
+    console.log('update count')
     $.ajax({
       url: '/api/loser/' + losingModel.get('characterId'),
       type: 'PUT',
       success: function(data) {
+        losingModel.set('losses', losingModel.get('losses') + 1);
       }
     });
 
@@ -128,11 +129,12 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   },
 
   winner: function() {
-    this.model.set('wins', this.model.get('wins') + 1);
+    var self = this;
     $.ajax({
       url: '/api/winner/' + this.model.get('characterId'),
       type: 'PUT',
       success: function(data) {
+        self.model.set('wins', self.model.get('wins') + 1);
       }
     });
   },

@@ -124,6 +124,26 @@ var NewEdenFaces = function() {
       app.use(express.errorHandler());
     }
 
+    app.put('/api/winner/:characterId', function(req, res) {
+      Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
+        if (err) {
+          return res.send(500, err);
+        }
+        //console.log('incrementing win count');
+        res.send(200);
+      });
+      
+    });
+
+    app.put('/api/loser/:characterId', function(req, res) {
+      Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
+        if (err) return res.send(500, err);
+        console.log('incrementing loss count');
+        res.send(200);
+      });
+      
+    });
+
     // report endpoint
     // I could add an if-statement to api/characters/:id instead that will get
     // checked everytime is model saved on backbone, but that will cause performance issues
@@ -359,25 +379,7 @@ var NewEdenFaces = function() {
     });
 
 
-    app.put('/api/winner/:characterId', function(req, res) {
-      Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
-        if (err) {
-          return res.send(500, err);
-          console.log('incrementing win count');
-          res.send(200);
-        }
-      });
-      
-    });
-
-    app.put('/api/loser/:characterId', function(req, res) {
-      Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
-        if (err) return res.send(500, err);
-        console.log('incrementing loss count');
-        res.send(200);
-      });
-      
-    });
+   
 
     //  Add handlers for the app (from the routes).
     app.put('/api/characters/:id', function(req, res) {
