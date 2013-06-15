@@ -247,7 +247,8 @@ App.Views.Leaderboard = Backbone.View.extend({
     // },
 
     this.collection = this.collection.sortBy(function(model) {
-      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+      //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+      return -model.get('wins');
     });
 
     var top14 = new Backbone.Collection(this.collection.slice(0,14));
@@ -456,6 +457,12 @@ App.Views.CharacterSummary = Backbone.View.extend({
       console.log('already reported');
       this.$el.find('#report').attr('disabled', true);
     }
+
+    this.$el.find('.magnific-popup').magnificPopup({
+          type: 'image',
+          closeOnContentClick: true,
+          mainClass: 'my-mfp-zoom-in'
+        });
 
     return this;
   },
@@ -684,6 +691,8 @@ App.Router = Backbone.Router.extend({
 
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating.toFixed(2), winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
+    
+
         characterSummaryView.selectMenuItem();
       }
     });

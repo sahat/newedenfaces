@@ -260,7 +260,7 @@
         <li><strong>Bloodline:</strong> <%= model.bloodline %></li>
     </ul>
 
-    <img class="img-polaroid character-thumbnail" src="<%= model.image256 %>">
+    <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg"><img class="img-polaroid" src="<%= model.image256 %>"></a>
     <div class="popover right">
         <div class="arrow"></div>
         <h3 class="popover-title pagination-centered">W/L Percentage</h3>
