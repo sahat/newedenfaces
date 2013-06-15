@@ -192,7 +192,7 @@
         <li><strong>Bloodline:</strong> <%= bloodline %></li>
     </ul>
 
-    <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
+    <div class="lead pagination-centered" rel="tooltip" title="Wins: <%= wins %> - Losses: <%= losses %>">
         <img src="../img/<%= race %>.png">
         <a href="/characters/<%= characterId %>"><%= name %></a>
     </div>
@@ -200,7 +200,7 @@
 </script>
 
 <script id="leaderboard-item-template" type="text/template">
-    <a href="/characters/<%= characterId %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %> &rarr; Rating: <%= rating %>">
+    <a href="/characters/<%= characterId %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %>">
         <img src="<%= image64 %>">
     </a>
 </script>
