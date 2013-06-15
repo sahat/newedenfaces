@@ -40,6 +40,7 @@ App.Views.Home = Backbone.View.extend({
   template: template('home-template'),
 
   events: {
+    'click #skip': 'skip'
   },
 
   initialize: function() {
@@ -335,10 +336,11 @@ App.Views.Characters = Backbone.View.extend({
     // this.collection.sort({ silent: true });
 
     this.collection = this.collection.sortBy(function(model) {
-      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+      //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+      return -model.get('wins');
     });
 
-    var top100 = new Backbone.Collection(this.collection.slice(0,100));
+    var top100 = new Backbone.Collection(this.collection.slice(0,1500));
     
     //delete this.collection.comparator;
 
