@@ -81,6 +81,7 @@ var NewEdenFaces = function() {
     /**
      * App Initialization
      */
+    
     var parser = new xml2js.Parser();
     mongoose.connect(config.mongoose);
     var gfs = Grid(mongoose.connection.db, mongoose.mongo);
