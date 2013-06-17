@@ -126,9 +126,16 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   template: template('character-thumbnail-template'),
 
   events: {
-    'click img': 'winner'
+    'click img': 'winner',
   },
 
+  initialize: function() {
+    _.bindAll(this);
+    Mousetrap.bind('left', this.winner);
+    Mousetrap.bind('right', this.winner);
+    Mousetrap.bind('a', this.winner);
+    Mousetrap.bind('d', this.winner);
+  },
 
   winner: function() {
     var self = this;
