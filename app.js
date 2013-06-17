@@ -402,12 +402,25 @@ var NewEdenFaces = function() {
       });
     });
 
+    var counter = 0;
     app.get('/api/characters', function(req, res) {
-      Character.find(function(err, characters) {
+      
+      console.log('Counter: ', counter);
+
+      Character
+      .find()
+      .skip(counter)
+      .limit(2)
+      .exec(function(err, characters) {
         if (err) {
           console.log(err);
           return res.send(500, 'Error getting characters');
         }
+
+        // counter is what makes pagination possible, every request, increment by two,
+        // this number is then passed to mongoose's skip().
+        counter = counter + 2;
+
         res.send(characters);
       });
     });
@@ -610,6 +623,87 @@ var NewEdenFaces = function() {
         }
       ]);
     });
+
+  
+    app.del('/api/characters/:characterId', function(req, res) {
+      Character.remove({ characterId: req.params.characterId }, function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, err);
+        }
+
+        console.log('Character has been removed');
+        
+        // Now remove image files associated with this character
+        async.parallel({
+          one: function(callback){
+            var filename32 = req.params.characterId + '_32.jpg';
+            gfs.remove({ filename: filename32 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success removing 32px from gridfs!');
+              callback(null);
+            });
+          },
+          two: function(callback) {
+            var filename64 = req.params.characterId + '_64.jpg';
+            gfs.remove({ filename: filename64 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success removing 64px from gridfs!');
+              callback(null);
+            });        
+          },
+          three: function(callback){
+            var filename128 = req.params.characterId + '_128.jpg';
+            gfs.remove({ filename: filename128 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success removing 128px from gridfs!');
+              callback(null);
+            });   
+          },
+          four: function(callback){
+            var filename256 = req.params.characterId + '_256.jpg';
+            gfs.remove({ filename: filename256 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success removing 256px from gridfs!');
+              callback(null);
+            });  
+          },
+          five: function(callback){
+            var filename512 = req.params.characterId + '_512.jpg';
+            gfs.remove({ filename: filename512 }, function (err) {
+              if (err) {
+                console.log('Error removing file from GridFS');
+                return res.send(500, 'Failed to remove image from gridfs');
+              }
+              console.log('success removing 512px from gridfs!');
+              callback(null);
+            });
+          }
+        },
+        function(err) {
+          if (err) {
+            console.log(err);
+            return res.send(500, err);
+          }
+          console.log('Character and files have been removed successfully');
+
+          return res.send(200, 'Character and files have been removed successfully');
+        });
+      });
+    });
+
 
     app.get('/api/characters/:id', function(req, res) {
       Character.findOne({ characterId: req.params.id }, function(err, character) {
