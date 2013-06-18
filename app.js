@@ -541,7 +541,6 @@ var NewEdenFaces = function() {
 
     app.get('/api/characters/top/:race', function(req, res) {
       var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-      console.log(race);
       Character
       .find()
       .where('race').equals(race)
@@ -557,8 +556,14 @@ var NewEdenFaces = function() {
     });
 
     app.get('/api/characters/top/:race/:bloodline', function(req, res) {
+      var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
+      var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
       Character
       .find()
+      .where('race').equals(race)
+      .where('bloodline').equals(bloodline)
+      .sort('-wins')
+      .limit(100)
       .exec(function(err, characters) {
         if (err) {
           console.log(err);
