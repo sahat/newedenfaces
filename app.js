@@ -558,6 +558,15 @@ var NewEdenFaces = function() {
     app.get('/api/characters/top/:race/:bloodline', function(req, res) {
       var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
       var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
+
+      if (req.params.bloodline === 'jin-mei') {
+        bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
+            req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
+      } else if (req.params.bloodline === 'ni-kunni') {
+        bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
+            req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
+      }
+      
       Character
       .find()
       .where('race').equals(race)
