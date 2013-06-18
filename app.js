@@ -420,7 +420,7 @@ var NewEdenFaces = function() {
           return res.send(500, err);
         }
 
-        res.send({ count: count });
+        res.send(count);
       });
     });
 
@@ -436,6 +436,8 @@ var NewEdenFaces = function() {
         counter = 0;
       }
       console.log('Counter: ', counter);
+
+
 
       Character
       .find()
@@ -470,6 +472,20 @@ var NewEdenFaces = function() {
 
     });
 
+    app.get('/api/leaderboard', function(req, res) {
+      Character
+      .find()
+      .limit(14)
+      .sort('-wins')
+      .exec(function(err, characters) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error getting characters');
+        }
+        res.send(characters);
+      });
+
+    });
 
     app.post('/api/characters', function(req, res) {
 
