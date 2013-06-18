@@ -71,14 +71,25 @@ App.Views.Home = Backbone.View.extend({
 
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
+    losingModel.set('losses', losingModel.get('losses') + 1);
     console.log('update count')
+    // $.ajax({
+    //   url: '/api/loser/' + losingModel.get('characterId'),
+    //   type: 'PUT',
+    //   success: function(data) {
+    //     
+    //   }
+    // });
+
+    // streamline vote request
     $.ajax({
-      url: '/api/loser/' + losingModel.get('characterId'),
+      url: '/api/vote',
       type: 'PUT',
+      data: { winner: winningModel.get('characterId'), loser: losingModel.get('characterId') },
       success: function(data) {
-        losingModel.set('losses', losingModel.get('losses') + 1);
+        console.log('successfully voted');
       }
-    });
+    })
 
     var self = this;
     
@@ -151,13 +162,14 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   winner: function() {
     var self = this;
-    $.ajax({
-      url: '/api/winner/' + this.model.get('characterId'),
-      type: 'PUT',
-      success: function(data) {
-        self.model.set('wins', self.model.get('wins') + 1);
-      }
-    });
+    self.model.set('wins', self.model.get('wins') + 1);
+    // $.ajax({
+    //   url: '/api/winner/' + this.model.get('characterId'),
+    //   type: 'PUT',
+    //   success: function(data) {
+        
+    //   }
+    // });
   },
 
 
@@ -523,7 +535,6 @@ App.Views.Search = Backbone.View.extend({
 
   submit: function(e) {
     e.preventDefault();
-
     var input = this.$el.find('input').val();
 
     var queryMatch = this.collection.filter(function(model) {
@@ -531,7 +542,7 @@ App.Views.Search = Backbone.View.extend({
     });
 
     if (!queryMatch.length) {
-      return;
+      return toastr.warning('No query match');
     }
 
     var characterId = queryMatch[0].get('characterId');
@@ -610,6 +621,7 @@ App.Router = Backbone.Router.extend({
   initialize: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
+      url: '/api/characters/all',
       success: function(data) {
         var searchView = new App.Views.Search({
           collection: characters
