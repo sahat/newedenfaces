@@ -925,6 +925,14 @@ var NewEdenFaces = function() {
       res.redirect('/#top');
     });
 
+    app.get('/top/:race', function(req, res) {
+      res.redirect('/#top/' + req.params.race);
+    });
+
+    app.get('/top/:race/:bloodline', function(req, res) {
+      res.redirect('/#top/' + req.params.race + '/' + req.params.bloodline);
+    });
+
     app.get('/characters/:id', function(req, res) {
       res.redirect('/#characters/' + req.params.id);
     });
