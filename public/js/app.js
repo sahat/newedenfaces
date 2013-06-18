@@ -59,7 +59,7 @@ App.Views.Home = Backbone.View.extend({
         self.render();
         if (data.length < 2) {
           Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-          $('#content').append('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
         }
       }
     });
@@ -84,12 +84,10 @@ App.Views.Home = Backbone.View.extend({
         self.render();
         if (data.length < 2) {
           Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-          $('#content').append('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
         }
       }
     });
-
-    
   },
 
   render: function() {
