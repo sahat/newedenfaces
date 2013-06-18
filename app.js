@@ -530,6 +530,7 @@ var NewEdenFaces = function() {
     app.get('/api/characters/all', function(req, res) {
       Character
       .find()
+      .select('name characterId')
       .exec(function(err, characters) {
         if (err) {
           console.log(err);
