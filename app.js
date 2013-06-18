@@ -487,14 +487,14 @@ var NewEdenFaces = function() {
         seen = [];
       }
       console.log('Counter: ', counter);
-      //console.log(seen);
+      console.log('Seen length: ', seen.length);
 
       Character
       .find()
       .sort('-wins')
       .where('name').nin(seen)
       .skip(counter)
-      .limit(10)
+      .limit(2)
       .exec(function(err, characters) {
         if (err) {
           console.log(err);
@@ -504,18 +504,19 @@ var NewEdenFaces = function() {
         // this number is then passed to mongoose's skip().
         
         // edge case when at the end characters returned are less than ten.
-        if (characters.length < 10) {
+        // quick hack
+        //if (characters.length < 10) {
           counter = counter + 2;
-          return res.send(characters.slice(0,2));
-        }
+          return res.send(characters);
+        //}
         
-        counter = counter + 1;
-        var randomTen = Math.floor(Math.random() * 9);
-        // push to exclude array
-        seen.push(characters[randomTen + 1].name);
-        seen.push(characters[0].name);
+        // counter = counter + 1;
+        // var randomTen = Math.floor(Math.random() * 9);
+        // // push to exclude array
+        // seen.push(characters[randomTen + 1].name);
+        // seen.push(characters[0].name);
 
-        res.send([characters[0], characters[randomTen + 1]]);
+        // res.send([characters[0], characters[randomTen + 1]]);
       });
     });
 
