@@ -47,6 +47,9 @@ App.Views.Home = Backbone.View.extend({
     _.bindAll(this);
     Mousetrap.bind('s', this.skip);
     this.collection.on('change:wins', this.updateCount, this);
+    if (this.collection.length < 2) {
+      Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+    }
   },
 
   skip: function() {
@@ -58,6 +61,7 @@ App.Views.Home = Backbone.View.extend({
       success: function(data) {
         self.render();
         if (data.length < 2) {
+          console.log('Trigged by skip function');
           Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
           $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
         }
@@ -83,6 +87,7 @@ App.Views.Home = Backbone.View.extend({
       success: function(data) {
         self.render();
         if (data.length < 2) {
+          console.log('Triggered by voting');
           Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
           $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
         }
@@ -259,17 +264,24 @@ App.Views.Leaderboard = Backbone.View.extend({
     //   if (winLossCharacterB > winLossCharacterA) return 1;
     //   return 0;
     // },
+    this.collection.comparator = function(character) {
+      return -character.get('wins');
+    };
 
-    this.collection = this.collection.sortBy(function(model) {
-      //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
-      return -model.get('wins');
-    });
+    this.collection.sort();
 
-    var top14 = new Backbone.Collection(this.collection.slice(0,14));
+    console.log(this.collection.toJSON())
+
+    // this.collection = this.collection.sortBy(function(model) {
+    //   //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+    //   return -model.get('wins');
+    // });
+
+    var top14 = new Backbone.Collection(this.collection);
     
-    delete this.collection.comparator;
+    // delete this.collection.comparator;
 
-    top14.each(function(character) {
+    this.collection.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
       this.$el.append(leaderboardItemView.render().el);
     }, this);
@@ -337,7 +349,7 @@ App.Views.Characters = Backbone.View.extend({
     // create new character view
     var characterView = new App.Views.Character({ model: character, position: index + 1 });
     // apend to <tbody>
-    this.$el.html(characterView.render().el);
+    this.$el.append(characterView.render().el);
   },
 
   render: function() {
@@ -358,7 +370,9 @@ App.Views.Characters = Backbone.View.extend({
     // var top100 = new Backbone.Collection(this.collection.slice(0,100));
     
     //delete this.collection.comparator;
+    
 
+    console.log('not caching top100');
     $('#content').html(this.template());
     this.collection.each(this.addOne, this);
     return this;
@@ -593,16 +607,21 @@ App.Views.AddCharacter = Backbone.View.extend({
 App.Router = Backbone.Router.extend({
 
   initialize: function() {
-
-    
-    
     var characters = new App.Collections.Characters();
     characters.fetch({
       success: function(data) {
-
         var searchView = new App.Views.Search({
           collection: characters
         });
+      }
+    });
+    characters.fetch({
+      url: '/api/leaderboard',
+      success: function(data) {
+        App.Views.leaderboardView = new App.Views.Leaderboard({
+          collection: data
+        });
+        $('.footer #leaderboard').html(App.Views.leaderboardView.render().el);
       }
     });
   },
@@ -640,13 +659,15 @@ App.Router = Backbone.Router.extend({
             collection: new Backbone.Collection(data.shuffle())
           });
 
-
-          App.Views.leaderboardView = new App.Views.Leaderboard({
-            collection: characters
-          });
-
-          $('#content').html(App.Views.homeView.render().el);
-          $('.footer #leaderboard').html(App.Views.leaderboardView.render().el);
+          if (data.length < 2) {
+            console.log('Trigged by F5 or natural page');
+            Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+            $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+          } else {
+            $('#content').html(App.Views.homeView.render().el);
+          }
+          
+          
           App.Views.homeView.selectMenuItem('home-menu');
         }
       });
@@ -667,26 +688,16 @@ App.Router = Backbone.Router.extend({
 
   topCharacters: function() {
     var characters = new App.Collections.Characters();
-
-    if (App.Views.charactersView) {
-      console.log('reusing top100 view');
-
-      $('#content').html(App.Views.charactersView.render().el);
-      
-      App.Views.charactersView.selectMenuItem('top-menu');
-    } else {
-      console.log('not reusing top100 view');
-      characters.fetch({
-        url: '/api/characters/top',
-        success: function(data) {
-          App.Views.charactersView = new App.Views.Characters({
-            collection: characters
-          });
-          $('#content').html(App.Views.charactersView.render().el);
-          App.Views.charactersView.selectMenuItem('top-menu');
-        }
-      });
-    }
+    characters.fetch({
+      url: '/api/characters/top',
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
   },
 
   addCharacter: function() {
