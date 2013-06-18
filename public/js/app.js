@@ -264,24 +264,24 @@ App.Views.Leaderboard = Backbone.View.extend({
     //   if (winLossCharacterB > winLossCharacterA) return 1;
     //   return 0;
     // },
-    this.collection.comparator = function(character) {
-      return -character.get('wins');
-    };
+    // this.collection.comparator = function(character) {
+    //   return -character.get('wins');
+    // };
 
-    this.collection.sort();
+    // this.collection.sort();
 
-    console.log(this.collection.toJSON())
+    //console.log(this.collection.toJSON())
 
-    // this.collection = this.collection.sortBy(function(model) {
-    //   //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
-    //   return -model.get('wins');
-    // });
+    this.collection = this.collection.sortBy(function(model) {
+      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+      //return -model.get('wins');
+    });
 
     var top14 = new Backbone.Collection(this.collection);
     
     // delete this.collection.comparator;
 
-    this.collection.each(function(character) {
+    top14.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
       this.$el.append(leaderboardItemView.render().el);
     }, this);
