@@ -337,7 +337,7 @@ App.Views.Characters = Backbone.View.extend({
     // create new character view
     var characterView = new App.Views.Character({ model: character, position: index + 1 });
     // apend to <tbody>
-    this.$el.append(characterView.render().el);
+    this.$el.html(characterView.render().el);
   },
 
   render: function() {
