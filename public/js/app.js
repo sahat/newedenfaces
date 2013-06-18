@@ -66,7 +66,9 @@ App.Views.Home = Backbone.View.extend({
         losingModel.set('losses', losingModel.get('losses') + 1);
       }
     });
+
     var self = this;
+    
     this.collection.fetch({
       url: '/api/characters',
       success: function(data) {
@@ -93,8 +95,7 @@ App.Views.Home = Backbone.View.extend({
     // });
     // sortedByVotes = new Backbone.Collection(sortedByVotes);
 
-    var twoChars = new Backbone.Collection(this.collection.slice(0,2));
-    twoChars.each(this.addOne, this);
+    this.collection.each(this.addOne, this);
 
     this.$('.lead').tooltip({ placement: 'bottom' });
     return this;
