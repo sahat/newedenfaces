@@ -487,7 +487,7 @@ var NewEdenFaces = function() {
         seen = [];
       }
       console.log('Counter: ', counter);
-      console.log(seen);
+      //console.log(seen);
 
       Character
       .find()
