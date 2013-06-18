@@ -125,6 +125,37 @@ var NewEdenFaces = function() {
       app.use(express.errorHandler());
     }
 
+    app.put('/api/vote', function(req, res) {
+      var winner = req.body.winner;
+      var loser = req.body.loser;
+
+      async.parallel({
+        updateWinner: function(callback){
+          Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
+            if (err) {
+              return res.send(500, err);
+            }
+            console.log('incrementing win count');
+            callback(null);
+          });
+        },
+        updateLoser: function(callback) {
+          Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
+            if (err) return res.send(500, err);
+            console.log('incrementing loss count');
+            callback(null);
+          });        
+        }
+      },
+      function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, err);
+        }
+        return res.send(200, 'Wins and Losses have been updated');
+      });
+    });
+
     app.put('/api/winner/:characterId', function(req, res) {
       Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
         if (err) {
@@ -412,6 +443,25 @@ var NewEdenFaces = function() {
       });
     }, 3600000);
 
+    // delete lowest ranked character
+    setInterval(function() {
+      Character
+      .find()
+      .sort('-losses')
+      .limit(1)
+      .exec(function(err, data) {
+        if (err) {
+          return res.send(500, err);
+        }
+        Character.remove({ characterId: data[0].characterId }, function(err) {
+          if (err) {
+            console.log('Error in removing the biggest loser from the system');
+            return res.send(500, err);
+          }
+          console.log('Lowest ranking character successfully deleted');
+        });
+      });
+    }, 86400000);
 
     app.get('/api/count', function(req, res) {
       Character.count({}, function(err, count) {
