@@ -587,6 +587,7 @@ App.Views.AddCharacter = Backbone.View.extend({
     newCharacter.save(null, {
       success: function() {
         Backbone.history.navigate('#', { trigger: true });
+        toastr.success('Character has been added successfully');
       },
       error: function(model, response) {
         controlGroup.addClass('error');
@@ -640,12 +641,14 @@ App.Router = Backbone.Router.extend({
   },
 
   routes: {
-    '':                   'home',
-    'top':                'topCharacters',
-    'azlist':             'alphabeticalCharacters',
-    'add':                'addCharacter',
-    'characters/:id':     'characterDetails',
-    'feedback':           'feedback'
+    '':                     'home',
+    'top':                  'topCharacters',
+    'top/:race':            'topRace',
+    'top/:race/:bloodline': 'topBloodline',
+    'azlist':               'alphabeticalCharacters',
+    'add':                  'addCharacter',
+    'characters/:id':       'characterDetails',
+    'feedback':             'feedback'
   },
 
   home: function() {
@@ -699,6 +702,35 @@ App.Router = Backbone.Router.extend({
     }
   },
 
+  topRace: function(race) {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/top/' + race,
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+
+  topBloodline: function(race, bloodline) {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/top/' + race + '/' + bloodline,
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
   topCharacters: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
@@ -744,7 +776,7 @@ App.Router = Backbone.Router.extend({
 });
 
 var router = new App.Router();
-Backbone.history.start({ pushState: true });
+Backbone.history.start();
 
 })();
 
