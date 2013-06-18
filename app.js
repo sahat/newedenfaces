@@ -426,7 +426,7 @@ var NewEdenFaces = function() {
 
     var counter = 0;
     var modelCount = 0;
-
+    var seen = [];
     Character.count({}, function(err, count) {
       modelCount = count;
     });
@@ -434,14 +434,17 @@ var NewEdenFaces = function() {
     app.get('/api/characters', function(req, res) {
       if (counter > modelCount) {
         counter = 0;
+        seen = [];
       }
       console.log('Counter: ', counter);
-      
+      console.log(seen);
+
       Character
       .find()
       .sort('-wins')
+      .where('name').nin(seen)
       .skip(counter)
-      .limit(2)
+      .limit(10)
       .exec(function(err, characters) {
         if (err) {
           console.log(err);
@@ -449,9 +452,14 @@ var NewEdenFaces = function() {
         }
         // counter is what makes pagination possible, every request, increment by two,
         // this number is then passed to mongoose's skip().
-        counter = counter + 2;
+        counter = counter + 1;
+        var randomTen = Math.floor(Math.random() * 9);
 
-        res.send(characters);
+        // push to exclude array
+        seen.push(characters[randomTen + 1].name);
+        seen.push(characters[0].name);
+
+        res.send([characters[0], characters[randomTen + 1]]);
       });
     });
 
