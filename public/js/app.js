@@ -542,15 +542,15 @@ App.Views.Search = Backbone.View.extend({
     });
 
     if (!queryMatch.length) {
-      return toastr.warning('No query match');
+      return toastr.warning('Search input cannot be empty');
     }
-
+    console.log(queryMatch);
     var characterId = queryMatch[0].get('characterId');
 
     if (characterId) {
       Backbone.history.navigate('/characters/' + characterId, { trigger: true });
     } else {
-      console.log('no match, got: ' + input);
+      toastr.warning('No query match');
     }
   }
 
@@ -776,7 +776,7 @@ App.Router = Backbone.Router.extend({
 });
 
 var router = new App.Router();
-Backbone.history.start();
+Backbone.history.start({ pushState: true });
 
 })();
 
