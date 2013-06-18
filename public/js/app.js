@@ -362,19 +362,17 @@ App.Views.Characters = Backbone.View.extend({
 
     // this.collection.sort({ silent: true });
 
-    // this.collection = this.collection.sortBy(function(model) {
-    //   //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
-    //   return -model.get('wins');
-    // });
+    this.collection = this.collection.sortBy(function(model) {
+      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+      //return -model.get('wins');
+    });
 
-    // var top100 = new Backbone.Collection(this.collection.slice(0,100));
+    var top100 = new Backbone.Collection(this.collection);
     
     //delete this.collection.comparator;
-    
-
     console.log('not caching top100');
     $('#content').html(this.template());
-    this.collection.each(this.addOne, this);
+    top100.each(this.addOne, this);
     return this;
   }
 
