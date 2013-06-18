@@ -49,12 +49,21 @@ App.Views.Home = Backbone.View.extend({
     this.collection.on('change:wins', this.updateCount, this);
   },
 
-  // skip: function() {
-  //   console.log('skipping...')
-  //   this.collection.shift();
-  //   this.collection.shift();
-  //   this.render();
-  // },
+  skip: function() {
+    console.log('skipping...')
+    var self = this;
+    
+    this.collection.fetch({
+      url: '/api/characters',
+      success: function(data) {
+        self.render();
+        if (data.length < 2) {
+          Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+          $('#content').append('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+        }
+      }
+    });
+  },
 
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
@@ -84,9 +93,7 @@ App.Views.Home = Backbone.View.extend({
   },
 
   render: function() {
-
     this.$el.html(this.template());
-    
     // var sortedByVotes = this.collection.sortBy(function(m) {
     //   var wins = m.get('wins');
     //   var losses = m.get('losses');
@@ -94,16 +101,13 @@ App.Views.Home = Backbone.View.extend({
     //   return total;
     // });
     // sortedByVotes = new Backbone.Collection(sortedByVotes);
-
     this.collection.each(this.addOne, this);
-
     this.$('.lead').tooltip({ placement: 'bottom' });
     return this;
   },
 
   addOne: function(character, index) {
     var characterThumbnailView = new App.Views.CharacterThumbnail({ model: character });
-    
     // add bootstrap offset3 to the first thumbnail
     if (index == 0) {
       characterThumbnailView.$el.addClass('offset1');
