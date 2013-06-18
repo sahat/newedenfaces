@@ -83,7 +83,7 @@ var NewEdenFaces = function() {
      */
     
     var parser = new xml2js.Parser();
-    mongoose.connect(config.mongoose);
+    mongoose.connect('localhost');
     var gfs = Grid(mongoose.connection.db, mongoose.mongo);
     /**
      * DB Schema and Model
@@ -402,9 +402,39 @@ var NewEdenFaces = function() {
       });
     });
 
+    
+
+
+    // update count every hour
+    setInterval(function() {
+      Character.count({}, function(err, count) {
+        modelCount = count;
+      });
+    }, 3600000);
+
+
+    app.get('/api/count', function(req, res) {
+      Character.count({}, function(err, count) {
+        if (err) {
+          console.log('Error processing count');
+          return res.send(500, err);
+        }
+
+        res.send({ count: count });
+      });
+    });
+
     var counter = 0;
+    var modelCount = 0;
+
+    Character.count({}, function(err, count) {
+      modelCount = count;
+    });
+
     app.get('/api/characters', function(req, res) {
-      
+      if (counter > modelCount) {
+        counter = 0;
+      }
       console.log('Counter: ', counter);
 
       Character
@@ -423,6 +453,21 @@ var NewEdenFaces = function() {
 
         res.send(characters);
       });
+    });
+
+    app.get('/api/characters/top', function(req, res) {
+      Character
+      .find()
+      .sort('-wins')
+      .limit(100)
+      .exec(function(err, characters) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error getting characters');
+        }
+        res.send(characters);
+      });
+
     });
 
 
@@ -748,8 +793,8 @@ var NewEdenFaces = function() {
       res.redirect('/#feedback');
     });
 
-    app.get('/top100', function(req, res) {
-      res.redirect('/#top100');
+    app.get('/top', function(req, res) {
+      res.redirect('/#top');
     });
 
     app.get('/characters/:id', function(req, res) {
