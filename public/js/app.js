@@ -677,6 +677,7 @@ App.Router = Backbone.Router.extend({
     } else {
       console.log('not reusing top100 view');
       characters.fetch({
+        url: '/api/characters/top',
         success: function(data) {
           App.Views.charactersView = new App.Views.Characters({
             collection: characters
