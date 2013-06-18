@@ -350,17 +350,17 @@ App.Views.Characters = Backbone.View.extend({
 
     // this.collection.sort({ silent: true });
 
-    this.collection = this.collection.sortBy(function(model) {
-      //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
-      return -model.get('wins');
-    });
+    // this.collection = this.collection.sortBy(function(model) {
+    //   //return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
+    //   return -model.get('wins');
+    // });
 
-    var top100 = new Backbone.Collection(this.collection.slice(0,100));
+    // var top100 = new Backbone.Collection(this.collection.slice(0,100));
     
     //delete this.collection.comparator;
 
     $('#content').html(this.template());
-    top100.each(this.addOne, this);
+    this.collection.each(this.addOne, this);
     return this;
   }
 
@@ -609,7 +609,7 @@ App.Router = Backbone.Router.extend({
 
   routes: {
     '':                   'home',
-    'top100':             'topCharacters',
+    'top':                'topCharacters',
     'azlist':             'alphabeticalCharacters',
     'add':                'addCharacter',
     'characters/:id':     'characterDetails',
@@ -667,10 +667,13 @@ App.Router = Backbone.Router.extend({
 
   topCharacters: function() {
     var characters = new App.Collections.Characters();
+
     if (App.Views.charactersView) {
       console.log('reusing top100 view');
+
       $('#content').html(App.Views.charactersView.render().el);
-      App.Views.charactersView.selectMenuItem('top100-menu');
+      
+      App.Views.charactersView.selectMenuItem('top-menu');
     } else {
       console.log('not reusing top100 view');
       characters.fetch({
@@ -679,7 +682,7 @@ App.Router = Backbone.Router.extend({
             collection: characters
           });
           $('#content').html(App.Views.charactersView.render().el);
-          App.Views.charactersView.selectMenuItem('top100-menu');
+          App.Views.charactersView.selectMenuItem('top-menu');
         }
       });
     }
