@@ -525,8 +525,49 @@ var NewEdenFaces = function() {
         }
         res.send(characters);
       });
-
     });
+
+    app.get('/api/characters/all', function(req, res) {
+      Character
+      .find()
+      .exec(function(err, characters) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error getting characters');
+        }
+        res.send(characters);
+      });
+    });
+
+    app.get('/api/characters/top/:race', function(req, res) {
+      var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
+      console.log(race);
+      Character
+      .find()
+      .where('race').equals(race)
+      .sort('-wins')
+      .limit(100)
+      .exec(function(err, characters) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error getting characters');
+        }
+        res.send(characters);
+      });
+    });
+
+    app.get('/api/characters/top/:race/:bloodline', function(req, res) {
+      Character
+      .find()
+      .exec(function(err, characters) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error getting characters');
+        }
+        res.send(characters);
+      });
+    });
+    
 
     app.get('/api/leaderboard', function(req, res) {
       Character
