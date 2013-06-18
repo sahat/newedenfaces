@@ -83,13 +83,13 @@ var NewEdenFaces = function() {
      */
     
     var parser = new xml2js.Parser();
-    mongoose.connect('localhost');
+    mongoose.connect(config.mongoose);
     var gfs = Grid(mongoose.connection.db, mongoose.mongo);
     /**
      * DB Schema and Model
      */
     var Character = mongoose.model('Character', {
-      characterId: { type: String, unique: true },
+      characterId: { type: String, unique: true, index: true },
       name: String,
       image32: String,
       image64: String,
@@ -100,7 +100,7 @@ var NewEdenFaces = function() {
       gender: String,
       bloodline: String,
       rating: { type: Number, default: 1400 },
-      wins: { type: Number, default: 0 },
+      wins: { type: Number, default: 0, index: true },
       losses: { type: Number, default: 0 },
       userRating: { type: Number, default: 0 },
       userRatingVotes: { type: Number, default: 0 },
@@ -420,7 +420,7 @@ var NewEdenFaces = function() {
           return res.send(500, err);
         }
 
-        res.send(count);
+        res.send({ count: count });
       });
     });
 
@@ -436,11 +436,10 @@ var NewEdenFaces = function() {
         counter = 0;
       }
       console.log('Counter: ', counter);
-
-
-
+      
       Character
       .find()
+      .sort('-wins')
       .skip(counter)
       .limit(2)
       .exec(function(err, characters) {
@@ -448,7 +447,6 @@ var NewEdenFaces = function() {
           console.log(err);
           return res.send(500, 'Error getting characters');
         }
-
         // counter is what makes pagination possible, every request, increment by two,
         // this number is then passed to mongoose's skip().
         counter = counter + 2;
