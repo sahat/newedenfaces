@@ -49,12 +49,12 @@ App.Views.Home = Backbone.View.extend({
     this.collection.on('change:wins', this.updateCount, this);
   },
 
-  skip: function() {
-    console.log('skipping...')
-    this.collection.shift();
-    this.collection.shift();
-    this.render();
-  },
+  // skip: function() {
+  //   console.log('skipping...')
+  //   this.collection.shift();
+  //   this.collection.shift();
+  //   this.render();
+  // },
 
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
@@ -66,15 +66,19 @@ App.Views.Home = Backbone.View.extend({
         losingModel.set('losses', losingModel.get('losses') + 1);
       }
     });
+    var self = this;
+    this.collection.fetch({
+      url: '/api/characters',
+      success: function(data) {
+        self.render();
+        if (data.length < 2) {
+          Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+          $('#content').append('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+        }
+      }
+    });
 
-    this.collection.shift();
-    this.collection.shift();
-
-    this.render();
-
-    if (this.collection.length < 2) {
-      $('#content').append('<div class="alert alert-info">You have exhausted all characters. Refresh the page to start over.</div>')
-    }
+    
   },
 
   render: function() {
@@ -618,6 +622,7 @@ App.Router = Backbone.Router.extend({
     //   collection: new Backbone.Collection()
     // });
     // 
+    
     if (App.Views.homeView) {
       console.log('reusing homeview');
       $('#content').html(App.Views.homeView.render().el);
