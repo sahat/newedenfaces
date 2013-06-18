@@ -502,9 +502,15 @@ var NewEdenFaces = function() {
         }
         // counter is what makes pagination possible, every request, increment by two,
         // this number is then passed to mongoose's skip().
+        
+        // edge case when at the end characters returned are less than ten.
+        if (characters.length < 10) {
+          counter = counter + 2;
+          return res.send(characters.slice(0,2));
+        }
+        
         counter = counter + 1;
         var randomTen = Math.floor(Math.random() * 9);
-
         // push to exclude array
         seen.push(characters[randomTen + 1].name);
         seen.push(characters[0].name);
