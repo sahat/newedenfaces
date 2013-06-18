@@ -514,6 +514,9 @@ App.Views.Search = Backbone.View.extend({
     $('#search').typeahead({
       source: this.collection.pluck('name')
     });
+    $.get('/api/count', function(data) {
+      $('#search').attr('placeholder', data.count + ' capsuleers');
+    });
   },
 
   events: {
