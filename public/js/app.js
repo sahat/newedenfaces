@@ -717,7 +717,7 @@ App.Router = Backbone.Router.extend({
         var averageRating = data.get('userRating') / data.get('userRatingVotes');
         if (isNaN(averageRating)) averageRating = 0;
 
-        var winLossRatio = Math.floor(data.get('wins') / (data.get('wins') + data.get('losses')) * 100);
+        var winLossRatio = (data.get('wins') / data.get('losses')).toFixed(3);
         if (isNaN(winLossRatio)) winLossRatio = 0;
 
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating.toFixed(2), winLossRatio: winLossRatio });
