@@ -410,11 +410,11 @@ App.Views.CharacterSummary = Backbone.View.extend({
   template: template('character-summary-template'),
 
   initialize: function() {
-    this.model.on('change:userRatingVotes', this.updateAverage, this);
+    //this.model.on('change:userRatingVotes', this.updateAverage, this);
   },
 
   events: {
-    'submit form': 'submit',
+    //'submit form': 'submit',
     'click #report': 'reportPlayer',
     'click #update': 'updateAvatar'
   },
@@ -439,48 +439,48 @@ App.Views.CharacterSummary = Backbone.View.extend({
     });
   },
 
-  updateAverage: function() {
-    this.options.averageRating = this.model.get('userRating') / this.model.get('userRatingVotes');
-    this.$el.find('#averageRating').text(this.options.averageRating.toFixed(2));
-    this.$el.find('#voteCount').text(this.model.get('userRatingVotes'));
-  },
+  // updateAverage: function() {
+  //   this.options.averageRating = this.model.get('userRating') / this.model.get('userRatingVotes');
+  //   this.$el.find('#averageRating').text(this.options.averageRating.toFixed(2));
+  //   this.$el.find('#voteCount').text(this.model.get('userRatingVotes'));
+  // },
 
-  submit: function(e) {
-    e.preventDefault();
+  // submit: function(e) {
+  //   e.preventDefault();
 
-    var input = this.$el.find('input');
-    var controlGroup = this.$el.find('.control-group');
-    var helpBlock = this.$el.find('.help-block');
-    if (isNaN(input.val())) {
-      helpBlock.text('Please enter a valid number.');
-      controlGroup.addClass('error');
-      input.val();
-      input.focus();
-    } else if (parseInt(input.val()) < 0) {
-      helpBlock.text('Rating cannot be less than 0.');
-      controlGroup.addClass('error');
-      input.val();
-      input.focus();
-    } else if (parseInt(input.val()) > 10) {
-      helpBlock.text('Rating cannot be greater than 10.');
-      controlGroup.addClass('error');
-      input.val();
-      input.focus();
-    } else {
-      helpBlock.text('');
-      controlGroup.removeClass('error');
+  //   var input = this.$el.find('input');
+  //   var controlGroup = this.$el.find('.control-group');
+  //   var helpBlock = this.$el.find('.help-block');
+  //   if (isNaN(input.val())) {
+  //     helpBlock.text('Please enter a valid number.');
+  //     controlGroup.addClass('error');
+  //     input.val();
+  //     input.focus();
+  //   } else if (parseInt(input.val()) < 0) {
+  //     helpBlock.text('Rating cannot be less than 0.');
+  //     controlGroup.addClass('error');
+  //     input.val();
+  //     input.focus();
+  //   } else if (parseInt(input.val()) > 10) {
+  //     helpBlock.text('Rating cannot be greater than 10.');
+  //     controlGroup.addClass('error');
+  //     input.val();
+  //     input.focus();
+  //   } else {
+  //     helpBlock.text('');
+  //     controlGroup.removeClass('error');
 
-      this.model.set('userRating', this.model.get('userRating') + parseFloat(input.val()));
-      this.model.set('userRatingVotes', this.model.get('userRatingVotes') + 1);
-      this.model.save();
+  //     this.model.set('userRating', this.model.get('userRating') + parseFloat(input.val()));
+  //     this.model.set('userRatingVotes', this.model.get('userRatingVotes') + 1);
+  //     this.model.save();
 
-      // TODO refactor into a function
-      input.val("You've already voted!");
-      input.prop('disabled', true);
-      this.$el.find('#rateButton').prop('disabled', true);
-      localStorage[this.model.get('characterId')] = 'True';
-    }
-  },
+  //     // TODO refactor into a function
+  //     input.val("You've already voted!");
+  //     input.prop('disabled', true);
+  //     this.$el.find('#rateButton').prop('disabled', true);
+  //     localStorage[this.model.get('characterId')] = 'True';
+  //   }
+  // },
 
   
 
@@ -496,14 +496,14 @@ App.Views.CharacterSummary = Backbone.View.extend({
     this.$el.html(this.template(data));
 
     // Must be after we render content, or else it won't find the DOM elements
-    if (localStorage[this.model.get('characterId')] == 'True') {
-      //console.log('true story')
-      var input = this.$el.find('input');
-      //console.log(input);
-      input.val("You've already voted!");
-      input.prop('disabled', true);
-      this.$el.find('#rateButton').prop('disabled', true);
-    }
+    // if (localStorage[this.model.get('characterId')] == 'True') {
+    //   //console.log('true story')
+    //   var input = this.$el.find('input');
+    //   //console.log(input);
+    //   input.val("You've already voted!");
+    //   input.prop('disabled', true);
+    //   this.$el.find('#rateButton').prop('disabled', true);
+    // }
 
     if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
       //console.log('already reported');
@@ -772,13 +772,13 @@ App.Router = Backbone.Router.extend({
         console.log(err, 'error');
       },
       success: function(data) {
-        var averageRating = data.get('userRating') / data.get('userRatingVotes');
-        if (isNaN(averageRating)) averageRating = 0;
+        //var averageRating = data.get('userRating') / data.get('userRatingVotes');
+        //if (isNaN(averageRating)) averageRating = 0;
 
-        var winLossRatio = (data.get('wins') / data.get('losses')).toFixed(3);
+        var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses'))).toFixed(2) * 100;
         if (isNaN(winLossRatio)) winLossRatio = 0;
 
-        var characterSummaryView = new App.Views.CharacterSummary({ model: data, averageRating: averageRating.toFixed(2), winLossRatio: winLossRatio });
+        var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
     
 
