@@ -449,8 +449,8 @@ var NewEdenFaces = function() {
     var counter = 0;
     var modelCount = 0;
     var seen = [];
-
     var allCharacters = [];
+    
     Character.count({}, function(err, count) {
       modelCount = count;
     });
@@ -459,6 +459,14 @@ var NewEdenFaces = function() {
       allCharacters = _.clone(characters);
       allCharacters = _.shuffle(allCharacters);
     });
+
+    // update count every hour
+    setInterval(function() {
+      Character.find(function(err, characters) {
+        allCharacters = _.clone(characters);
+        allCharacters = _.shuffle(allCharacters);
+      });
+    }, 3600000);
 
 
     app.get('/api/characters', function(req, res) {
@@ -471,6 +479,7 @@ var NewEdenFaces = function() {
 
       console.log('Counter: ', counter);
       console.log('Model count: ', modelCount);
+      //console.log(allCharacters.length)
       res.send(allCharacters.slice(counter, counter+2));
       //counter = counter + 2;
 
