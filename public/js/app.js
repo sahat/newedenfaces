@@ -40,39 +40,53 @@ App.Views.Home = Backbone.View.extend({
   template: template('home-template'),
 
   events: {
-    'click #skip': 'skip'
+  //  'click #skip': 'skip' // skip: function() {
+  //   console.log('skipping...')
+  //   var self = this;
+    
+  //   this.collection.fetch({
+  //     url: '/api/characters',
+  //     success: function(data) {
+  //       self.render();
+  //       if (data.length < 2) {
+  //         console.log('Trigged by skip function');
+  //         Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+  //         $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+  //       }
+  //     }
+  //   });
   },
 
   initialize: function() {
     _.bindAll(this);
-    Mousetrap.bind('s', this.skip);
+    //Mousetrap.bind('s', this.skip);
     this.collection.on('change:wins', this.updateCount, this);
-    if (this.collection.length < 2) {
-      Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-    }
+    // if (this.collection.length < 2) {
+    //   Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+    // }
   },
 
-  skip: function() {
-    console.log('skipping...')
-    var self = this;
+  // skip: function() {
+  //   console.log('skipping...')
+  //   var self = this;
     
-    this.collection.fetch({
-      url: '/api/characters',
-      success: function(data) {
-        self.render();
-        if (data.length < 2) {
-          console.log('Trigged by skip function');
-          Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
-        }
-      }
-    });
-  },
+  //   this.collection.fetch({
+  //     url: '/api/characters',
+  //     success: function(data) {
+  //       self.render();
+  //       if (data.length < 2) {
+  //         console.log('Trigged by skip function');
+  //         Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+  //         $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+  //       }
+  //     }
+  //   });
+  // },
 
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
     losingModel.set('losses', losingModel.get('losses') + 1);
-    console.log('update count')
+    console.log('update count');
     // $.ajax({
     //   url: '/api/loser/' + losingModel.get('characterId'),
     //   type: 'PUT',
@@ -87,7 +101,7 @@ App.Views.Home = Backbone.View.extend({
       type: 'PUT',
       data: { winner: winningModel.get('characterId'), loser: losingModel.get('characterId') },
       success: function(data) {
-        console.log('successfully voted');
+        // console.log('successfully voted');
       }
     })
 
@@ -98,8 +112,8 @@ App.Views.Home = Backbone.View.extend({
       success: function(data) {
         self.render();
         if (data.length < 2) {
-          console.log('Triggered by voting');
-          Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+          // console.log('Triggered by voting');
+          //Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
           $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
         }
       }
@@ -154,10 +168,10 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this);
-    Mousetrap.bind('left', this.winner);
-    Mousetrap.bind('right', this.winner);
-    Mousetrap.bind('a', this.winner);
-    Mousetrap.bind('d', this.winner);
+    // Mousetrap.bind('left', this.winner);
+    // Mousetrap.bind('right', this.winner);
+    // Mousetrap.bind('a', this.winner);
+    // Mousetrap.bind('d', this.winner);
   },
 
   winner: function() {
@@ -382,7 +396,7 @@ App.Views.Characters = Backbone.View.extend({
     var top100 = new Backbone.Collection(this.collection);
     
     //delete this.collection.comparator;
-    console.log('not caching top100');
+    //console.log('not caching top100');
     $('#content').html(this.template());
     top100.each(this.addOne, this);
     return this;
@@ -417,7 +431,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
   reportPlayer: function(e) {
     var self = this;
-    console.log(localStorage['reported-'+this.model.get('characterId')])
+    //console.log(localStorage['reported-'+this.model.get('characterId')])
 
     $.post('/api/report', this.model.toJSON(), function(data) {
       self.$el.find('#report').attr('disabled', true);
@@ -483,16 +497,16 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
     // Must be after we render content, or else it won't find the DOM elements
     if (localStorage[this.model.get('characterId')] == 'True') {
-      console.log('true story')
+      //console.log('true story')
       var input = this.$el.find('input');
-      console.log(input);
+      //console.log(input);
       input.val("You've already voted!");
       input.prop('disabled', true);
       this.$el.find('#rateButton').prop('disabled', true);
     }
 
     if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
-      console.log('already reported');
+      //console.log('already reported');
       this.$el.find('#report').attr('disabled', true);
     }
 
@@ -544,7 +558,7 @@ App.Views.Search = Backbone.View.extend({
     if (!queryMatch.length) {
       return toastr.warning('Search input cannot be empty');
     }
-    console.log(queryMatch);
+    //console.log(queryMatch);
     var characterId = queryMatch[0].get('characterId');
 
     if (characterId) {
@@ -662,11 +676,11 @@ App.Router = Backbone.Router.extend({
     // 
     
     if (App.Views.homeView) {
-      console.log('reusing homeview');
+      //console.log('reusing homeview');
       $('#content').html(App.Views.homeView.render().el);
       App.Views.homeView.selectMenuItem('home-menu');
     } else {
-      console.log('not reusing home');
+      //console.log('not reusing home');
       characters.fetch({
         success: function(data) {
 
@@ -676,7 +690,7 @@ App.Router = Backbone.Router.extend({
           });
 
           if (data.length < 2) {
-            console.log('Trigged by F5 or natural page');
+            //console.log('Trigged by F5 or natural page');
             Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
             $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
           } else {
