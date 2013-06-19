@@ -167,7 +167,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   },
 
   initialize: function() {
-    _.bindAll(this);
+    //.bindAll(this);
     // Mousetrap.bind('left', this.winner);
     // Mousetrap.bind('right', this.winner);
     // Mousetrap.bind('a', this.winner);
@@ -298,16 +298,17 @@ App.Views.Leaderboard = Backbone.View.extend({
 
     //console.log(this.collection.toJSON())
 
-    this.collection = this.collection.sortBy(function(model) {
-      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
-      //return -model.get('wins');
-    });
+    // this.collection = this.collection.sortBy(function(model) {
+    //   // var winningPercentage = model.get('wins') / (model.get('wins') + model.get('losses'));
+    //   // return winningPercentage;
+    //   return -model.get('wins');
+    // });
 
-    var top14 = new Backbone.Collection(this.collection);
+    // var top14 = new Backbone.Collection(this.collection);
     
     // delete this.collection.comparator;
 
-    top14.each(function(character) {
+    this.collection.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
       this.$el.append(leaderboardItemView.render().el);
     }, this);
@@ -386,19 +387,20 @@ App.Views.Characters = Backbone.View.extend({
     //   return 0;
     // },
 
-    // this.collection.sort({ silent: true });
+    // // this.collection.sort({ silent: true });
 
-    this.collection = this.collection.sortBy(function(model) {
-      return -(model.get('wins') / (model.get('wins') + model.get('losses') ));
-      //return -model.get('wins');
-    });
+    // this.collection = this.collection.sortBy(function(model) {
+    //   // var winningPercentage = model.get('wins') / (model.get('wins') + model.get('losses'));
+    //   // return -winningPercentage;
+    //   return -model.get('wins');
+    // });
 
-    var top100 = new Backbone.Collection(this.collection);
+    // var top100 = new Backbone.Collection(this.collection);
     
     //delete this.collection.comparator;
     //console.log('not caching top100');
     $('#content').html(this.template());
-    top100.each(this.addOne, this);
+    this.collection.each(this.addOne, this);
     return this;
   }
 
@@ -775,7 +777,7 @@ App.Router = Backbone.Router.extend({
         //var averageRating = data.get('userRating') / data.get('userRatingVotes');
         //if (isNaN(averageRating)) averageRating = 0;
 
-        var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses'))).toFixed(2) * 100;
+        var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses')) * 100).toFixed(1);
         if (isNaN(winLossRatio)) winLossRatio = 0;
 
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
