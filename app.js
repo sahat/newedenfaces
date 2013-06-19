@@ -473,6 +473,10 @@ var NewEdenFaces = function() {
       if (counter > modelCount) {
         counter = 0;
         seen = [];
+        Character.find(function(err, characters) {
+          allCharacters = _.clone(characters);
+          allCharacters = _.shuffle(allCharacters);
+        });
       }
 
       //var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
