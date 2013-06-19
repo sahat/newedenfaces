@@ -23,6 +23,7 @@
     "mongoose": "*",
     "sendgrid": "*",
     "mongodb": "*",
-    "gridfs-stream": "*"
+    "gridfs-stream": "*",
+    "underscore":"*"
   }
 }

@@ -13,7 +13,8 @@ var express = require('express'),
     xml2js = require('xml2js'),
     mongoose = require('mongoose'),
     Grid = require('gridfs-stream'),
-    SendGrid = require('sendgrid').SendGrid;
+    SendGrid = require('sendgrid').SendGrid,
+    _ = require('underscore');
 
 
 var NewEdenFaces = function() {
@@ -125,36 +126,7 @@ var NewEdenFaces = function() {
       app.use(express.errorHandler());
     }
 
-    app.put('/api/vote', function(req, res) {
-      var winner = req.body.winner;
-      var loser = req.body.loser;
-
-      async.parallel({
-        updateWinner: function(callback){
-          Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
-            if (err) {
-              return res.send(500, err);
-            }
-            console.log('incrementing win count');
-            callback(null);
-          });
-        },
-        updateLoser: function(callback) {
-          Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
-            if (err) return res.send(500, err);
-            console.log('incrementing loss count');
-            callback(null);
-          });        
-        }
-      },
-      function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, err);
-        }
-        return res.send(200, 'Wins and Losses have been updated');
-      });
-    });
+    
 
     app.put('/api/winner/:characterId', function(req, res) {
       Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
@@ -477,46 +449,93 @@ var NewEdenFaces = function() {
     var counter = 0;
     var modelCount = 0;
     var seen = [];
+
+    var allCharacters = [];
     Character.count({}, function(err, count) {
       modelCount = count;
     });
+
+    Character.find(function(err, characters) {
+      allCharacters = _.clone(characters);
+      allCharacters = _.shuffle(allCharacters);
+    });
+
 
     app.get('/api/characters', function(req, res) {
       if (counter > modelCount) {
         counter = 0;
         seen = [];
       }
-      console.log('Counter: ', counter);
-      console.log('Seen length: ', seen.length);
 
-      Character
-      .find()
-      .sort('-wins')
-      .where('name').nin(seen)
-      .skip(counter)
-      .limit(2)
-      .exec(function(err, characters) {
+      //var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+      console.log('Counter: ', counter);
+      console.log('Model count: ', modelCount);
+      res.send(allCharacters.slice(counter, counter+2));
+      //counter = counter + 2;
+
+
+      // Character
+      // .find()
+      // .sort('-wins')
+      // .where('name').nin(seen)
+      // .skip(counter)
+      // .limit(2)
+      // .exec(function(err, characters) {
+      //   if (err) {
+      //     console.log(err);
+      //     return res.send(500, 'Error getting characters');
+      //   }
+      //   // counter is what makes pagination possible, every request, increment by two,
+      //   // this number is then passed to mongoose's skip().
+        
+      //   // edge case when at the end characters returned are less than ten.
+      //   // quick hack
+      //   //if (characters.length < 10) {
+      //     counter = counter + 2;
+      //     return res.send(characters);
+      //   //}
+        
+      //   // counter = counter + 1;
+      //   // var randomTen = Math.floor(Math.random() * 9);
+      //   // // push to exclude array
+      //   // seen.push(characters[randomTen + 1].name);
+      //   // seen.push(characters[0].name);
+
+      //   // res.send([characters[0], characters[randomTen + 1]]);
+      // });
+    });
+
+    app.put('/api/vote', function(req, res) {
+      var winner = req.body.winner;
+      var loser = req.body.loser;
+
+      async.parallel({
+        updateWinner: function(callback){
+          Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
+            if (err) {
+              return res.send(500, err);
+            }
+            console.log('incrementing win count');
+            callback(null);
+          });
+        },
+        updateLoser: function(callback) {
+          Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
+            if (err) return res.send(500, err);
+            console.log('incrementing loss count');
+            callback(null);
+          });        
+        }
+      },
+      function(err) {
         if (err) {
           console.log(err);
-          return res.send(500, 'Error getting characters');
-        }
-        // counter is what makes pagination possible, every request, increment by two,
-        // this number is then passed to mongoose's skip().
-        
-        // edge case when at the end characters returned are less than ten.
-        // quick hack
-        //if (characters.length < 10) {
-          counter = counter + 2;
-          return res.send(characters);
-        //}
-        
-        // counter = counter + 1;
-        // var randomTen = Math.floor(Math.random() * 9);
-        // // push to exclude array
-        // seen.push(characters[randomTen + 1].name);
-        // seen.push(characters[0].name);
 
-        // res.send([characters[0], characters[randomTen + 1]]);
+          return res.send(500, err);
+        }
+        counter += 2;
+        return res.send(200, 'Wins and Losses have been updated');
       });
     });
 

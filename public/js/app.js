@@ -94,30 +94,30 @@ App.Views.Home = Backbone.View.extend({
     //     
     //   }
     // });
-
+    var self = this;
     // streamline vote request
     $.ajax({
       url: '/api/vote',
       type: 'PUT',
       data: { winner: winningModel.get('characterId'), loser: losingModel.get('characterId') },
       success: function(data) {
-        // console.log('successfully voted');
-      }
-    })
-
-    var self = this;
-    
-    this.collection.fetch({
-      url: '/api/characters',
-      success: function(data) {
-        self.render();
-        if (data.length < 2) {
-          // console.log('Triggered by voting');
-          //Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
-        }
+        self.collection.fetch({
+          url: '/api/characters',
+          success: function(data) {
+            self.render();
+            if (data.length < 2) {
+              // console.log('Triggered by voting');
+              //Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+              $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+            }
+          }
+        });
       }
     });
+
+    
+    
+    
   },
 
   render: function() {
@@ -491,9 +491,8 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
     var data = {
       model: this.model.toJSON(),
-      averageRating: this.options.averageRating,
       WLRatio: this.options.winLossRatio
-    }
+    };
 
     this.$el.html(this.template(data));
 
