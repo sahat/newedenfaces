@@ -86,7 +86,7 @@ App.Views.Home = Backbone.View.extend({
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
     losingModel.set('losses', losingModel.get('losses') + 1);
-    console.log('update count');
+    //console.log('update count');
     // $.ajax({
     //   url: '/api/loser/' + losingModel.get('characterId'),
     //   type: 'PUT',
