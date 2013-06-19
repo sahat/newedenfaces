@@ -254,7 +254,7 @@
 <script id="character-template" type="text/template">
     <span class="position pull-left"><%= position %></span>
     <a class="pull-left" href="/characters/<%= model.characterId %>">
-        <img class="media-object" src="<%= model.image128 %>">
+        <img class="media-object" src="<%= model.image64 %>">
     </a>
     <div class="media-body">
         <h4 class="media-heading"><a href="/characters/<%= model.characterId %>"><%= model.name %></a></h4>
@@ -262,8 +262,6 @@
             <strong>Race:</strong> <%= model.race %>
             <br>
             <strong>Bloodline:</strong> <%= model.bloodline %>
-            <br>
-            <strong>Wins:</strong> <%= model.wins %>, <strong>Losses:</strong> <%= model.losses %>
         </p>
     </div>
 </script>
