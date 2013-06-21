@@ -55,7 +55,6 @@ var Character = mongoose.model('Character', {
 
 
 // all environments
-app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon(__dirname + '/public/favicon.ico')); 
@@ -901,6 +900,6 @@ app.get('/characters/:id', function(req, res) {
 
 
 app.listen(port, ipaddress, function() {
-  console.log('%s: Node server started on %s:%d ...', Date(Date.now()), ipaddress, port);
+  console.log('Express server started listening on %s:%d', ipaddress, port);
 });
 
