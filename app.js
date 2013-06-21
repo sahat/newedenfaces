@@ -2,7 +2,7 @@
 
 // TODO: Node.js error handler module
 
-var 
+var
   express = require('express'),
   async = require('async'),
   http = require('http'),
@@ -30,299 +30,299 @@ if (typeof ipaddress === "undefined") {
 }
 
 
-  app = express();
-  
-  var parser = new xml2js.Parser();
-  mongoose.connect('localhost');
-  var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-  
-  // DB Schema and Model
-  var Character = mongoose.model('Character', {
-    characterId: { type: String, unique: true, index: true },
-    name: String,
-    image32: String,
-    image64: String,
-    image128: String,
-    image256: String,
-    image512: String,
-    race: String,
-    gender: String,
-    bloodline: String,
-    wins: { type: Number, default: 0, index: true },
-    losses: { type: Number, default: 0 },
-    reportCount: { type: Number, default: 0 }
-  });
+app = express();
+
+var parser = new xml2js.Parser();
+mongoose.connect('localhost');
+var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+
+// DB Schema and Model
+var Character = mongoose.model('Character', {
+  characterId: { type: String, unique: true, index: true },
+  name: String,
+  image32: String,
+  image64: String,
+  image128: String,
+  image256: String,
+  image512: String,
+  race: String,
+  gender: String,
+  bloodline: String,
+  wins: { type: Number, default: 0, index: true },
+  losses: { type: Number, default: 0 },
+  reportCount: { type: Number, default: 0 }
+});
 
 
-  // all environments
-  app.set('port', process.env.PORT || 3000);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon(__dirname + '/public/favicon.ico')); 
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser());  
-  app.use(express.session({ secret: 'lolsec'}));
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
+// all environments
+app.set('port', process.env.PORT || 3000);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(express.favicon(__dirname + '/public/favicon.ico')); 
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.cookieParser());  
+app.use(express.session({ secret: 'lolsec'}));
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
 
 
-  // report endpoint
-  // I could add an if-statement to api/characters/:id instead that will get
-  // checked everytime is model saved on backbone, but that will cause performance issues
-  // That endpoint is also used on the home page where most people spend their time,
-  // so checking an if-statement thousands of times is redundant
-  app.post('/api/report', function(req, res) {
-    Character.findOne({ characterId: req.body.characterId }, function(err, character) {
-      if (err) {
-        console.log(err);
-        return res.send(500, err);
-      }
+// report endpoint
+// I could add an if-statement to api/characters/:id instead that will get
+// checked everytime is model saved on backbone, but that will cause performance issues
+// That endpoint is also used on the home page where most people spend their time,
+// so checking an if-statement thousands of times is redundant
+app.post('/api/report', function(req, res) {
+  Character.findOne({ characterId: req.body.characterId }, function(err, character) {
+    if (err) {
+      console.log(err);
+      return res.send(500, err);
+    }
 
-      character.reportCount += 1;
-      
-      if (character.reportCount >= 10) {
-        // remove character from DateB
-        Character.remove({ characterId: req.body.characterId }, function (err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, err);
-          }
-          console.log('Character has been removed');
-          res.send(200, {'message': 'Character has been removed'});
-        });
-      } else {
-        character.save(function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, err);
-          }
-          res.send(200, {'message': 'Character has been reported++'});
-        });
-      }
-    });
-  });
-
-  app.put('/api/grid/:characterId', function(req, res) {
-    async.parallel({
-      one: function(callback){
-        var image32 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_32.jpg';
-        var filename32 = image32.replace(/^.*[\\\/]/, '');
-        var filepath32 = path.join(__dirname, filename32);
-        var writestream32 = gfs.createWriteStream({ filename: filename32 });
-        var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
-
-        imageStream32.on('close', function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'File error has occured');
-          }
-          gfs.remove({ filename: filename32 }, function (err) {
-            if (err) {
-              console.log('Error removing file from GridFS');
-              return res.send(500, 'Failed to remove image from gridfs');
-            }
-            console.log('success!');
-            var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath32);
-              callback(null, filename32);
-            });
-          });
-        });
-      },
-      two: function(callback) {
-        var image64 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_64.jpg';
-        var filename64 = image64.replace(/^.*[\\\/]/, '');
-        var filepath64 = path.join(__dirname, filename64);
-        var writestream64 = gfs.createWriteStream({ filename: filename64 });
-        var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
-
-        imageStream64.on('close', function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'File error has occured');
-          }
-          gfs.remove({ filename: filename64 }, function (err) {
-            if (err) {
-              console.log('Error removing file from GridFS');
-              return res.send(500, 'Failed to remove image from gridfs');
-            }
-            console.log('success!');
-            var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath64);
-              callback(null, filename64);
-            });
-          });
-        });
-      },
-      three: function(callback){
-        var image128 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_128.jpg'; 
-        var filename128 = image128.replace(/^.*[\\\/]/, '');
-        var filepath128 = path.join(__dirname, filename128);
-        var writestream128 = gfs.createWriteStream({ filename: filename128 });
-        var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
-
-        imageStream128.on('close', function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'File error has occured');
-          }
-          gfs.remove({ filename: filename128 }, function (err) {
-            if (err) {
-              console.log('Error removing file from GridFS');
-              return res.send(500, 'Failed to remove image from gridfs');
-            }
-            console.log('success!');
-            var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath128);
-              callback(null, filename128);
-            });
-          });
-
-          
-        });
-      },
-      four: function(callback){
-        var image256 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_256.jpg'; 
-        var filename256 = image256.replace(/^.*[\\\/]/, '');
-        var filepath256 = path.join(__dirname, filename256);
-        var writestream256 = gfs.createWriteStream({ filename: filename256 });
-        var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
-
-        imageStream256.on('close', function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'File error has occured');
-          }
-          gfs.remove({ filename: filename256 }, function (err) {
-            if (err) {
-              console.log('Error removing file from GridFS');
-              return res.send(500, 'Failed to remove image from gridfs');
-            }
-            console.log('success!');
-            var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath256);
-              callback(null, filename256);
-            });
-          });
-        });
-      },
-      five: function(callback){
-        var image512 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_512.jpg';
-        var filename512 = image512.replace(/^.*[\\\/]/, '');
-        var filepath512 = path.join(__dirname, filename512);
-        var writestream512 = gfs.createWriteStream({ filename: filename512 });
-        var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
-
-        imageStream512.on('close', function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'File error has occured');
-          }
-          gfs.remove({ filename: filename512 }, function (err) {
-            if (err) {
-              console.log('Error removing file from GridFS');
-              return res.send(500, 'Failed to remove image from gridfs');
-            }
-            console.log('success!');
-            var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath512);
-              callback(null, filename512);
-            });
-          });
-
-        });
-      }
-    },
-    function(err, results) {
-      if (err) {
-        console.log(err);
-        return res.send(500, err);
-      }
-      console.log(results.five);
-
-      var filename32 = results.one;
-      var filename64 = results.two;
-      var filename128 = results.three;
-      var filename256 = results.four;
-      var filename512 = results.five;
-
-      Character.findOne({ characterId: req.params.characterId }, function(err, character) {
-        character.image32 = '/api/grid/' + filename32;
-        character.image64 = '/api/grid/' + filename64;
-        character.image128 ='/api/grid/' + filename128;
-        character.image256 = '/api/grid/' + filename256;
-        character.image512 = '/api/grid/' + filename512;
-
-        character.save(function(err) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'Error while saving new character to database');
-          }
-          res.send(character);
-        });
-      });
-
-    });
-  });
-
-  app.post('/api/grid', function(req, res) {
-    var url = 'https://image.eveonline.com/Character/' + req.body.characterId + '_' + req.body.size + '.jpg';
-    var filename = url.replace(/^.*[\\\/]/, '');
-    var filepath = path.join(__dirname, filename);
-
-    var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-    var writestream = gfs.createWriteStream({ filename: filename });
-
-    var imageStream = request(url).pipe(fs.createWriteStream(filepath));
-
-    imageStream.on('close', function() {
-      fs.createReadStream(filepath).pipe(writestream);
-      res.send(200);
-    });
-
-  });
-
-
-  app.get('/api/grid/:filename', function(req, res) {
-    var filename = req.params.filename;
-    var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-    var readstream = gfs.createReadStream({
-      filename: filename
-    });
-    readstream.pipe(res);
-    readstream.on('error', function(err) {
-      return res.send(500, 'Error while retriving a file from database');
-    });
-  });
-
-
- 
-
-  //  Add handlers for the app (from the routes).
-  app.put('/api/characters/:id', function(req, res) {
-    Character.findOne({ characterId: req.body.characterId }, function(err, character) {
-      if (err) {
-        console.log(err);
-        return res.send(500, 'Error in accessing the database');
-      }
+    character.reportCount += 1;
     
-      character.userRating = req.body.userRating;
-      character.userRatingVotes = req.body.userRatingVotes;
+    if (character.reportCount >= 10) {
+      // remove character from DateB
+      Character.remove({ characterId: req.body.characterId }, function (err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, err);
+        }
+        console.log('Character has been removed');
+        res.send(200, {'message': 'Character has been removed'});
+      });
+    } else {
       character.save(function(err) {
         if (err) {
           console.log(err);
           return res.send(500, err);
         }
-        res.send(200);
+        res.send(200, {'message': 'Character has been reported++'});
+      });
+    }
+  });
+});
+
+app.put('/api/grid/:characterId', function(req, res) {
+  async.parallel({
+    one: function(callback){
+      var image32 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_32.jpg';
+      var filename32 = image32.replace(/^.*[\\\/]/, '');
+      var filepath32 = path.join(__dirname, filename32);
+      var writestream32 = gfs.createWriteStream({ filename: filename32 });
+      var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
+
+      imageStream32.on('close', function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'File error has occured');
+        }
+        gfs.remove({ filename: filename32 }, function (err) {
+          if (err) {
+            console.log('Error removing file from GridFS');
+            return res.send(500, 'Failed to remove image from gridfs');
+          }
+          console.log('success!');
+          var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
+          gridstream.on('close', function(err) {
+            fs.unlink(filepath32);
+            callback(null, filename32);
+          });
+        });
+      });
+    },
+    two: function(callback) {
+      var image64 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_64.jpg';
+      var filename64 = image64.replace(/^.*[\\\/]/, '');
+      var filepath64 = path.join(__dirname, filename64);
+      var writestream64 = gfs.createWriteStream({ filename: filename64 });
+      var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
+
+      imageStream64.on('close', function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'File error has occured');
+        }
+        gfs.remove({ filename: filename64 }, function (err) {
+          if (err) {
+            console.log('Error removing file from GridFS');
+            return res.send(500, 'Failed to remove image from gridfs');
+          }
+          console.log('success!');
+          var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
+          gridstream.on('close', function(err) {
+            fs.unlink(filepath64);
+            callback(null, filename64);
+          });
+        });
+      });
+    },
+    three: function(callback){
+      var image128 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_128.jpg'; 
+      var filename128 = image128.replace(/^.*[\\\/]/, '');
+      var filepath128 = path.join(__dirname, filename128);
+      var writestream128 = gfs.createWriteStream({ filename: filename128 });
+      var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
+
+      imageStream128.on('close', function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'File error has occured');
+        }
+        gfs.remove({ filename: filename128 }, function (err) {
+          if (err) {
+            console.log('Error removing file from GridFS');
+            return res.send(500, 'Failed to remove image from gridfs');
+          }
+          console.log('success!');
+          var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
+          gridstream.on('close', function(err) {
+            fs.unlink(filepath128);
+            callback(null, filename128);
+          });
+        });
+
+        
+      });
+    },
+    four: function(callback){
+      var image256 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_256.jpg'; 
+      var filename256 = image256.replace(/^.*[\\\/]/, '');
+      var filepath256 = path.join(__dirname, filename256);
+      var writestream256 = gfs.createWriteStream({ filename: filename256 });
+      var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
+
+      imageStream256.on('close', function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'File error has occured');
+        }
+        gfs.remove({ filename: filename256 }, function (err) {
+          if (err) {
+            console.log('Error removing file from GridFS');
+            return res.send(500, 'Failed to remove image from gridfs');
+          }
+          console.log('success!');
+          var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
+          gridstream.on('close', function(err) {
+            fs.unlink(filepath256);
+            callback(null, filename256);
+          });
+        });
+      });
+    },
+    five: function(callback){
+      var image512 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_512.jpg';
+      var filename512 = image512.replace(/^.*[\\\/]/, '');
+      var filepath512 = path.join(__dirname, filename512);
+      var writestream512 = gfs.createWriteStream({ filename: filename512 });
+      var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
+
+      imageStream512.on('close', function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'File error has occured');
+        }
+        gfs.remove({ filename: filename512 }, function (err) {
+          if (err) {
+            console.log('Error removing file from GridFS');
+            return res.send(500, 'Failed to remove image from gridfs');
+          }
+          console.log('success!');
+          var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
+          gridstream.on('close', function(err) {
+            fs.unlink(filepath512);
+            callback(null, filename512);
+          });
+        });
+
+      });
+    }
+  },
+  function(err, results) {
+    if (err) {
+      console.log(err);
+      return res.send(500, err);
+    }
+    console.log(results.five);
+
+    var filename32 = results.one;
+    var filename64 = results.two;
+    var filename128 = results.three;
+    var filename256 = results.four;
+    var filename512 = results.five;
+
+    Character.findOne({ characterId: req.params.characterId }, function(err, character) {
+      character.image32 = '/api/grid/' + filename32;
+      character.image64 = '/api/grid/' + filename64;
+      character.image128 ='/api/grid/' + filename128;
+      character.image256 = '/api/grid/' + filename256;
+      character.image512 = '/api/grid/' + filename512;
+
+      character.save(function(err) {
+        if (err) {
+          console.log(err);
+          return res.send(500, 'Error while saving new character to database');
+        }
+        res.send(character);
       });
     });
+
   });
+});
+
+app.post('/api/grid', function(req, res) {
+  var url = 'https://image.eveonline.com/Character/' + req.body.characterId + '_' + req.body.size + '.jpg';
+  var filename = url.replace(/^.*[\\\/]/, '');
+  var filepath = path.join(__dirname, filename);
+
+  var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+  var writestream = gfs.createWriteStream({ filename: filename });
+
+  var imageStream = request(url).pipe(fs.createWriteStream(filepath));
+
+  imageStream.on('close', function() {
+    fs.createReadStream(filepath).pipe(writestream);
+    res.send(200);
+  });
+
+});
+
+
+app.get('/api/grid/:filename', function(req, res) {
+  var filename = req.params.filename;
+  var gfs = Grid(mongoose.connection.db, mongoose.mongo);
+  var readstream = gfs.createReadStream({
+    filename: filename
+  });
+  readstream.pipe(res);
+  readstream.on('error', function(err) {
+    return res.send(500, 'Error while retriving a file from database');
+  });
+});
+
+
+
+
+//  Add handlers for the app (from the routes).
+app.put('/api/characters/:id', function(req, res) {
+  Character.findOne({ characterId: req.body.characterId }, function(err, character) {
+    if (err) {
+      console.log(err);
+      return res.send(500, 'Error in accessing the database');
+    }
+  
+    character.userRating = req.body.userRating;
+    character.userRatingVotes = req.body.userRatingVotes;
+    character.save(function(err) {
+      if (err) {
+        console.log(err);
+        return res.send(500, err);
+      }
+      res.send(200);
+    });
+  });
+});
 
   
 // TODO: USE CRON JOB INSTEAD
