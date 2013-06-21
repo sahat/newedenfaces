@@ -21,15 +21,6 @@ var express = require('express'),
 
 var NewEdenFaces = function() {
   var self = this;
-
-
-  /*  ================================================================  */
-  /*  Helper functions.                                                 */
-  /*  ================================================================  */
-
-  /**
-   *  Set up server IP address and port # using env variables/defaults.
-   */
   self.setupVariables = function() {
       //  Set the environment variables we need.
       self.ipaddress = process.env.OPENSHIFT_NODEJS_IP ||
@@ -44,12 +35,6 @@ var NewEdenFaces = function() {
           self.ipaddress = "127.0.0.1";
       };
   };
-
-  /**
-   *  terminator === the termination handler
-   *  Terminate server on receipt of the specified signal.
-   *  @param {string} sig  Signal to terminate on.
-   */
   self.terminator = function(sig){
       if (typeof sig === "string") {
          console.log('%s: Received %s - terminating sample app ...',
@@ -59,9 +44,6 @@ var NewEdenFaces = function() {
       console.log('%s: Node server stopped.', Date(Date.now()) );
   };
 
-  /**
-   *  Setup termination handlers (for exit and a list of signals).
-   */
   self.setupTerminationHandlers = function(){
       //  Process on exit and signals.
       process.on('exit', function() { self.terminator(); });
@@ -74,23 +56,15 @@ var NewEdenFaces = function() {
       });
   };
 
-  /**
-  *  Initialize the server (express) and create the routes and register
-  *  the handlers.
-  */
+
   self.initializeServer = function() {
     app = express();
-
-    /**
-     * App Initialization
-     */
     
     var parser = new xml2js.Parser();
     mongoose.connect(config.mongoose);
     var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-    /**
-     * DB Schema and Model
-     */
+    
+    // DB Schema and Model
     var Character = mongoose.model('Character', {
       characterId: { type: String, unique: true, index: true },
       name: String,
@@ -102,11 +76,8 @@ var NewEdenFaces = function() {
       race: String,
       gender: String,
       bloodline: String,
-      rating: { type: Number, default: 1400 },
       wins: { type: Number, default: 0, index: true },
       losses: { type: Number, default: 0 },
-      userRating: { type: Number, default: 0 },
-      userRatingVotes: { type: Number, default: 0 },
       reportCount: { type: Number, default: 0 }
     });
 
@@ -483,7 +454,7 @@ var NewEdenFaces = function() {
         hasBeenVoted = [];
 
         // Retrieve new set of characters in case new characters have been
-        // added since the last query, and then shuffle them
+        // added since the last query, and then shuffle them.
         Character.find(function(err, characters) {
           if (err) {
             console.log(err);
@@ -497,7 +468,20 @@ var NewEdenFaces = function() {
 
       console.log('Counter: ', counter);
       console.log('Total Count: ', modelCount);
+
+      if (req.session.hasNotVoted) {
+        return res.send(allCharacters.slice(counter, counter + 2));
+      }
+
+      req.session.hasNotVoted = true;
+
       res.send(allCharacters.slice(counter, counter + 2));
+
+      // Since we don't want to increment counter before the very first page 
+      // is displayed, it is placed after res.send, also note I am not doing
+      // return res.send, so the function will still continue to execute after
+      // previous line up until the next line.
+      counter = counter + 2;
     });
 
     
@@ -547,6 +531,7 @@ var NewEdenFaces = function() {
         }
       },
       function(err) {
+        // TOODO: Verify that DB fail above bubles up this error object here
         if (err) {
           console.log(err);
           return res.send(500, err);
