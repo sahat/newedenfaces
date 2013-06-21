@@ -33,7 +33,7 @@ if (typeof ipaddress === "undefined") {
 app = express();
 
 var parser = new xml2js.Parser();
-mongoose.connect('localhost');
+mongoose.connect(config.mongoose);
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 // DB Schema and Model
@@ -330,7 +330,7 @@ app.put('/api/characters/:id', function(req, res) {
 // update count every hour
 setInterval(function() {
   Character.count({}, function(err, count) {
-    modelCount = count;
+    totalCount = count;
   });
 }, 3600000);
 
@@ -410,7 +410,7 @@ app.get('/api/characters', function(req, res) {
 
 
   console.log('Counter: ', counter);
-  console.log('Total Count: ', modelCount);
+  console.log('Total Count: ', totalCount);
 
   if (req.session.hasNotVoted) {
     return res.send(allCharacters.slice(counter, counter + 2));
