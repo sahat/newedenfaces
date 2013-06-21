@@ -371,12 +371,17 @@ var totalCount = 0;
 var allCharacters = [];
 var votedCharacters = [];
 
+var IP_BUCKET = [];
+
 Character.count({}, function(err, count) {
   totalCount = count;
 });
 
-Character.find(function(err, characters) {
+Character
+.find()
+.exec(function(err, characters) {
   allCharacters = _.clone(characters);
+  console.log('Finished fetching characters from DB.');
   allCharacters = _.shuffle(allCharacters);
 });
 
@@ -387,15 +392,14 @@ Character.find(function(err, characters) {
  * @return {[type]}     [description]
  */
 app.get('/api/characters', function(req, res) {
-  // TOODO: Create a session object
-  // Go back to counter+2 on each GET request
-  // but create a session for that user that F5 doesn't skip to the next 2 avatars
-  
+  var ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
   // When all characters have been voted on...
   if (counter > totalCount) {
+    console.log('----reached the end------');
     counter = 0;
-    hasBeenVoted = [];
-
+    votedCharacters = [];
+    IP_BUCKET = [];
     // Retrieve new set of characters in case new characters have been
     // added since the last query, and then shuffle them.
     Character.find(function(err, characters) {
@@ -406,25 +410,33 @@ app.get('/api/characters', function(req, res) {
       allCharacters = _.clone(characters);
       allCharacters = _.shuffle(allCharacters);
     });
+    
+    console.log(IP_BUCKET)
+    res.send(allCharacters.slice(counter, counter + 2));
+    counter = counter + 2;
+  } else {
+    console.log('not at the end');
+    console.log('IP BUCKET: ', IP_BUCKET);
+    console.log('Counter: ', counter);
+    console.log('Total Count: ', totalCount);
+
+    if (_.contains(IP_BUCKET, ipAddress)) {
+      console.log('User has not voted, IP stays in the bucket.');
+      return res.send(allCharacters.slice(counter - 2, counter));
+    }
+
+    console.log('First time view. Adding ip.');
+    IP_BUCKET.push(ipAddress);
+    console.log(allCharacters.length);
+    res.send(allCharacters.slice(counter, counter + 2));
+
+    // Since we don't want to increment counter before the very first page 
+    // is displayed, it is placed after res.send, also note I am not doing
+    // return res.send, so the function will still continue to execute after
+    // previous line up until the next line.
+    counter = counter + 2;
+    console.log('Incrementing counter...it is now: ', counter);
   }
-
-
-  console.log('Counter: ', counter);
-  console.log('Total Count: ', totalCount);
-
-  if (req.session.hasNotVoted) {
-    return res.send(allCharacters.slice(counter, counter + 2));
-  }
-
-  req.session.hasNotVoted = true;
-
-  res.send(allCharacters.slice(counter, counter + 2));
-
-  // Since we don't want to increment counter before the very first page 
-  // is displayed, it is placed after res.send, also note I am not doing
-  // return res.send, so the function will still continue to execute after
-  // previous line up until the next line.
-  counter = counter + 2;
 });
 
 
@@ -436,15 +448,16 @@ app.get('/api/characters', function(req, res) {
  * @return {[type]}     [description]
  */
 app.post('/api/vote', function(req, res) {
-  var IP = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  var ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
   // Validation check for multiple votes
   if (_.contains(votedCharacters , winner) || 
     _.contains(votedCharacters, loser)) {
-    console.log('Already voted!');
-    return res.send(500, 'Already voted!');
+    console.log('ALREADY VOTED!');
+    return res.redirect('/');
+    //eturn res.send(500, 'Already voted!');
   }
   
   // Add these two characters to global array to prevent multiple voting
@@ -459,7 +472,7 @@ app.post('/api/vote', function(req, res) {
           console.log('Error updating wins count.');
           return res.send(500, err);
         }
-        console.log('Incrementing wins count of ', winner, ' by ', IP);
+        console.log('Incrementing wins count of ', winner, ' by ', ipAddress);
         callback(null);
       });
     },
@@ -469,7 +482,7 @@ app.post('/api/vote', function(req, res) {
           console.log('Error updating losses count.');
           return res.send(500, err);
         }
-        console.log('incrementing losses count of ', loser, ' by ', IP);
+        console.log('incrementing losses count of ', loser, ' by ', ipAddress);
         callback(null);
       });
     }
@@ -480,6 +493,12 @@ app.post('/api/vote', function(req, res) {
       console.log(err);
       return res.send(500, err);
     }
+
+    console.log('IP BUCKET before slice: ', IP_BUCKET);
+    console.log('Pulling IP address from the bucket...');
+    IP_BUCKET = _.without(IP_BUCKET, ipAddress);
+    console.log('IP BUCKET after slice: ', IP_BUCKET);
+
     // TODO: remove comment counter += 2;
     return res.send(200, 'Wins and Losses have been updated');
   });
@@ -487,7 +506,7 @@ app.post('/api/vote', function(req, res) {
 
 /**
  * Top characters page
- * @param  {[type]} req [description]
+ * @param  {[type]} rhttp://127.0.0.1:8080/eq [description]
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
@@ -551,7 +570,7 @@ app.get('/api/characters/top/:race/:bloodline', function(req, res) {
     bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
         req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
   }
-  
+
   Character
   .find()
   .where('race').equals(race)
