@@ -455,7 +455,7 @@ var NewEdenFaces = function() {
     var counter = 0;
     var totalCount = 0;
     var allCharacters = [];
-    var hasBeenVoted = [];
+    var votedCharacters = [];
 
     Character.count({}, function(err, count) {
       totalCount = count;
@@ -513,17 +513,18 @@ var NewEdenFaces = function() {
       var winner = req.body.winner;
       var loser = req.body.loser;
 
-      if (_.contains(hasBeenVoted, winner) || _.contains(hasBeenVoted, loser)) {
+      // Validation check for multiple votes
+      if (_.contains(votedCharacters , winner) || 
+        _.contains(votedCharacters, loser)) {
         console.log('Already voted!');
-        return res.send(500, 'Already voted!')
+        return res.send(500, 'Already voted!');
       }
       
-      // Add them to global array to prevent multiple voting
-      hasBeenVoted.push(winner);
-      hasBeenVoted.push(loser);
+      // Add these two characters to global array to prevent multiple voting
+      votedCharacters.push(winner);
+      votedCharacters.push(loser);
 
-      console.log(hasBeenVoted);
-
+      // Update wins and losses count in parallel using async library
       async.parallel({
         updateWinner: function(callback){
           Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
@@ -555,6 +556,12 @@ var NewEdenFaces = function() {
       });
     });
 
+    /**
+     * Top characters page
+     * @param  {[type]} req [description]
+     * @param  {[type]} res [description]
+     * @return {[type]}     [description]
+     */
     app.get('/api/characters/top', function(req, res) {
       Character
       .find()
@@ -569,6 +576,12 @@ var NewEdenFaces = function() {
       });
     });
 
+    /**
+     * Returns all characters in the system
+     * @param  {[type]} req [description]
+     * @param  {[type]} res [description]
+     * @return {[type]}     [description]
+     */
     app.get('/api/characters/all', function(req, res) {
       Character
       .find()
