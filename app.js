@@ -531,7 +531,7 @@ var NewEdenFaces = function() {
               console.log('Error updating wins count.');
               return res.send(500, err);
             }
-            console.log('incrementing win count');
+            console.log('Incrementing wins count of ', winner, ' by ', IP);
             callback(null);
           });
         },
@@ -540,7 +540,7 @@ var NewEdenFaces = function() {
             if (err) {
               console.log('Error updating losses count.');
               return res.send(500, err);
-            console.log('incrementing loss count');
+            console.log('incrementing losses count of ', loser, ' by ', IP);
             callback(null);
           });
         }
