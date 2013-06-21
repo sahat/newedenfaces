@@ -107,7 +107,6 @@ App.Views.Home = Backbone.View.extend({
             self.render();
             if (data.length < 2) {
               // console.log('Triggered by voting');
-              //Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
               $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
             }
           }
@@ -692,7 +691,7 @@ App.Router = Backbone.Router.extend({
 
           if (data.length < 2) {
             //console.log('Trigged by F5 or natural page');
-            Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
+            //Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
             $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
           } else {
             $('#content').html(App.Views.homeView.render().el);
