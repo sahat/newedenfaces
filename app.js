@@ -87,41 +87,13 @@ var NewEdenFaces = function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.favicon(__dirname + '/public/favicon.ico')); 
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());  
-    app.use(express.session({ secret: 'md5hash'}));
+    app.use(express.session({ secret: 'lolsec'}));
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    // development only
-    if ('development' == app.get('env')) {
-      app.use(express.errorHandler());
-    }
-
-    
-
-    // app.put('/api/winner/:characterId', function(req, res) {
-    //   Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
-    //     if (err) {
-    //       return res.send(500, err);
-    //     }
-    //     //console.log('incrementing win count');
-    //     res.send(200);
-    //   });
-      
-    // });
-
-    // app.put('/api/loser/:characterId', function(req, res) {
-    //   Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
-    //     if (err) return res.send(500, err);
-    //     console.log('incrementing loss count');
-    //     res.send(200);
-    //   });
-      
-    // });
 
     // report endpoint
     // I could add an if-statement to api/characters/:id instead that will get
@@ -928,29 +900,6 @@ var NewEdenFaces = function() {
       });
     });
 
-
-    // app.post('/api/feedback', function(req, res) {
-    //   var sendgrid = new SendGrid(config.sendgrid_user, config.sendgrid_key);
-    //   var characterName = req.body.characterName;
-    //   var message = req.body.message;
-    //   var uiRating = req.body.uiRating;
-    //   var text = 'From: ' + characterName + '.' + 'User Interface: ' +
-    //               uiRating + '.' + 'Message: ' + message + '.';
-      
-    //   sendgrid.send({
-    //     to: 'sakhat@gmail.com',
-    //     from: 'aura@neweden.com',
-    //     subject: 'Site Feedback',
-    //     text: text
-    //   }, function(success, message) {
-    //     if (!success) {
-    //       console.log(message);
-    //     }
-    //     res.send('Email has been sent successfully');
-    //   });
-    // });
-
-
     // PushState redirects
     // 
     app.get('/add', function(req, res) {
@@ -979,33 +928,7 @@ var NewEdenFaces = function() {
 
   };
 
-  /**
-   *  Initializes the sample application.
-   */
-  self.initialize = function() {
-    self.setupVariables();
-    
-
-    //self.setupTerminationHandlers();
-
-    // Create the express server and routes.
-    self.initializeServer();
-  };
-
-
-  /**_.contains(express.session.hasVoted, winner_.contains(express_.contains(express.session.hasVoted, winner.session.hasVoted, winner
-   *  Start the server (starts up the sample application).
-   */
-  self.start = function() {
-    //  Start the app on the specific interface (and port).
-    app.listen(self.port, self.ipaddress, function() {
-        console.log('%s: Node server started on %s:%d ...',
-                    Date(Date.now() ), self.ipaddress, self.port);
-    });
-  };  
-};
-
-var zapp = new NewEdenFaces();
-zapp.initialize();
-zapp.start();
+app.listen(port, self.ipaddress, function() {
+  console.log('%s: Node server started on %s:%d ...', Date(Date.now()), ipaddress, port);
+});
 
