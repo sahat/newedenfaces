@@ -509,6 +509,7 @@ var NewEdenFaces = function() {
      * @return {[type]}     [description]
      */
     app.post('/api/vote', function(req, res) {
+      var IP = req.header('x-forwarded-for') || req.connection.remoteAddress;
       var winner = req.body.winner;
       var loser = req.body.loser;
 
@@ -527,6 +528,7 @@ var NewEdenFaces = function() {
         updateWinner: function(callback){
           Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
             if (err) {
+              console.log('Error updating wins count.');
               return res.send(500, err);
             }
             console.log('incrementing win count');
@@ -535,7 +537,9 @@ var NewEdenFaces = function() {
         },
         updateLoser: function(callback) {
           Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
-            if (err) return res.send(500, err);
+            if (err) {
+              console.log('Error updating losses count.');
+              return res.send(500, err);
             console.log('incrementing loss count');
             callback(null);
           });
