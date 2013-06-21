@@ -18,3 +18,24 @@
 //     res.send('Email has been sent successfully');
 //   });
 // });
+
+
+// app.put('/api/winner/:characterId', function(req, res) {
+//   Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
+//     if (err) {
+//       return res.send(500, err);
+//     }
+//     //console.log('incrementing win count');
+//     res.send(200);
+//   });
+  
+// });
+
+// app.put('/api/loser/:characterId', function(req, res) {
+//   Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
+//     if (err) return res.send(500, err);
+//     console.log('incrementing loss count');
+//     res.send(200);
+//   });
+  
+// });
