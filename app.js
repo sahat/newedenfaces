@@ -3,6 +3,8 @@
  * Module dependencies.
  */
 
+// TODO: Node.js error handler module
+
 var express = require('express'),
     async = require('async'),
     http = require('http'),
@@ -118,6 +120,8 @@ var NewEdenFaces = function() {
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
+    app.use(express.cookieParser());  
+    app.use(express.session({ secret: 'md5hash'}));
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
 
@@ -128,25 +132,25 @@ var NewEdenFaces = function() {
 
     
 
-    app.put('/api/winner/:characterId', function(req, res) {
-      Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
-        if (err) {
-          return res.send(500, err);
-        }
-        //console.log('incrementing win count');
-        res.send(200);
-      });
+    // app.put('/api/winner/:characterId', function(req, res) {
+    //   Character.update({ characterId: req.params.characterId }, { $inc: { wins: 1 } }, function(err) {
+    //     if (err) {
+    //       return res.send(500, err);
+    //     }
+    //     //console.log('incrementing win count');
+    //     res.send(200);
+    //   });
       
-    });
+    // });
 
-    app.put('/api/loser/:characterId', function(req, res) {
-      Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
-        if (err) return res.send(500, err);
-        console.log('incrementing loss count');
-        res.send(200);
-      });
+    // app.put('/api/loser/:characterId', function(req, res) {
+    //   Character.update({ characterId: req.params.characterId }, { $inc: { losses: 1 } }, function(err) {
+    //     if (err) return res.send(500, err);
+    //     console.log('incrementing loss count');
+    //     res.send(200);
+    //   });
       
-    });
+    // });
 
     // report endpoint
     // I could add an if-statement to api/characters/:id instead that will get
@@ -406,6 +410,7 @@ var NewEdenFaces = function() {
     });
 
     
+    // TODO: USE CRON JOB INSTEAD
 
 
     // update count every hour
@@ -446,13 +451,14 @@ var NewEdenFaces = function() {
       });
     });
 
+    // GLOBAL VARIABLES
     var counter = 0;
-    var modelCount = 0;
-    var seen = [];
+    var totalCount = 0;
     var allCharacters = [];
-    
+    var hasBeenVoted = [];
+
     Character.count({}, function(err, count) {
-      modelCount = count;
+      totalCount = count;
     });
 
     Character.find(function(err, characters) {
@@ -460,68 +466,62 @@ var NewEdenFaces = function() {
       allCharacters = _.shuffle(allCharacters);
     });
 
-    // update count every hour
-    setInterval(function() {
-      Character.find(function(err, characters) {
-        allCharacters = _.clone(characters);
-        allCharacters = _.shuffle(allCharacters);
-      });
-    }, 3600000);
-
-
+    /**
+     * Retrieve 2 characters for the home page screen
+     * @param  {[type]} req [description]
+     * @param  {[type]} res [description]
+     * @return {[type]}     [description]
+     */
     app.get('/api/characters', function(req, res) {
-      if (counter > modelCount) {
+      // TOODO: Create a session object
+      // Go back to counter+2 on each GET request
+      // but create a session for that user that F5 doesn't skip to the next 2 avatars
+      
+      // When all characters have been voted on...
+      if (counter > totalCount) {
         counter = 0;
-        seen = [];
+        hasBeenVoted = [];
+
+        // Retrieve new set of characters in case new characters have been
+        // added since the last query, and then shuffle them
         Character.find(function(err, characters) {
+          if (err) {
+            console.log(err);
+            return res.send(500, err);
+          }
           allCharacters = _.clone(characters);
           allCharacters = _.shuffle(allCharacters);
         });
       }
 
-      //var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
       console.log('Counter: ', counter);
-      console.log('Model count: ', modelCount);
-      //console.log(allCharacters.length)
-      res.send(allCharacters.slice(counter, counter+2));
-      //counter = counter + 2;
-
-
-      // Character
-      // .find()
-      // .sort('-wins')
-      // .where('name').nin(seen)
-      // .skip(counter)
-      // .limit(2)
-      // .exec(function(err, characters) {
-      //   if (err) {
-      //     console.log(err);
-      //     return res.send(500, 'Error getting characters');
-      //   }
-      //   // counter is what makes pagination possible, every request, increment by two,
-      //   // this number is then passed to mongoose's skip().
-        
-      //   // edge case when at the end characters returned are less than ten.
-      //   // quick hack
-      //   //if (characters.length < 10) {
-      //     counter = counter + 2;
-      //     return res.send(characters);
-      //   //}
-        
-      //   // counter = counter + 1;
-      //   // var randomTen = Math.floor(Math.random() * 9);
-      //   // // push to exclude array
-      //   // seen.push(characters[randomTen + 1].name);
-      //   // seen.push(characters[0].name);
-
-      //   // res.send([characters[0], characters[randomTen + 1]]);
-      // });
+      console.log('Total Count: ', modelCount);
+      res.send(allCharacters.slice(counter, counter + 2));
     });
 
-    app.put('/api/vote', function(req, res) {
+    
+
+    /**
+     * Update Votes
+     * @param  {[type]} req [description]
+     * @param  {[type]} res [description]
+     * @return {[type]}     [description]
+     */
+    app.post('/api/vote', function(req, res) {
       var winner = req.body.winner;
       var loser = req.body.loser;
+
+      if (_.contains(hasBeenVoted, winner) || _.contains(hasBeenVoted, loser)) {
+        console.log('Already voted!');
+        return res.send(500, 'Already voted!')
+      }
+      
+      // Add them to global array to prevent multiple voting
+      hasBeenVoted.push(winner);
+      hasBeenVoted.push(loser);
+
+      console.log(hasBeenVoted);
 
       async.parallel({
         updateWinner: function(callback){
@@ -538,16 +538,15 @@ var NewEdenFaces = function() {
             if (err) return res.send(500, err);
             console.log('incrementing loss count');
             callback(null);
-          });        
+          });
         }
       },
       function(err) {
         if (err) {
           console.log(err);
-
           return res.send(500, err);
         }
-        counter += 2;
+        // TODO: remove comment counter += 2;
         return res.send(200, 'Wins and Losses have been updated');
       });
     });
@@ -635,8 +634,8 @@ var NewEdenFaces = function() {
         }
         res.send(characters);
       });
-
     });
+
 
     app.post('/api/characters', function(req, res) {
 
@@ -992,7 +991,7 @@ var NewEdenFaces = function() {
   };
 
 
-  /**
+  /**_.contains(express.session.hasVoted, winner_.contains(express_.contains(express.session.hasVoted, winner.session.hasVoted, winner
    *  Start the server (starts up the sample application).
    */
   self.start = function() {
