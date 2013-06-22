@@ -449,7 +449,7 @@ app.post('/api/vote', function(req, res) {
   var loser = req.body.loser;
 
   // Validation check for multiple votes
-  if (_.contains(votedCharacters , winner) || 
+  if (_.contains(votedCharacters , winner) &&
     _.contains(votedCharacters, loser)) {
     console.log('ALREADY VOTED!');
     return res.redirect('/');
