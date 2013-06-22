@@ -39,63 +39,14 @@ App.Views.Home = Backbone.View.extend({
 
   template: template('home-template'),
 
-  events: {
-  //  'click #skip': 'skip' // skip: function() {
-  //   console.log('skipping...')
-  //   var self = this;
-    
-  //   this.collection.fetch({
-  //     url: '/api/characters',
-  //     success: function(data) {
-  //       self.render();
-  //       if (data.length < 2) {
-  //         console.log('Trigged by skip function');
-  //         Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-  //         $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
-  //       }
-  //     }
-  //   });
-  },
-
   initialize: function() {
-    _.bindAll(this);
-    //Mousetrap.bind('s', this.skip);
     this.collection.on('change:wins', this.updateCount, this);
-    // if (this.collection.length < 2) {
-    //   Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-    // }
   },
-
-  // skip: function() {
-  //   console.log('skipping...')
-  //   var self = this;
-    
-  //   this.collection.fetch({
-  //     url: '/api/characters',
-  //     success: function(data) {
-  //       self.render();
-  //       if (data.length < 2) {
-  //         console.log('Trigged by skip function');
-  //         Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-  //         $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
-  //       }
-  //     }
-  //   });
-  // },
 
   updateCount: function(winningModel) {
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
     losingModel.set('losses', losingModel.get('losses') + 1);
-    //console.log('update count');
-    // $.ajax({
-    //   url: '/api/loser/' + losingModel.get('characterId'),
-    //   type: 'PUT',
-    //   success: function(data) {
-    //     
-    //   }
-    // });
     var self = this;
-    // streamline vote request
     $.ajax({
       url: '/api/vote',
       type: 'POST',
@@ -113,21 +64,10 @@ App.Views.Home = Backbone.View.extend({
         });
       }
     });
-
-    
-    
-    
   },
 
   render: function() {
     this.$el.html(this.template());
-    // var sortedByVotes = this.collection.sortBy(function(m) {
-    //   var wins = m.get('wins');
-    //   var losses = m.get('losses');
-    //   var total = wins + losses;
-    //   return total;
-    // });
-    // sortedByVotes = new Backbone.Collection(sortedByVotes);
     this.collection.each(this.addOne, this);
     this.$('.lead').tooltip({ placement: 'bottom' });
     return this;
@@ -667,43 +607,22 @@ App.Router = Backbone.Router.extend({
 
   home: function() {
     var characters = new App.Collections.Characters();
-    
-    // initialize view here
-    // pass in dummy empty collection
-    // var homeView = new App.Views.Home({
-    //   collection: new Backbone.Collection()
-    // });
-    // 
-    
-    if (App.Views.homeView) {
-      //console.log('reusing homeview');
-      $('#content').html(App.Views.homeView.render().el);
-      App.Views.homeView.selectMenuItem('home-menu');
-    } else {
-      //console.log('not reusing home');
-      characters.fetch({
-        success: function(data) {
+    characters.fetch({
+      success: function(data) {
+        App.Views.homeView = new App.Views.Home({
+          collection: new Backbone.Collection(data.shuffle())
+        });
 
-          //reset collection here
-          App.Views.homeView = new App.Views.Home({
-            collection: new Backbone.Collection(data.shuffle())
-          });
-
-          if (data.length < 2) {
-            //console.log('Trigged by F5 or natural page');
-            //Mousetrap.unbind(['s', 'left', 'right', 'a', 'd']);
-            $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
-          } else {
-            $('#content').html(App.Views.homeView.render().el);
-          }
-          
-          
-          App.Views.homeView.selectMenuItem('home-menu');
+        if (data.length < 2) {
+          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+        } else {
+          $('#content').html(App.Views.homeView.render().el);
         }
-      });
-    }
-
-    
+        
+        
+        App.Views.homeView.selectMenuItem('home-menu');
+      }
+    });
   },
 
   // feedback: function() {

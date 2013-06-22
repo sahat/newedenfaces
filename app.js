@@ -371,7 +371,7 @@ var totalCount = 0;
 var allCharacters = [];
 var votedCharacters = [];
 
-var IP_BUCKET = [];
+var seenCharacters = [];
 
 Character.count({}, function(err, count) {
   totalCount = count;
@@ -392,14 +392,15 @@ Character
  * @return {[type]}     [description]
  */
 app.get('/api/characters', function(req, res) {
-  var ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
   // When all characters have been voted on...
   if (counter > totalCount) {
     console.log('----reached the end------');
     counter = 0;
-    votedCharacters = [];
-    IP_BUCKET = [];
+    votedCharacters = []; // stores character ids
+    seenCharacters = []; // stores user ip addresses + counter
+
     // Retrieve new set of characters in case new characters have been
     // added since the last query, and then shuffle them.
     Character.find(function(err, characters) {
@@ -410,20 +411,25 @@ app.get('/api/characters', function(req, res) {
       allCharacters = _.clone(characters);
       allCharacters = _.shuffle(allCharacters);
     });
-    
     res.send(allCharacters.slice(counter, counter + 2));
     counter = counter + 2;
   } else {
+    
     console.log('Global: ' + counter + ' out of ' + totalCount);
-    console.log(IP_BUCKET);
-    if (_.contains(IP_BUCKET, ipAddress)) {
-      console.log('Personal: ' + req.session.currentCounter + ' out of ' + totalCount);
-      return res.send(allCharacters.slice(req.session.currentCounter, req.session.currentCounter+2));
+    
+    if (_.contains(_.pluck(seenCharacters, 'ip'), myIpAddress)) {
+      var index = seenCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
+      var myCounter = seenCharacters[index].counter;
+      console.log('Personal: ' + myCounter + ' out of ' + totalCount);
+      return res.send(allCharacters.slice(myCounter, myCounter + 2));
     }
-    IP_BUCKET.push(ipAddress);
+
+    seenCharacters.push({
+      ip: myIpAddress,
+      counter: counter
+    });
     
     res.send(allCharacters.slice(counter, counter + 2));
-    req.session.currentCounter = counter; 
     counter = counter + 2;
   }
 });
@@ -435,7 +441,7 @@ app.get('/api/characters', function(req, res) {
  * @return {[type]}     [description]
  */
 app.post('/api/vote', function(req, res) {
-  var ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
@@ -459,7 +465,7 @@ app.post('/api/vote', function(req, res) {
           console.log('Error updating wins count.');
           return res.send(500, err);
         }
-        console.log('Incrementing wins count of ', winner, ' by ', ipAddress);
+        console.log('Incrementing wins count of ', winner, ' by ', myIpAddress);
         callback(null);
       });
     },
@@ -469,7 +475,7 @@ app.post('/api/vote', function(req, res) {
           console.log('Error updating losses count.');
           return res.send(500, err);
         }
-        console.log('incrementing losses count of ', loser, ' by ', ipAddress);
+        console.log('incrementing losses count of ', loser, ' by ', myIpAddress);
         callback(null);
       });
     }
@@ -481,10 +487,10 @@ app.post('/api/vote', function(req, res) {
       return res.send(500, err);
     }
 
-    console.log('IP BUCKET before slice: ', IP_BUCKET);
+    console.log('IP BUCKET before slice: ', seenCharacters);
     console.log('Pulling IP address from the bucket...');
-    IP_BUCKET = _.without(IP_BUCKET, ipAddress);
-    console.log('IP BUCKET after slice: ', IP_BUCKET);
+    var index = seenCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
+    seenCharacters.splice(index, 1);
 
     // TODO: remove comment counter += 2;
     return res.send(200, 'Wins and Losses have been updated');
