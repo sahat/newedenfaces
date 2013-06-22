@@ -386,7 +386,7 @@ Character
 });
 
 /**
- * Retrieve 2 characters for the home page screen
+ * Retrieve 2 characters for the home page screen 
  * @param  {[type]} req [description]
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
@@ -411,35 +411,22 @@ app.get('/api/characters', function(req, res) {
       allCharacters = _.shuffle(allCharacters);
     });
     
-    console.log(IP_BUCKET)
     res.send(allCharacters.slice(counter, counter + 2));
     counter = counter + 2;
   } else {
-    console.log('not at the end');
-    console.log('IP BUCKET: ', IP_BUCKET);
-    console.log('Counter: ', counter);
-    console.log('Total Count: ', totalCount);
-
+    console.log('Global: ' + counter + ' out of ' + totalCount);
+    console.log(IP_BUCKET);
     if (_.contains(IP_BUCKET, ipAddress)) {
-      console.log('User has not voted, IP stays in the bucket.');
-      return res.send(allCharacters.slice(counter - 2, counter));
+      console.log('Personal: ' + req.session.currentCounter + ' out of ' + totalCount);
+      return res.send(allCharacters.slice(req.session.currentCounter, req.session.currentCounter+2));
     }
-
-    console.log('First time view. Adding ip.');
     IP_BUCKET.push(ipAddress);
-    console.log(allCharacters.length);
+    
     res.send(allCharacters.slice(counter, counter + 2));
-
-    // Since we don't want to increment counter before the very first page 
-    // is displayed, it is placed after res.send, also note I am not doing
-    // return res.send, so the function will still continue to execute after
-    // previous line up until the next line.
+    req.session.currentCounter = counter; 
     counter = counter + 2;
-    console.log('Incrementing counter...it is now: ', counter);
   }
 });
-
-
 
 /**
  * Update Votes
@@ -503,6 +490,25 @@ app.post('/api/vote', function(req, res) {
     return res.send(200, 'Wins and Losses have been updated');
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Top characters page
