@@ -401,6 +401,7 @@ app.get('/api/characters', function(req, res) {
     votedCharacters = []; // stores character ids
     seenCharacters = []; // stores user ip addresses + counter
 
+
     // Retrieve new set of characters in case new characters have been
     // added since the last query, and then shuffle them.
     Character.find(function(err, characters) {
@@ -410,9 +411,11 @@ app.get('/api/characters', function(req, res) {
       }
       allCharacters = _.clone(characters);
       allCharacters = _.shuffle(allCharacters);
+
+      res.send(allCharacters.slice(counter, counter + 2));
+      counter = counter + 2;
     });
-    res.send(allCharacters.slice(counter, counter + 2));
-    counter = counter + 2;
+    
   } else {
     
     console.log('Global: ' + counter + ' out of ' + totalCount);
