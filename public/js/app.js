@@ -69,7 +69,6 @@ App.Views.Home = Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     this.collection.each(this.addOne, this);
-    this.$('.lead').tooltip({ placement: 'bottom' });
     return this;
   },
 
