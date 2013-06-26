@@ -634,7 +634,11 @@ app.post('/api/characters', function(req, res) {
         }
 
         parser.parseString(body, function(err, response) {
-          if (response.eveapi.error) {
+          
+          if (!response.eveapi) {
+            console.log('EVEAPI is not defined')
+            return res.send(500, 'Character name is not found');
+          } else if (response.eveapi.error) {
             console.log('Character name is not found');
             return res.send(404, 'Character name is not found');
           }
@@ -778,7 +782,10 @@ app.post('/api/characters', function(req, res) {
             console.log(err);
             return res.send(500, 'Error parsing XML');
           }
-          if (response.eveapi.error) {
+          if (!response.eveapi) {
+            console.log('EVEAPI is not defined')
+            return res.send(500, 'Character name is not found');
+          } else if (response.eveapi.error) {
             console.log('404 while getting character info');
             return res.send(404);
           }
