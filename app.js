@@ -33,7 +33,12 @@ if (typeof ipaddress === "undefined") {
 app = express();
 
 var parser = new xml2js.Parser();
-mongoose.connect(config.mongoose);
+mongoose.connect(config.mongoose, function(err) {
+  if (err) {
+    console.log('Could not connect to the DB');
+    res.send(500, 'Error Connecting to the database');
+  }
+});
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 // DB Schema and Model
