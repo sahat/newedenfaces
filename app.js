@@ -377,7 +377,7 @@ var totalCount = 0;
 var allCharacters = [];
 var votedCharacters = [];
 
-var seenCharacters = [];
+var viewedCharacters = [];
 
 Character.count({}, function(err, count) {
   totalCount = count;
@@ -421,7 +421,7 @@ app.get('/api/characters', function(req, res) {
     console.log('----reached the end------');
     counter = 0;
     votedCharacters = []; // stores character ids
-    seenCharacters = []; // stores user ip addresses + counter
+    viewedCharacters = []; // stores user ip addresses + counter
 
 
     // Retrieve new set of characters in case new characters have been
@@ -439,19 +439,19 @@ app.get('/api/characters', function(req, res) {
     });
     
   } else {
-    console.log(seenCharacters);
+    console.log(viewedCharacters);
     console.log('Global: ' + counter + ' out of ' + totalCount);
     nonces.push(randomString);
     console.log(nonces);
-    if (_.contains(_.pluck(seenCharacters, 'ip'), myIpAddress)) {
+    if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
       console.log('PLease vote before proceeding');
-      var index = seenCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
-      var myCounter = seenCharacters[index].counter;
+      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
+      var myCounter = viewedCharacters[index].counter;
       console.log('Personal: ' + myCounter + ' out of ' + totalCount);
       return res.send({ nonce: randomString, characters: allCharacters.slice(myCounter, myCounter + 2) });
     }
 
-    seenCharacters.push({
+    viewedCharacters.push({
       ip: myIpAddress,
       counter: counter
     });
@@ -469,16 +469,23 @@ app.get('/api/characters', function(req, res) {
 
  app.post('/api/vote', function(req, res) {
 
+  // Verify that malicious user does not pass an empty POST data
   if (!req.body.winner || !req.body.loser) {
     return res.send(500, 'Winner or Loser IDs are invalid');
   }
-  
+
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
-  // To prevent multiple voting for the same character
-  // we verify that client's nonce matches server's nonce
+  // Prevent users from voting for the same characters multiple times
+  if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
+    console.log('ALREADY VOTED!');
+    return res.redirect('/');
+  }
+
+  // Prevent users from chain-voting via an API console by verifying that
+  // client nonce and server nonce match
   if (_.contains(nonces, req.body.nonce)) {
     nonces.splice(nonces.indexOf(req.body.nonce), 1);
     console.log('nonces after splice', nonces);
@@ -487,10 +494,10 @@ app.get('/api/characters', function(req, res) {
     return res.redirect('/');
   }
 
-  // Add these two characters to global array to prevent multiple voting
-  votedCharacters.push(winner);
-  votedCharacters.push(loser);
-  console.log(votedCharacters);
+  // After all potential malicious attacks have been handled
+  // add both characters to the global array
+  votedCharacters.push(winner, loser);
+
   // Update wins and losses count in parallel using async library
   async.parallel({
     updateWinner: function(callback){
@@ -520,12 +527,11 @@ app.get('/api/characters', function(req, res) {
       return res.send(500, 'Error updating wins and losses count');
     }
 
-    console.log('IP BUCKET before slice: ', seenCharacters);
-    console.log('Pulling IP address from the bucket...');
-    var index = seenCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
-    seenCharacters.splice(index, 1);
+    // After successful voting remove current IP addres from [viewedCharacters]
+    // so that user does not get stuck on the same two characters
+    var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
+    viewedCharacters.splice(index, 1);
 
-    // TODO: remove comment counter += 2;
     return res.send(200, 'Wins and Losses have been updated');
   });
 });
