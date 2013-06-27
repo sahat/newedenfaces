@@ -618,7 +618,7 @@ app.get('/api/characters/all', function(req, res) {
       console.log(err);
       return res.send(500, 'Error getting characters');
     }
-    res.send(characters);
+    res.send({ characters: characters });
   });
 });
 
