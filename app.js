@@ -456,12 +456,11 @@ app.get('/api/characters', function(req, res) {
     });
     
   } else {
-    console.log(viewedCharacters);
     console.log('Global: ' + counter + ' out of ' + totalCount);
     nonces.push(randomString);
 
     if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
-      console.log('PLease vote before proceeding');
+      console.log('Please vote before proceeding');
       var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
       var myCounter = viewedCharacters[index].counter;
       console.log('Personal: ' + myCounter + ' out of ' + totalCount);
@@ -522,7 +521,7 @@ app.get('/api/characters', function(req, res) {
           console.log('Error updating wins count.');
           return res.send(500, err);
         }
-        console.log('Incrementing wins count of ', winner, ' by ', myIpAddress);
+        console.log('+1 ▴', winner, 'from', myIpAddress);
         callback(null);
       });
     },
@@ -532,7 +531,7 @@ app.get('/api/characters', function(req, res) {
           console.log('Error updating losses count.');
           return res.send(500, err);
         }
-        console.log('incrementing losses count of ', loser, ' by ', myIpAddress);
+        console.log('+1 ▾', loser, 'from', myIpAddress);
         callback(null);
       });
     }
