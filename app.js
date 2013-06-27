@@ -459,7 +459,6 @@ app.get('/api/characters', function(req, res) {
     console.log(viewedCharacters);
     console.log('Global: ' + counter + ' out of ' + totalCount);
     nonces.push(randomString);
-    console.log(nonces);
 
     if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
       console.log('PLease vote before proceeding');
@@ -506,7 +505,6 @@ app.get('/api/characters', function(req, res) {
   // client nonce and server nonce match
   if (_.contains(nonces, req.body.nonce)) {
     nonces.splice(nonces.indexOf(req.body.nonce), 1);
-    console.log('nonces after splice', nonces);
   } else {
     console.log('NONCE MISMATCH');
     return res.redirect('/');
