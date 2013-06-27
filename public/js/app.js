@@ -587,6 +587,7 @@ App.Router = Backbone.Router.extend({
 
   routes: {
     '':                     'home',
+    'hall-of-shame':        'hallOfShame',
     'top':                  'topCharacters',
     'top/:race':            'topRace',
     'top/:race/:bloodline': 'topBloodline',
@@ -618,15 +619,19 @@ App.Router = Backbone.Router.extend({
     });
   },
 
-  // feedback: function() {
-  //   if (localStorage.feedbackSent) {
-  //     $('#content').html(localStorage.feedbackNotice);
-  //   } else {
-  //     var feedbackView = new App.Views.Feedback();
-  //     $('#content').html(feedbackView.render().el);
-  //     feedbackView.selectMenuItem('home-menu');
-  //   }
-  // },
+  hallOfShame: function() {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/worst',
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('hall-of-shame-menu');
+      }
+    });
+  },
 
   topRace: function(race) {
     var characters = new App.Collections.Characters();

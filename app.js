@@ -578,7 +578,19 @@ app.get('/api/characters', function(req, res) {
 
 
 
-
+app.get('/api/characters/worst', function(req, res) {
+  Character
+  .find()
+  .sort('-losses')
+  .limit(25)
+  .exec(function(err, characters) {
+    if (err) {
+      console.log(err);
+      return res.send(500, 'Error getting characters');
+    }
+    res.send({ characters: characters});
+  });
+});
 
 
 
@@ -1046,6 +1058,10 @@ app.get('/add', function(req, res) {
 
 app.get('/top', function(req, res) {
   res.redirect('/#top');
+});
+
+app.get('/hall-of-shame', function(req, res) {
+  res.redirect('/#hall-of-shame');
 });
 
 app.get('/top/:race', function(req, res) {
