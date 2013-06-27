@@ -108,6 +108,9 @@ app.post('/api/report', function(req, res) {
   });
 });
 
+/**
+ * Update Existing Character Avatar
+ */
 app.put('/api/grid/:characterId', function(req, res) {
   async.parallel({
     one: function(callback){
@@ -116,6 +119,11 @@ app.put('/api/grid/:characterId', function(req, res) {
       var filepath32 = path.join(__dirname, filename32);
       var writestream32 = gfs.createWriteStream({ filename: filename32 });
       var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
+
+      imageStream32.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
 
       imageStream32.on('close', function(err) {
         if (err) {
@@ -143,6 +151,11 @@ app.put('/api/grid/:characterId', function(req, res) {
       var writestream64 = gfs.createWriteStream({ filename: filename64 });
       var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
 
+      imageStream64.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
       imageStream64.on('close', function(err) {
         if (err) {
           console.log(err);
@@ -168,6 +181,11 @@ app.put('/api/grid/:characterId', function(req, res) {
       var filepath128 = path.join(__dirname, filename128);
       var writestream128 = gfs.createWriteStream({ filename: filename128 });
       var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
+
+      imageStream128.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
 
       imageStream128.on('close', function(err) {
         if (err) {
@@ -197,6 +215,11 @@ app.put('/api/grid/:characterId', function(req, res) {
       var writestream256 = gfs.createWriteStream({ filename: filename256 });
       var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
 
+      imageStream256.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
       imageStream256.on('close', function(err) {
         if (err) {
           console.log(err);
@@ -222,6 +245,11 @@ app.put('/api/grid/:characterId', function(req, res) {
       var filepath512 = path.join(__dirname, filename512);
       var writestream512 = gfs.createWriteStream({ filename: filename512 });
       var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
+      
+      imageStream512.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
 
       imageStream512.on('close', function(err) {
         if (err) {
@@ -527,7 +555,7 @@ app.get('/api/characters', function(req, res) {
       return res.send(500, 'Error updating wins and losses count');
     }
 
-    // After successful voting remove current IP addres from [viewedCharacters]
+    // After the successful voting remove current IP addres from [viewedCharacters]
     // so that user does not get stuck on the same two characters
     var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
     viewedCharacters.splice(index, 1);
@@ -653,11 +681,13 @@ app.get('/api/leaderboard', function(req, res) {
 });
 
 
+/**
+ * Add New Character
+ */
 app.post('/api/characters', function(req, res) {
 
   var charNameInput = req.body.name;
-  // strip space characters
-  charNameInput = charNameInput.replace(/\s/g, '%20');
+  charNameInput = charNameInput.replace(/\s/g, '%20'); // strip space characters
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
 
   async.waterfall([
@@ -699,7 +729,7 @@ app.post('/api/characters', function(req, res) {
       });
     },
     function(characterId, characterInfoUrl, image32, image64, image128, image256, image512, waterfallCallback) {
-
+      // Save images into MonoLab
       async.parallel({
         one: function(callback){
           var filename32 = image32.replace(/^.*[\\\/]/, '');
@@ -707,12 +737,23 @@ app.post('/api/characters', function(req, res) {
           var writestream32 = gfs.createWriteStream({ filename: filename32 });
           var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
 
+          imageStream32.on('error', function(err) {
+            console.log('Streaming Error');
+            return res.send(500, err);
+          });
+
           imageStream32.on('close', function(err) {
             if (err) {
               console.log(err);
-              return res.send(500, 'File error has occured');
+              return res.send(500, 'Open file error has occured');
             }
             var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
+            
+            gridstream.on('error', function(err) {
+              console.log('GridFS Streaming Error');
+              return res.send(500, err);
+            });
+
             gridstream.on('close', function(err) {
               fs.unlink(filepath32);
               callback(null, filename32);
@@ -725,12 +766,23 @@ app.post('/api/characters', function(req, res) {
           var writestream64 = gfs.createWriteStream({ filename: filename64 });
           var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
 
+          imageStream64.on('error', function(err) {
+            console.log('Streaming Error');
+            return res.send(500, err);
+          });
+
           imageStream64.on('close', function(err) {
             if (err) {
               console.log(err);
               return res.send(500, 'File error has occured');
             }
             var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
+
+            gridstream.on('error', function(err) {
+              console.log('GridFS Streaming Error');
+              return res.send(500, err);
+            });
+
             gridstream.on('close', function(err) {
               fs.unlink(filepath64);
               callback(null, filename64);
@@ -743,12 +795,23 @@ app.post('/api/characters', function(req, res) {
           var writestream128 = gfs.createWriteStream({ filename: filename128 });
           var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
 
+          imageStream128.on('error', function(err) {
+            console.log('Streaming Error');
+            return res.send(500, err);
+          });
+
           imageStream128.on('close', function(err) {
             if (err) {
               console.log(err);
               return res.send(500, 'File error has occured');
             }
             var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
+            
+            gridstream.on('error', function(err) {
+              console.log('GridFS Streaming Error');
+              return res.send(500, err);
+            });
+
             gridstream.on('close', function(err) {
               fs.unlink(filepath128);
               callback(null, filename128);
@@ -761,12 +824,23 @@ app.post('/api/characters', function(req, res) {
           var writestream256 = gfs.createWriteStream({ filename: filename256 });
           var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
 
+          imageStream256.on('error', function(err) {
+            console.log('Streaming Error');
+            return res.send(500, err);
+          });
+
           imageStream256.on('close', function(err) {
             if (err) {
               console.log(err);
               return res.send(500, 'File error has occured');
             }
             var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
+
+            gridstream.on('error', function(err) {
+              console.log('GridFS Streaming Error');
+              return res.send(500, err);
+            });
+
             gridstream.on('close', function(err) {
               fs.unlink(filepath256);
               callback(null, filename256);
@@ -779,12 +853,23 @@ app.post('/api/characters', function(req, res) {
           var writestream512 = gfs.createWriteStream({ filename: filename512 });
           var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
 
+          imageStream512.on('error', function(err) {
+            console.log('Streaming Error');
+            return res.send(500, err);
+          });
+
           imageStream512.on('close', function(err) {
             if (err) {
               console.log(err);
               return res.send(500, 'File error has occured');
             }
             var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
+
+            gridstream.on('error', function(err) {
+              console.log('GridFS Streaming Error');
+              return res.send(500, err);
+            });
+
             gridstream.on('close', function(err) {
               fs.unlink(filepath512);
               callback(null, filename512);
