@@ -25,7 +25,12 @@ App.Collections.Characters = Backbone.Collection.extend({
 
   model: App.Models.Character,
 
-  url: '/api/characters'
+  url: '/api/characters',
+
+  parse: function(response) {
+    this.nonce = response.nonce;
+    return response.characters;
+  }
 
 });
 
@@ -608,8 +613,9 @@ App.Router = Backbone.Router.extend({
     var characters = new App.Collections.Characters();
     characters.fetch({
       success: function(data) {
+        console.log(data);
         App.Views.homeView = new App.Views.Home({
-          collection: new Backbone.Collection(data.shuffle())
+          collection: data
         });
 
         if (data.length < 2) {
