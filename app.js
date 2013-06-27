@@ -414,6 +414,7 @@ var nonces = [];
  */
 app.get('/api/characters', function(req, res) {
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  var randomString = crypto.randomBytes(20).toString('hex');
 
   // When all characters have been voted on...
   if (counter > totalCount) {
@@ -438,14 +439,16 @@ app.get('/api/characters', function(req, res) {
     });
     
   } else {
-    
+    console.log(seenCharacters);
     console.log('Global: ' + counter + ' out of ' + totalCount);
-    
+    nonces.push(randomString);
+    console.log(nonces);
     if (_.contains(_.pluck(seenCharacters, 'ip'), myIpAddress)) {
+      console.log('PLease vote before proceeding');
       var index = seenCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
       var myCounter = seenCharacters[index].counter;
       console.log('Personal: ' + myCounter + ' out of ' + totalCount);
-      return res.send({ nonce: randomString, characters: allCharacters.slice(counter, counter + 2) });
+      return res.send({ nonce: randomString, characters: allCharacters.slice(myCounter, myCounter + 2) });
     }
 
     seenCharacters.push({
@@ -453,12 +456,8 @@ app.get('/api/characters', function(req, res) {
       counter: counter
     });
 
-    var randomString = crypto.randomBytes(20).toString('hex');
-
-    nonces.push({
-      nonce: randomString,
-      characters: allCharacters.slice(counter, counter + 2)
-    });
+    // add a random hash string
+    
 
     res.send({ nonce: randomString, characters: allCharacters.slice(counter, counter + 2) });
 
@@ -468,46 +467,30 @@ app.get('/api/characters', function(req, res) {
 
 
 
-/**
- * Update Votes
- * @param  {[type]} req [description]
- * @param  {[type]} res [description]
- * @return {[type]}     [description]
- */
-
-
-// 
-// 
-//verifyNonce(data, cnonce, hash)
-// id = characterid
-// nonce = getnonce(id)
-// removeNonce({id: nonce})
-// testHash = hash(nonce, cnonce, data)
-// 
-// 
-// Client side 
-// sendDate({votes})
-// nonce = $.get(getNonce)
-// cnonce = md5.randomstring
-// hash = hash(nonce, cnonce, data)
-// 
  app.post('/api/vote', function(req, res) {
+
+  if (!req.body.winner || !req.body.loser) {
+    return res.send(500, 'Winner or Loser IDs are invalid');
+  }
+  
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
-  // Validation check for multiple votes
-  if (_.contains(votedCharacters , winner) &&
-    _.contains(votedCharacters, loser)) {
-    console.log('ALREADY VOTED!');
+  // To prevent multiple voting for the same character
+  // we verify that client's nonce matches server's nonce
+  if (_.contains(nonces, req.body.nonce)) {
+    nonces.splice(nonces.indexOf(req.body.nonce), 1);
+    console.log('nonces after splice', nonces);
+  } else {
+    console.log('NONCE MISMATCH');
     return res.redirect('/');
-    //eturn res.send(500, 'Already voted!');
   }
-  
+
   // Add these two characters to global array to prevent multiple voting
   votedCharacters.push(winner);
   votedCharacters.push(loser);
-
+  console.log(votedCharacters);
   // Update wins and losses count in parallel using async library
   async.parallel({
     updateWinner: function(callback){
@@ -532,10 +515,9 @@ app.get('/api/characters', function(req, res) {
     }
   },
   function(err) {
-    // TOODO: Verify that DB fail above bubles up this error object here
     if (err) {
       console.log(err);
-      return res.send(500, err);
+      return res.send(500, 'Error updating wins and losses count');
     }
 
     console.log('IP BUCKET before slice: ', seenCharacters);

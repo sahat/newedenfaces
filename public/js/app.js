@@ -46,20 +46,30 @@ App.Views.Home = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on('change:wins', this.updateCount, this);
+    this.nonce = this.options.nonce; //initially contains nonce passed-in on load
   },
 
   updateCount: function(winningModel) {
+    console.log(this.nonce);
+    console.log('updating count')
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
     losingModel.set('losses', losingModel.get('losses') + 1);
     var self = this;
     $.ajax({
       url: '/api/vote',
       type: 'POST',
-      data: { winner: winningModel.get('characterId'), loser: losingModel.get('characterId') },
-      success: function(data) {
+      data: { 
+        winner: winningModel.get('characterId'),
+        loser: losingModel.get('characterId'),
+        nonce: this.nonce
+      },
+      success: function() {
         self.collection.fetch({
           url: '/api/characters',
           success: function(data) {
+            console.log('DATA', data);
+            console.log(self.nonce);
+            self.nonce = data.nonce;
             self.render();
             if (data.length < 2) {
               // console.log('Triggered by voting');
@@ -109,26 +119,9 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
     'click img': 'winner',
   },
 
-  initialize: function() {
-    //.bindAll(this);
-    // Mousetrap.bind('left', this.winner);
-    // Mousetrap.bind('right', this.winner);
-    // Mousetrap.bind('a', this.winner);
-    // Mousetrap.bind('d', this.winner);
-  },
-
   winner: function() {
-    var self = this;
-    self.model.set('wins', self.model.get('wins') + 1);
-    // $.ajax({
-    //   url: '/api/winner/' + this.model.get('characterId'),
-    //   type: 'PUT',
-    //   success: function(data) {
-        
-    //   }
-    // });
+    this.model.set('wins', this.model.get('wins') + 1);
   },
-
 
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
@@ -614,8 +607,10 @@ App.Router = Backbone.Router.extend({
     characters.fetch({
       success: function(data) {
         console.log(data);
+        
         App.Views.homeView = new App.Views.Home({
-          collection: data
+          collection: data,
+          nonce: data.nonce
         });
 
         if (data.length < 2) {
