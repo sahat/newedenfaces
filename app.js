@@ -404,12 +404,14 @@ var counter = 0;
 var totalCount = 0;
 var allCharacters = [];
 var votedCharacters = [];
-
+var nonces = [];
 var viewedCharacters = [];
+
 
 Character.count({}, function(err, count) {
   totalCount = count;
 });
+
 
 Character
 .find()
@@ -419,26 +421,9 @@ Character
   allCharacters = _.shuffle(allCharacters);
 });
 
-/**
- * Retrieve 2 characters for the home page screen 
- * @param  {[type]} req [description]
- * @param  {[type]} res [description]
- * @return {[type]}     [description]
- */
-
-// getNonce()
-// id = characterid
-// md5 = crypto.createHash('md5');
-// storeNonce( { id: nonce })
-// send nonce to client when 2 thumbnails are loaded
-var nonces = [];
-
 
 /**
  * /GET /characters
- * @param  {[type]} req [description]
- * @param  {[type]} res [description]
- * @return {[type]}     [description]
  */
 app.get('/api/characters', function(req, res) {
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
@@ -446,11 +431,8 @@ app.get('/api/characters', function(req, res) {
 
   // When all characters have been voted on...
   if (counter > totalCount) {
-    console.log('----reached the end------');
-    counter = 0;
-    votedCharacters = []; // stores character ids
-    viewedCharacters = []; // stores user ip addresses + counter
-
+    
+     console.log('----reached the end------');
 
     // Retrieve new set of characters in case new characters have been
     // added since the last query, and then shuffle them.
@@ -459,6 +441,13 @@ app.get('/api/characters', function(req, res) {
         console.log(err);
         return res.send(500, err);
       }
+
+     
+      counter = 0;
+      votedCharacters = []; // stores character ids
+      viewedCharacters = []; // stores user ip addresses + counter
+      nonces = [];
+
       allCharacters = _.clone(characters);
       allCharacters = _.shuffle(allCharacters);
 
@@ -471,6 +460,7 @@ app.get('/api/characters', function(req, res) {
     console.log('Global: ' + counter + ' out of ' + totalCount);
     nonces.push(randomString);
     console.log(nonces);
+
     if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
       console.log('PLease vote before proceeding');
       var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
