@@ -599,7 +599,7 @@ app.get('/api/characters/top', function(req, res) {
       console.log(err);
       return res.send(500, 'Error getting characters');
     }
-    res.send(characters);
+    res.send({ characters: characters});
   });
 });
 
@@ -634,7 +634,7 @@ app.get('/api/characters/top/:race', function(req, res) {
       console.log(err);
       return res.send(500, 'Error getting characters');
     }
-    res.send(characters);
+    res.send({ characters: characters});
   });
 });
 
@@ -661,7 +661,7 @@ app.get('/api/characters/top/:race/:bloodline', function(req, res) {
       console.log(err);
       return res.send(500, 'Error getting characters');
     }
-    res.send(characters);
+    res.send({ characters: characters});
   });
 });
 
@@ -676,7 +676,7 @@ app.get('/api/leaderboard', function(req, res) {
       console.log(err);
       return res.send(500, 'Error getting characters');
     }
-    res.send(characters);
+    res.send({ characters: characters});
   });
 });
 
