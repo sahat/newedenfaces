@@ -50,8 +50,6 @@ App.Views.Home = Backbone.View.extend({
   },
 
   updateCount: function(winningModel) {
-    console.log(this.nonce);
-    console.log('updating count')
     var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
     losingModel.set('losses', losingModel.get('losses') + 1);
     var self = this;
@@ -67,8 +65,6 @@ App.Views.Home = Backbone.View.extend({
         self.collection.fetch({
           url: '/api/characters',
           success: function(data) {
-            console.log('DATA', data);
-            console.log(self.nonce);
             self.nonce = data.nonce;
             self.render();
             if (data.length < 2) {
@@ -443,7 +439,6 @@ App.Views.CharacterSummary = Backbone.View.extend({
     // }
 
     if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
-      //console.log('already reported');
       this.$el.find('#report').attr('disabled', true);
     }
 
@@ -495,7 +490,6 @@ App.Views.Search = Backbone.View.extend({
     if (!queryMatch.length) {
       return toastr.warning('Search input cannot be empty');
     }
-    //console.log(queryMatch);
     var characterId = queryMatch[0].get('characterId');
 
     if (characterId) {
@@ -606,7 +600,6 @@ App.Router = Backbone.Router.extend({
     var characters = new App.Collections.Characters();
     characters.fetch({
       success: function(data) {
-        console.log(data);
         
         App.Views.homeView = new App.Views.Home({
           collection: data,
