@@ -69,7 +69,7 @@ App.Views.Home = Backbone.View.extend({
             self.render();
             if (data.length < 2) {
               // console.log('Triggered by voting');
-              $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+              $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have reached the end. Refresh the page <strong>in a few seconds</strong> to start over.</div>');
             }
           }
         });
@@ -608,7 +608,7 @@ App.Router = Backbone.Router.extend({
         });
 
         if (data.length < 2) {
-          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have exhausted all characters. Refresh the page to start over.</div>')
+          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have reached the end. Refresh the page <strong>in a few seconds</strong> to start over.</div>');
         } else {
           $('#content').html(App.Views.homeView.render().el);
         }
