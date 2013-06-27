@@ -5,6 +5,7 @@
 var
   express = require('express'),
   async = require('async'),
+  crypto = require('crypto'),
   http = require('http'),
   fs = require('fs'),
   path = require('path'),
@@ -396,6 +397,21 @@ Character
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
+
+// getNonce()
+// id = characterid
+// md5 = crypto.createHash('md5');
+// storeNonce( { id: nonce })
+// send nonce to client when 2 thumbnails are loaded
+var nonces = [];
+
+
+/**
+ * /GET /characters
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 app.get('/api/characters', function(req, res) {
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
@@ -429,18 +445,28 @@ app.get('/api/characters', function(req, res) {
       var index = seenCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
       var myCounter = seenCharacters[index].counter;
       console.log('Personal: ' + myCounter + ' out of ' + totalCount);
-      return res.send(allCharacters.slice(myCounter, myCounter + 2));
+      return res.send({ nonce: randomString, characters: allCharacters.slice(counter, counter + 2) });
     }
 
     seenCharacters.push({
       ip: myIpAddress,
       counter: counter
     });
-    
-    res.send(allCharacters.slice(counter, counter + 2));
+
+    var randomString = crypto.randomBytes(20).toString('hex');
+
+    nonces.push({
+      nonce: randomString,
+      characters: allCharacters.slice(counter, counter + 2)
+    });
+
+    res.send({ nonce: randomString, characters: allCharacters.slice(counter, counter + 2) });
+
     counter = counter + 2;
   }
 });
+
+
 
 /**
  * Update Votes
@@ -448,7 +474,24 @@ app.get('/api/characters', function(req, res) {
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
-app.post('/api/vote', function(req, res) {
+
+
+// 
+// 
+//verifyNonce(data, cnonce, hash)
+// id = characterid
+// nonce = getnonce(id)
+// removeNonce({id: nonce})
+// testHash = hash(nonce, cnonce, data)
+// 
+// 
+// Client side 
+// sendDate({votes})
+// nonce = $.get(getNonce)
+// cnonce = md5.randomstring
+// hash = hash(nonce, cnonce, data)
+// 
+ app.post('/api/vote', function(req, res) {
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
