@@ -707,6 +707,7 @@ app.post('/api/characters', function(req, res) {
             console.log('EVEAPI is not defined')
             return res.send(500, 'Character name is not found');
           
+
           } else if (response.eveapi.error) {
             console.log('Character name is not found');
             return res.send(404, 'Character name is not found');
