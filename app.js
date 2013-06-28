@@ -700,9 +700,13 @@ app.post('/api/characters', function(req, res) {
 
         parser.parseString(body, function(err, response) {
           
-          if (!response.eveapi) {
+          if (!response.eveapi || !response.eveapi.result[0] || 
+            !response.eveapi.result[0].rowset[0] || 
+            !response.eveapi.result[0].rowset[0].row[0]) {
+            
             console.log('EVEAPI is not defined')
             return res.send(500, 'Character name is not found');
+          
           } else if (response.eveapi.error) {
             console.log('Character name is not found');
             return res.send(404, 'Character name is not found');
