@@ -137,6 +137,10 @@ app.put('/api/grid/:characterId', function(req, res) {
           }
           console.log('success!');
           var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
+          gridstream.on('error', function(err) {
+            console.log('GridFS stream error during character add on 32px');
+            return res.send(500, err);
+          })
           gridstream.on('close', function(err) {
             fs.unlink(filepath32);
             callback(null, filename32);
@@ -168,6 +172,10 @@ app.put('/api/grid/:characterId', function(req, res) {
           }
           console.log('success!');
           var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
+          gridstream.on('error', function(err) {
+            console.log('GridFS stream error during character add on 64px');
+            return res.send(500, err);
+          })
           gridstream.on('close', function(err) {
             fs.unlink(filepath64);
             callback(null, filename64);
@@ -199,6 +207,10 @@ app.put('/api/grid/:characterId', function(req, res) {
           }
           console.log('success!');
           var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
+          gridstream.on('error', function(err) {
+            console.log('GridFS stream error during character add on 128px');
+            return res.send(500, err);
+          })
           gridstream.on('close', function(err) {
             fs.unlink(filepath128);
             callback(null, filename128);
@@ -232,6 +244,10 @@ app.put('/api/grid/:characterId', function(req, res) {
           }
           console.log('success!');
           var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
+          gridstream.on('error', function(err) {
+            console.log('GridFS stream error during character add on 256px');
+            return res.send(500, err);
+          })
           gridstream.on('close', function(err) {
             fs.unlink(filepath256);
             callback(null, filename256);
@@ -263,6 +279,10 @@ app.put('/api/grid/:characterId', function(req, res) {
           }
           console.log('success!');
           var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
+          gridstream.on('error', function(err) {
+            console.log('GridFS stream error during character add on 512px');
+            return res.send(500, err);
+          });
           gridstream.on('close', function(err) {
             fs.unlink(filepath512);
             callback(null, filename512);
@@ -502,12 +522,12 @@ app.get('/api/characters', function(req, res) {
 
   // Prevent users from chain-voting via an API console by verifying that
   // client nonce and server nonce match
-  if (_.contains(nonces, req.body.nonce)) {
-    nonces.splice(nonces.indexOf(req.body.nonce), 1);
-  } else {
-    console.log('NONCE MISMATCH');
-    return res.redirect('/');
-  }
+  // if (_.contains(nonces, req.body.nonce)) {
+  //   nonces.splice(nonces.indexOf(req.body.nonce), 1);
+  // } else {
+  //   console.log('NONCE MISMATCH');
+  //   return res.redirect('/');
+  // }
 
   // After all potential malicious attacks have been handled
   // add both characters to the global array
