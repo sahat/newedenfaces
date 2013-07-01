@@ -12,7 +12,7 @@ var
   config = require('./config.js'),
   request = require('request'),
   xml2js = require('xml2js'),
-  newrelic = require('newrelic')
+  newrelic = require('newrelic'),
   mongoose = require('mongoose'),
   Grid = require('gridfs-stream'),
   SendGrid = require('sendgrid').SendGrid,
@@ -523,12 +523,12 @@ app.get('/api/characters', function(req, res) {
 
   // Prevent users from chain-voting via an API console by verifying that
   // client nonce and server nonce match
-  // if (_.contains(nonces, req.body.nonce)) {
-  //   nonces.splice(nonces.indexOf(req.body.nonce), 1);
-  // } else {
-  //   console.log('NONCE MISMATCH');
-  //   return res.redirect('/');
-  // }
+  if (_.contains(nonces, req.body.nonce)) {
+    nonces.splice(nonces.indexOf(req.body.nonce), 1);
+  } else {
+    console.log('NONCE MISMATCH');
+    return res.redirect('/');
+  }
 
   // After all potential malicious attacks have been handled
   // add both characters to the global array
