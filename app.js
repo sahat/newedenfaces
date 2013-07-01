@@ -12,6 +12,7 @@ var
   config = require('./config.js'),
   request = require('request'),
   xml2js = require('xml2js'),
+  newrelic = require('newrelic')
   mongoose = require('mongoose'),
   Grid = require('gridfs-stream'),
   SendGrid = require('sendgrid').SendGrid,
@@ -140,7 +141,7 @@ app.put('/api/grid/:characterId', function(req, res) {
           gridstream.on('error', function(err) {
             console.log('GridFS stream error during character add on 32px');
             return res.send(500, err);
-          })
+          });
           gridstream.on('close', function(err) {
             fs.unlink(filepath32);
             callback(null, filename32);
@@ -175,7 +176,7 @@ app.put('/api/grid/:characterId', function(req, res) {
           gridstream.on('error', function(err) {
             console.log('GridFS stream error during character add on 64px');
             return res.send(500, err);
-          })
+          });
           gridstream.on('close', function(err) {
             fs.unlink(filepath64);
             callback(null, filename64);
@@ -210,7 +211,7 @@ app.put('/api/grid/:characterId', function(req, res) {
           gridstream.on('error', function(err) {
             console.log('GridFS stream error during character add on 128px');
             return res.send(500, err);
-          })
+          });
           gridstream.on('close', function(err) {
             fs.unlink(filepath128);
             callback(null, filename128);
@@ -247,7 +248,7 @@ app.put('/api/grid/:characterId', function(req, res) {
           gridstream.on('error', function(err) {
             console.log('GridFS stream error during character add on 256px');
             return res.send(500, err);
-          })
+          });
           gridstream.on('close', function(err) {
             fs.unlink(filepath256);
             callback(null, filename256);
@@ -724,7 +725,7 @@ app.post('/api/characters', function(req, res) {
             !response.eveapi.result[0].rowset[0] || 
             !response.eveapi.result[0].rowset[0].row[0]) {
             
-            console.log('EVEAPI is not defined')
+            console.log('EVEAPI is not defined');
             return res.send(500, 'Character name is not found');
           
 
@@ -928,7 +929,7 @@ app.post('/api/characters', function(req, res) {
             return res.send(500, 'Error parsing XML');
           }
           if (!response.eveapi) {
-            console.log('EVEAPI is not defined')
+            console.log('EVEAPI is not defined');
             return res.send(500, 'Character name is not found');
           } else if (response.eveapi.error) {
             console.log('404 while getting character info');
