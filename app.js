@@ -477,13 +477,15 @@ app.get('/api/characters', function(req, res) {
     });
     
   } else {
-    console.log('Global: ' + counter + ' out of ' + totalCount);
+    console.log('Global: ' + counter + ' out of ' + allCharacters.length);
     nonces.push(randomString);
 
     if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
       console.log('Please vote before proceeding');
       var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
+      console.log('Index', index);
       var myCounter = viewedCharacters[index].counter;
+      console.log('MyCounter', myCounter);
       console.log('Personal: ' + myCounter + ' out of ' + totalCount);
       return res.send({ nonce: randomString, characters: allCharacters.slice(myCounter, myCounter + 2) });
     }
@@ -720,7 +722,11 @@ app.post('/api/characters', function(req, res) {
         }
 
         parser.parseString(body, function(err, response) {
-          
+          if (err) {
+            console.log('Exception in ParseString of adding new character');
+            return res.send(500, 'parseString exception');
+          }
+
           if (!response.eveapi || !response.eveapi.result[0] || 
             !response.eveapi.result[0].rowset[0] || 
             !response.eveapi.result[0].rowset[0].row[0]) {
