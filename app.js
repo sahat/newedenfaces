@@ -44,8 +44,7 @@ app = express();
 var parser = new xml2js.Parser();
 mongoose.connect(config.mongoose, function(err) {
   if (err) {
-    console.log('Could not connect to the DB');
-    res.send(500, 'Error Connecting to the database');
+    return console.log('Could not connect to the DB');
   }
 });
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
