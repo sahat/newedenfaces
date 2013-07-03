@@ -44,6 +44,11 @@ app = express();
 var parser = new xml2js.Parser();
 mongoose.connect(config.mongoose, function(err) {
   if (err) {
+    setInterval(function(){
+      mongoose.connect(config.mongoose, function(err) {
+        if (err) return console.log('Could not connect to the DB on a successive try');
+      });
+    }, 5000)
     return console.log('Could not connect to the DB');
   }
 });
