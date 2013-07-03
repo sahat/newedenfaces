@@ -67,10 +67,6 @@ App.Views.Home = Backbone.View.extend({
           success: function(data) {
             self.nonce = data.nonce;
             self.render();
-            if (data.length < 2) {
-              // console.log('Triggered by voting');
-              $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have reached the end. Refresh the page <strong>in a few seconds</strong> to start over.</div>');
-            }
           }
         });
       }
