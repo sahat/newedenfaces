@@ -20,6 +20,13 @@ var
 
 
 
+// Helpers
+// 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
 //  Set the OpenShift environment variables.
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP ||
               process.env.OPENSHIFT_INTERNAL_IP;
@@ -113,15 +120,26 @@ app.post('/api/report', function(req, res) {
  * Update Existing Character Avatar
  */
 app.put('/api/grid/:characterId', function(req, res) {
+  if (isNumber(req.params.characterId)) {
+    var characterId = req.params.characterId;
+  } else {
+    return res.send(500, 'Character ID must be a number')
+  }
+  
   async.parallel({
     one: function(callback){
-      var image32 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_32.jpg';
+      var image32 = 'https://image.eveonline.com/Character/' + characterId + '_32.jpg';
       var filename32 = image32.replace(/^.*[\\\/]/, '');
       var filepath32 = path.join(__dirname, filename32);
       var writestream32 = gfs.createWriteStream({ filename: filename32 });
       var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
 
       imageStream32.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
+      writestream32.on('error', function(err) {
         console.log('Streaming Error');
         return res.send(500, err);
       });
@@ -150,13 +168,18 @@ app.put('/api/grid/:characterId', function(req, res) {
       });
     },
     two: function(callback) {
-      var image64 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_64.jpg';
+      var image64 = 'https://image.eveonline.com/Character/' + characterId + '_64.jpg';
       var filename64 = image64.replace(/^.*[\\\/]/, '');
       var filepath64 = path.join(__dirname, filename64);
       var writestream64 = gfs.createWriteStream({ filename: filename64 });
       var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
 
       imageStream64.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
+      writestream64.on('error', function(err) {
         console.log('Streaming Error');
         return res.send(500, err);
       });
@@ -185,13 +208,18 @@ app.put('/api/grid/:characterId', function(req, res) {
       });
     },
     three: function(callback){
-      var image128 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_128.jpg'; 
+      var image128 = 'https://image.eveonline.com/Character/' + characterId + '_128.jpg'; 
       var filename128 = image128.replace(/^.*[\\\/]/, '');
       var filepath128 = path.join(__dirname, filename128);
       var writestream128 = gfs.createWriteStream({ filename: filename128 });
       var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
 
       imageStream128.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
+      writestream128.on('error', function(err) {
         console.log('Streaming Error');
         return res.send(500, err);
       });
@@ -222,13 +250,18 @@ app.put('/api/grid/:characterId', function(req, res) {
       });
     },
     four: function(callback){
-      var image256 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_256.jpg'; 
+      var image256 = 'https://image.eveonline.com/Character/' + characterId + '_256.jpg'; 
       var filename256 = image256.replace(/^.*[\\\/]/, '');
       var filepath256 = path.join(__dirname, filename256);
       var writestream256 = gfs.createWriteStream({ filename: filename256 });
       var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
 
       imageStream256.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
+      writestream256.on('error', function(err) {
         console.log('Streaming Error');
         return res.send(500, err);
       });
@@ -257,13 +290,18 @@ app.put('/api/grid/:characterId', function(req, res) {
       });
     },
     five: function(callback){
-      var image512 = 'https://image.eveonline.com/Character/' + req.params.characterId + '_512.jpg';
+      var image512 = 'https://image.eveonline.com/Character/' + characterId + '_512.jpg';
       var filename512 = image512.replace(/^.*[\\\/]/, '');
       var filepath512 = path.join(__dirname, filename512);
       var writestream512 = gfs.createWriteStream({ filename: filename512 });
       var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
       
       imageStream512.on('error', function(err) {
+        console.log('Streaming Error');
+        return res.send(500, err);
+      });
+
+      writestream512.on('error', function(err) {
         console.log('Streaming Error');
         return res.send(500, err);
       });
@@ -298,7 +336,7 @@ app.put('/api/grid/:characterId', function(req, res) {
       console.log(err);
       return res.send(500, err);
     }
-    console.log(results.five);
+    console.log(results);
 
     var filename32 = results.one;
     var filename64 = results.two;
@@ -307,6 +345,12 @@ app.put('/api/grid/:characterId', function(req, res) {
     var filename512 = results.five;
 
     Character.findOne({ characterId: req.params.characterId }, function(err, character) {
+      if (err) {
+        return res.send(500, err);
+      }
+      if (!character) {
+        return res.send(500, 'No such character');
+      }
       character.image32 = '/api/grid/' + filename32;
       character.image64 = '/api/grid/' + filename64;
       character.image128 ='/api/grid/' + filename128;
@@ -786,7 +830,7 @@ app.post('/api/characters', function(req, res) {
             });
 
             gridstream.on('close', function(err) {
-              fs.unlink(filepath32);
+              fs.unlink(filepath32)
               callback(null, filename32);
             });
           });

@@ -602,14 +602,8 @@ App.Router = Backbone.Router.extend({
           collection: data,
           nonce: data.nonce
         });
-
-        if (data.length < 2) {
-          $('#content').html('<div class="alert alert-info"><strong>Congratulations!</strong><br>You have reached the end. Refresh the page <strong>in a few seconds</strong> to start over.</div>');
-        } else {
-          $('#content').html(App.Views.homeView.render().el);
-        }
         
-        
+        $('#content').html(App.Views.homeView.render().el);
         App.Views.homeView.selectMenuItem('home-menu');
       }
     });
