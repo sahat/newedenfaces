@@ -503,7 +503,7 @@ app.get('/api/characters', function(req, res) {
   var randomString = crypto.randomBytes(20).toString('hex');
 
   // When all characters have been voted on...
-  if (counter > totalCount) {
+  if (counter > allCharacters.length) {
     
      console.log('----reached the end------');
 
@@ -538,7 +538,7 @@ app.get('/api/characters', function(req, res) {
       console.log('Index', index);
       var myCounter = viewedCharacters[index].counter;
       console.log('MyCounter', myCounter);
-      console.log('Personal: ' + myCounter + ' out of ' + totalCount);
+      console.log('Personal: ' + myCounter + ' out of ' + allCharacters);
       return res.send({ nonce: randomString, characters: allCharacters.slice(myCounter, myCounter + 2) });
     }
 
