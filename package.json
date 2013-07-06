@@ -12,7 +12,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "supervisor app.js"
+    "start": "supervisor server.js"
   },
   "dependencies": {
     "express": "*",
@@ -24,6 +24,7 @@
     "mongodb": "*",
     "gridfs-stream": "*",
     "underscore":"*",
-    "newrelic": "*"
+    "newrelic": "*",
+    "node-cron": "*"
   }
 }
