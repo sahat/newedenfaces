@@ -499,6 +499,10 @@ Character
  * /GET /characters
  */
 app.get('/api/characters', function(req, res) {
+
+  // todo
+  // instead of shifting +2, randomly pick two and splice them from allCharacters
+
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var randomString = crypto.randomBytes(20).toString('hex');
 
