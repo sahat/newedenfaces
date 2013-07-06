@@ -1,10 +1,9 @@
 {
-  "name": "NewEdenFaces",
-  "version": "1.0.0",
+  "name": "newedenfaces",
+  "version": "1.1.0",
   "author": {
     "name": "Sahat Yalkabov",
     "email": "sakhat@gmail.com",
-    "url":  "http://sahat.me"
   },
   "homepage": "http://newedenfaces.com",
   "repository": {
@@ -13,7 +12,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "supervisor app.js"
   },
   "dependencies": {
     "express": "*",
