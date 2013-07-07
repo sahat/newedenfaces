@@ -21,6 +21,6 @@
     "gridfs-stream": "*",
     "underscore":"*",
     "newrelic": "*",
-    "node-cron": "*"
+    "cron": "*"
   }
 }
