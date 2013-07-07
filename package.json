@@ -1,10 +1,6 @@
 {
   "name": "newedenfaces",
   "version": "1.1.0",
-  "author": {
-    "name": "Sahat Yalkabov",
-    "email": "sakhat@gmail.com",
-  },
   "homepage": "http://newedenfaces.com",
   "repository": {
     "type": "git",
