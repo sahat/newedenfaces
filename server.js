@@ -51,6 +51,8 @@ var Character = mongoose.model('Character', {
 });
 
 
+
+
 // Express configuration
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -936,12 +938,13 @@ app.post('/api/characters', function(req, res) {
  * DEL /characterId
  * Delete a character and all its images from database
  * All five images are deleted in concurrently with async.parallel
+ * This function requres the secret code as a querystring to prevent abuse
  */
 app.del('/api/characters/:characterId', function(req, res, next) {
   var characterId = req.params.characterId;
 
   if (req.query.secretCode !== config.secretCode) {
-    return next(new Error('Secret code is invalid'));
+    return next(new Error('Must have a valid secret code'));
   }
 
   Character.remove({ characterId: characterId }, function(err) {
@@ -988,12 +991,13 @@ app.del('/api/characters/:characterId', function(req, res, next) {
 });
 
 
+/**
+ * GET /characters/:id
+ * Returns JSON for a single specified character
+ */
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
-    if (err) {
-      console.log(err);
-      return res.send(500, err);
-    }
+    if (err) return next(err);
     res.send(character);
   });
 });
@@ -1025,7 +1029,7 @@ app.get('/characters/:id', function(req, res) {
 });
 
 
-// Starts the express.js application
+// Starts the express application
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express server started listening on %s:%d', IP_ADDRESS, PORT);
 });
