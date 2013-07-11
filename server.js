@@ -638,6 +638,11 @@ app.get('/api/leaderboard', function(req, res, next) {
 });
 
 
+/**
+ * POST /characters
+ * Adds new character to the database
+ * Long and complex due to XML parsing and parallel image saving
+ */
 app.post('/api/characters', function(req, res) {
 
   var charNameInput = req.body.name;
