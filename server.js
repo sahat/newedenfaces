@@ -71,17 +71,20 @@ app.use(function(err, req, res, next) {
  */
 app.post('/api/report', function(req, res, next) {
   var characterId = req.body.characterId;
+  var ipAddress = req.connection.remoteAddress;
   Character.findOne({ characterId: characterId }, function(err, character) {
     if (err) next(err);
     character.reportCount++;
     if (character.reportCount >= 3) {
-      request.del('http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' + characterId);
-      console.log(character.name, 'has been deleted');
+      var url = 'http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' +
+        characterId + '?secretCode=' + config.secretCode;
+      request.del(url);
+      console.log(character.name, 'has been deleted by', ipAddress);
       res.send(200, character.name + ' has been deleted');
     } else {
       character.save(function(err) {
         if (err) next(err);
-        console.log(character.name, 'has been reported');
+        console.log(character.name, 'has been reported by', ipAddress);
         res.send(200, character.name + ' has been reported');
       });
     }
