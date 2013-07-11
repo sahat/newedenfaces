@@ -645,6 +645,7 @@ app.get('/api/leaderboard', function(req, res, next) {
  */
 app.post('/api/characters', function(req, res, next) {
   var charNameInput = req.body.name;
+  var gender = req.body.gender;
   if (!charNameInput) return next(new Error('Character name cannot be blank'));
   charNameInput = charNameInput.replace(/\s/g, '%20'); // strip space characters
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
@@ -888,6 +889,7 @@ app.post('/api/characters', function(req, res, next) {
             name: characterName,
             race: race,
             bloodline: bloodline,
+            gender: gender || '',
             image32: '/api/grid/' + filename32,
             image64: '/api/grid/' + filename64,
             image128: '/api/grid/' + filename128,

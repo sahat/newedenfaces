@@ -483,7 +483,6 @@ App.Views.AddCharacter = Backbone.View.extend({
     });
 
 
-    submitBtn.button('loading');
 
     newCharacter.save(null, {
       success: function() {
