@@ -484,28 +484,20 @@ app.get('/api/characters', function(req, res, next) {
  * This where winner and loser scores are updated
  */
 app.put('/api/vote', function(req, res, next) {
-  // Checks that a malicious user does not pass an empty PUT request
+
+  // Validation check against an empty PUT request
   if (!req.body.winner || !req.body.loser) {
     return next(new Error('Winner/Loser IDs are invalid or empty'));
   }
 
-  var myIpAddress = req.connection.remoteAddress;
+  var ipAddress = req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
   // Prevent users from voting for the same characters multiple times
   if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
-    console.log('ALREADY VOTED!');
-    return res.redirect('/');
-  }
-
-  // Prevent users from chain-voting via an API console by verifying that
-  // client nonce and server nonce match
-  if (_.contains(nonces, req.body.nonce)) {
-    nonces.splice(nonces.indexOf(req.body.nonce), 1);
-  } else {
-    console.log('NONCE MISMATCH');
-    return res.redirect('/');
+    console.warn('Already voted, this vote will not be counted');
+    return res.send(200);
   }
 
   // After all potential malicious attacks have been handled
@@ -520,7 +512,6 @@ app.put('/api/vote', function(req, res, next) {
           console.log('Error updating wins count.');
           return res.send(500, err);
         }
-        console.log('+1 ▴', winner, 'from', myIpAddress);
         callback(null);
       });
     },
@@ -530,7 +521,6 @@ app.put('/api/vote', function(req, res, next) {
           console.log('Error updating losses count.');
           return res.send(500, err);
         }
-        console.log('+1 ▾', loser, 'from', myIpAddress);
         callback(null);
       });
     }
@@ -543,7 +533,7 @@ app.put('/api/vote', function(req, res, next) {
 
     // After the successful voting remove current IP addres from [viewedCharacters]
     // so that user does not get stuck on the same two characters
-    var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
+    var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(ipAddress);
     viewedCharacters.splice(index, 1);
 
     return res.send(200, 'Wins and Losses have been updated');

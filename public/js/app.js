@@ -46,7 +46,6 @@ App.Views.Home = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on('change:wins', this.updateCount, this);
-    this.nonce = this.options.nonce; //initially contains nonce passed-in on load
   },
 
   updateCount: function(winningModel) {
@@ -59,13 +58,11 @@ App.Views.Home = Backbone.View.extend({
       data: { 
         winner: winningModel.get('characterId'),
         loser: losingModel.get('characterId'),
-        nonce: this.nonce
       },
       success: function() {
         self.collection.fetch({
           url: '/api/characters',
-          success: function(data) {
-            self.nonce = data.nonce;
+          success: function() {
             self.render();
           }
         });
