@@ -940,8 +940,12 @@ app.post('/api/characters', function(req, res) {
 app.del('/api/characters/:characterId', function(req, res, next) {
   var characterId = req.params.characterId;
 
+  if (req.query.secretCode !== config.secretCode) {
+    return next(new Error('Secret code is invalid'));
+  }
+
   Character.remove({ characterId: characterId }, function(err) {
-    if (err) next(err);
+    if (err) return next(err);
 
     async.parallel([
       function(callback){
@@ -976,8 +980,8 @@ app.del('/api/characters/:characterId', function(req, res, next) {
       }
     ],
     function(err) {
-      if (err) next(err);
-      console.log('Character and its images have been removed');
+      if (err) return next(err);
+      console.log('Character', characterId, 'has been removed GridFS');
       res.send(200);
     });
   });
