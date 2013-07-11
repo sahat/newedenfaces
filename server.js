@@ -13,7 +13,6 @@ var express = require('express'),
     _ = require('underscore');
 
 // Helpers
-// 
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
@@ -444,6 +443,7 @@ Character
  * Retrieves 2 characters per user and increments global counter.
  */
 app.get('/api/characters', function(req, res, next) {
+
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var randomString = crypto.randomBytes(20).toString('hex');
 
@@ -502,14 +502,13 @@ app.get('/api/characters', function(req, res, next) {
  * PUT /vote
  * This where winner and loser scores are updated
  */
-app.put('/api/vote', function(req, res) {
-
-  // Verify that malicious user does not pass an empty POST data
+app.put('/api/vote', function(req, res, next) {
+  // Checks that a malicious user does not pass an empty PUT request
   if (!req.body.winner || !req.body.loser) {
-    return res.send(500, 'Winner or Loser IDs are invalid');
+    next(new Error('Winner/Loser IDs are invalid or empty'));
   }
 
-  var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  var myIpAddress = req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
@@ -1045,5 +1044,10 @@ app.get('/characters/:id', function(req, res) {
 
 app.listen(port, ipaddress, function() {
   console.log('Express server started listening on %s:%d', ipaddress, port);
+});
+
+// Handle any uncaught exceptions to prevent a server crash
+process.on('uncaughtException', function(err) {
+    console.error(err);
 });
 
