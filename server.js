@@ -20,16 +20,16 @@ var helpers = require('./helpers'),
 
 // OpenShift required environment variables
 // Defaults to 127.0.0.1:8080 if running on localhost
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP ||
+var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
   process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
-var port = process.env.OPENSHIFT_NODEJS_PORT ||
+var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
   process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
 // Globals
 app = express();
 parser = new xml2js.Parser();
 
-mongoose.connect('122');
+mongoose.connect(config.mongoose);
 
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
@@ -102,7 +102,7 @@ app.post('/api/report', function(req, res) {
   });
 });
 app.put('/api/grid/:characterId', function(req, res) {
-  if (isNumber(req.params.characterId)) {
+  if (helpers.isNumber(req.params.characterId)) {
     var characterId = req.params.characterId;
   } else {
     return res.send(500, 'Character ID must be a number')
@@ -553,6 +553,8 @@ app.put('/api/vote', function(req, res, next) {
     return res.send(200, 'Wins and Losses have been updated');
   });
 });
+
+
 app.get('/api/characters/worst', function(req, res) {
   Character
   .find()
@@ -566,6 +568,8 @@ app.get('/api/characters/worst', function(req, res) {
     res.send({ characters: characters});
   });
 });
+
+
 app.get('/api/characters/top', function(req, res) {
   Character
   .find()
@@ -579,6 +583,8 @@ app.get('/api/characters/top', function(req, res) {
     res.send({ characters: characters});
   });
 });
+
+
 app.get('/api/characters/all', function(req, res) {
   Character
   .find()
@@ -591,6 +597,8 @@ app.get('/api/characters/all', function(req, res) {
     res.send({ characters: characters });
   });
 });
+
+
 app.get('/api/characters/top/:race', function(req, res) {
   var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
   Character
@@ -606,6 +614,8 @@ app.get('/api/characters/top/:race', function(req, res) {
     res.send({ characters: characters});
   });
 });
+
+
 app.get('/api/characters/top/:race/:bloodline', function(req, res) {
   var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
   var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
@@ -632,17 +642,29 @@ app.get('/api/characters/top/:race/:bloodline', function(req, res) {
     res.send({ characters: characters});
   });
 });
-app.get('/api/leaderboard', function(req, res) {
+
+
+/**
+ * GET /leaderboard
+ * Displays top 14 characters in the footer section
+ */
+app.get('/api/leaderboard', function(req, res, next) {
   Character
   .find()
   .sort('-wins')
   .limit(14)
+  .lean()
   .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
+    if (err) next(err);
+
+    // Sort by winning percentage
+    characters.sort(function(a, b) {
+      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+      return 0;
+    });
+
+    res.send({ characters: characters });
   });
 });
 
@@ -1027,9 +1049,11 @@ app.get('/characters/:id', function(req, res) {
   res.redirect('/#characters/' + req.params.id);
 });
 
-app.listen(port, ipaddress, function() {
-  console.log('Express server started listening on %s:%d', ipaddress, port);
+
+app.listen(PORT, IP_ADDRESS, function() {
+  console.log('Express server started listening on %s:%d', IP_ADDRESS, PORT);
 });
+
 
 // Gracefully logs an error message and kills the process
 // Supervisor will intercept it and restart the application
