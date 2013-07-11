@@ -484,59 +484,46 @@ app.get('/api/characters', function(req, res, next) {
  * This where winner and loser scores are updated
  */
 app.put('/api/vote', function(req, res, next) {
+  var ipAddress = req.connection.remoteAddress;
 
-  // Validation check against an empty PUT request
   if (!req.body.winner || !req.body.loser) {
     return next(new Error('Winner/Loser IDs are invalid or empty'));
   }
 
-  var ipAddress = req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
 
-  // Prevent users from voting for the same characters multiple times
+  // Disallows voting for the same characters multiple times
   if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
     console.warn('Already voted, this vote will not be counted');
     return res.send(200);
   }
 
-  // After all potential malicious attacks have been handled
-  // add both characters to the global array
   votedCharacters.push(winner, loser);
 
-  // Update wins and losses count in parallel using async library
-  async.parallel({
-    updateWinner: function(callback){
+  async.parallel([
+    function(callback){
       Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
-        if (err) {
-          console.log('Error updating wins count.');
-          return res.send(500, err);
-        }
+        if (err) return next(err);
         callback(null);
       });
     },
-    updateLoser: function(callback) {
+    function(callback) {
       Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
-        if (err) {
-          console.log('Error updating losses count.');
-          return res.send(500, err);
-        }
+        if (err) return next(err);
         callback(null);
       });
     }
-  },
+  ],
   function(err) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error updating wins and losses count');
-    }
+    if (err) return next(err);
 
     // After the successful voting remove current IP addres from [viewedCharacters]
     // so that user does not get stuck on the same two characters
     var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(ipAddress);
     viewedCharacters.splice(index, 1);
 
-    return res.send(200, 'Wins and Losses have been updated');
+    res.send(200);
   });
 });
 
