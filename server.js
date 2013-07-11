@@ -84,6 +84,7 @@ app.post('/api/report', function(req, res, next) {
       character.save(function(err) {
         if (err) next(err);
         console.log(character.name, 'has been reported');
+        res.send(200);
       });
 
     }
