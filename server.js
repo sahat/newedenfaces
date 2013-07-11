@@ -438,10 +438,14 @@ Character
   allCharacters = _.shuffle(allCharacters);
 });
 
+
+/**
+ * GET /characters
+ * Retrieves 2 characters per user and increments global counter.
+ */
 app.get('/api/characters', function(req, res, next) {
 
 
-  next(new Error('lol'));
   // todo
   // instead of shifting +2, randomly pick two and splice them from allCharacters
 
