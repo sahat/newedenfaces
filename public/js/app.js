@@ -484,6 +484,7 @@ App.Views.AddCharacter = Backbone.View.extend({
         toastr.success('Character has been added successfully');
       },
       error: function(model, response) {
+        toastr.error(response.responseText);
         controlGroup.addClass('error');
         submitBtn.removeClass('btn-primary').addClass('btn-danger');
         submitBtn.button('reset');
@@ -491,7 +492,7 @@ App.Views.AddCharacter = Backbone.View.extend({
 
         // I've made so that the server returns a character id object with 409 error
         // we need character id to create a url linkback to that existing character
-        var characterId = response.responseJSON.characterId;
+        var characterId = response.responseJSON.characterId || '';
 
         if (response.status == 409) {
             helpBlock.html('<a href="/characters/' + characterId + '">' + model.get('name') + '</a> is already in our system.');
