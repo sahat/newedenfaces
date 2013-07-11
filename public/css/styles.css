@@ -348,9 +348,18 @@ ul.inline>li {
 }
 
 .winner {
-  border: 4px solid greenyellow;
+  border: 3px solid limegreen;
 }
 
 .loser {
-  border: 4px solid orangered;
+  border: 3px solid orangered;
+}
+
+.versus {
+  font-size: 20px;
+  padding: 5px;
+}
+
+.past-matches {
+  margin-bottom: 10px;
 }

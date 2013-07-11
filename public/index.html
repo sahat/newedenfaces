@@ -305,17 +305,17 @@
         <div class="arrow"></div>
         <h3 class="popover-title pagination-centered">Winning Percentage</h3>
         <div class="popover-content pagination-centered">
-            <h1><%= WLRatio %>%</h1>
+            <h1><%= winLossRatio %>%</h1>
             Wins: <strong><%= model.wins %></strong> Losses: <strong><%= model.losses %></strong>
         </div>
     </div>
 
 
 
-    <h1>Previous Matches</h1>
-    <img class="winner" src="/api/grid/<%= model.pastMatches[0].winner %>_128.jpg">
-   vs
-   <img class="loser" src="/api/grid/<%= model.pastMatches[0].loser %>_128.jpg">
+    <div class="page-header">
+      <h1>Previous Matches <small>Winners are highlighted in green</small></h1>
+    </div>
+    <div class="past-matches"></div>
 
     <br><br>
 

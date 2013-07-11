@@ -346,7 +346,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
       type: 'PUT',
       url: '/api/grid/' + this.model.get('characterId'),
       success: function() {
-        toastr.success('Avatar has been updated successfully. Please reload the page.');
+        toastr.success('Updated successfully');
       }
     });
   },
@@ -371,11 +371,9 @@ App.Views.CharacterSummary = Backbone.View.extend({
   },
 
   render: function () {
-
-
     var data = {
       model: this.model.toJSON(),
-      WLRatio: this.options.winLossRatio
+      winLossRatio: this.options.winLossRatio
     };
 
     this.$el.html(this.template(data));
@@ -385,10 +383,21 @@ App.Views.CharacterSummary = Backbone.View.extend({
     }
 
     this.$el.find('.magnific-popup').magnificPopup({
-          type: 'image',
-          closeOnContentClick: true,
-          mainClass: 'my-mfp-zoom-in'
-        });
+      type: 'image',
+      closeOnContentClick: true,
+      mainClass: 'my-mfp-zoom-in'
+    });
+
+    // TODO: Fix this ugly code later
+    var $pastMatches = this.$el.find('.past-matches');
+    _.each(this.model.get('pastMatches'), function(match) {
+      var templateString = '<div><a href="/characters/' + match.winner + '"><img class="winner" src="/api/grid/' + match.winner + '_128.jpg"></a>' +
+        '<span class="versus">vs</span>' +
+        '<a href="/characters/' + match.loser + '"><img class="loser" src="/api/grid/' + match.loser + '_128.jpg"></a></div>';
+      $pastMatches.append(templateString);
+    });
+
+
 
     return this;
   },
