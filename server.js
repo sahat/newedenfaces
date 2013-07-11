@@ -18,7 +18,6 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-
 //  Set the OpenShift environment variables.
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP ||
               process.env.OPENSHIFT_INTERNAL_IP;
@@ -79,6 +78,11 @@ app.use(express.session({ secret: 'lolsec'}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Error handling middleware
+app.use(function(err, req, res, next) {
+  console.error(new Date, err);
+  res.send(500);
+});
 
 /**
  * Routes
@@ -140,7 +144,7 @@ app.put('/api/grid/:characterId', function(req, res) {
 
       imageStream32.on('close', function(err) {
         if (err) {
-          console.log(err);
+          console.error(err);
           return res.send(500, 'File error has occured');
         }
         gfs.remove({ filename: filename32 }, function (err) {
@@ -434,8 +438,10 @@ Character
   allCharacters = _.shuffle(allCharacters);
 });
 
-app.get('/api/characters', function(req, res) {
+app.get('/api/characters', function(req, res, next) {
 
+
+  next(new Error('lol'));
   // todo
   // instead of shifting +2, randomly pick two and splice them from allCharacters
 
@@ -444,7 +450,7 @@ app.get('/api/characters', function(req, res) {
 
   // When all characters have been voted on...
   if (counter > allCharacters.length) {
-    
+
      console.log('----reached the end------');
 
     // Retrieve new set of characters in case new characters have been
@@ -455,7 +461,7 @@ app.get('/api/characters', function(req, res) {
         return res.send(500, err);
       }
 
-     
+
       counter = 0;
       votedCharacters = []; // stores character ids
       viewedCharacters = []; // stores user ip addresses + counter
@@ -467,18 +473,14 @@ app.get('/api/characters', function(req, res) {
       res.send(allCharacters.slice(counter, counter + 2));
       counter = counter + 2;
     });
-    
+
   } else {
     console.log('Global: ' + counter + ' out of ' + allCharacters.length);
     nonces.push(randomString);
 
     if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
-      console.log('Please vote before proceeding');
       var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
-      console.log('Index', index);
       var myCounter = viewedCharacters[index].counter;
-      console.log('MyCounter', myCounter);
-      console.log('Personal: ' + myCounter + ' out of ' + allCharacters);
       return res.send({ nonce: randomString, characters: allCharacters.slice(myCounter, myCounter + 2) });
     }
 
@@ -488,7 +490,7 @@ app.get('/api/characters', function(req, res) {
     });
 
     // add a random hash string
-    
+
 
     res.send({ nonce: randomString, characters: allCharacters.slice(counter, counter + 2) });
 
@@ -654,6 +656,8 @@ app.get('/api/leaderboard', function(req, res) {
     res.send({ characters: characters});
   });
 });
+
+
 app.post('/api/characters', function(req, res) {
 
   var charNameInput = req.body.name;
