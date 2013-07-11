@@ -48,13 +48,7 @@ var Character = mongoose.model('Character', {
   wins: { type: Number, default: 0, index: true },
   losses: { type: Number, default: 0 },
   reportCount: { type: Number, default: 0 },
-  matches: [
-    {
-      date: Date,
-      winner: String,
-      loser: String
-    }
-  ]
+  pastMatches: Array
 });
 
 var Match = mongoose.model('Match', {
@@ -499,13 +493,21 @@ app.put('/api/vote', function(req, res, next) {
   }
   async.parallel([
     function(callback){
-      Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
+      var updateParameter = {
+        $inc: { wins: 1 },
+        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
+      };
+      Character.update({ characterId: winner }, updateParameter, function(err) {
         if (err) return next(err);
         callback(null);
       });
     },
     function(callback) {
-      Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
+      var updateParameter = {
+        $inc: { losses: 1 },
+        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
+      };
+      Character.update({ characterId: loser }, updateParameter, function(err) {
         if (err) return next(err);
         callback(null);
       });

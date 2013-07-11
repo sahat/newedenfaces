@@ -11,6 +11,6 @@ lib-cov
 pids
 logs
 results
-
+.idea
 npm-debug.log
 
