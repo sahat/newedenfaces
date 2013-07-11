@@ -342,3 +342,10 @@ ul.inline>li {
   opacity: 0;
 }
 
+.winner {
+  border: 4px solid greenyellow;
+}
+
+.loser {
+  border: 4px solid orangered;
+}
