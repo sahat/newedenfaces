@@ -73,17 +73,17 @@ app.post('/api/report', function(req, res, next) {
   var characterId = req.body.characterId;
   var ipAddress = req.connection.remoteAddress;
   Character.findOne({ characterId: characterId }, function(err, character) {
-    if (err) next(err);
+    if (err) return next(err);
     character.reportCount++;
     if (character.reportCount >= 3) {
       var url = 'http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' +
         characterId + '?secretCode=' + config.secretCode;
       request.del(url);
-      console.log(character.name, 'has been deleted by', ipAddress);
-      res.send(200, character.name + ' has been deleted');
+      console.log(character.name, 'has been removed by', ipAddress);
+      res.send(200, character.name + ' has been removed');
     } else {
       character.save(function(err) {
-        if (err) next(err);
+        if (err) return next(err);
         console.log(character.name, 'has been reported by', ipAddress);
         res.send(200, character.name + ' has been reported');
       });
@@ -484,7 +484,7 @@ app.get('/api/characters', function(req, res, next) {
 app.put('/api/vote', function(req, res, next) {
   // Checks that a malicious user does not pass an empty PUT request
   if (!req.body.winner || !req.body.loser) {
-    next(new Error('Winner/Loser IDs are invalid or empty'));
+    return next(new Error('Winner/Loser IDs are invalid or empty'));
   }
 
   var myIpAddress = req.connection.remoteAddress;
@@ -649,7 +649,7 @@ app.get('/api/leaderboard', function(req, res, next) {
   .limit(14)
   .lean()
   .exec(function(err, characters) {
-    if (err) next(err);
+    if (err) return next(err);
 
     // Sort by winning percentage
     characters.sort(function(a, b) {
@@ -981,7 +981,7 @@ app.del('/api/characters/:characterId', function(req, res, next) {
     ],
     function(err) {
       if (err) return next(err);
-      console.log('Character', characterId, 'has been removed GridFS');
+      console.log('Character', characterId, 'has been removed from GridFS');
       res.send(200);
     });
   });
