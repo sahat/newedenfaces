@@ -1,10 +1,10 @@
+// NPM stuff
 var express = require('express'),
     async = require('async'),
     crypto = require('crypto'),
     http = require('http'),
     fs = require('fs'),
     path = require('path'),
-    config = require('./config.js'),
     request = require('request'),
     xml2js = require('xml2js'),
     newrelic = require('newrelic'),
@@ -12,40 +12,25 @@ var express = require('express'),
     Grid = require('gridfs-stream'),
     _ = require('underscore');
 
-// Helpers
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
 
-//  Set the OpenShift environment variables.
+// My stuff
+var helpers = require('./helpers'),
+    config = require('./config.js');
+
+
+// OpenShift required environment variables
+// Defaults to 127.0.0.1:8080 if running on localhost
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP ||
-              process.env.OPENSHIFT_INTERNAL_IP;
+  process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
 var port = process.env.OPENSHIFT_NODEJS_PORT ||
-         process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+  process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
-if (typeof ipaddress === "undefined") {
-  console.warn('No OPENSHIFT_IP address; using 127.0.0.1');
-  ipaddress = "127.0.0.1";
-}
-
-
+// Globals
 app = express();
+parser = new xml2js.Parser();
 
-var parser = new xml2js.Parser();
-mongoose.connect(config.mongoose, function(err) {
-  if (err) {
-    var tryToConnect = setInterval(function(){
-      mongoose.connect(config.mongoose, function(err) {
-        if (err) {
-          return console.log('Could not connect to the DB on a successive try');
-        } else {
-          clearTimeout(tryToConnect);
-        }
-      });
-    }, 5000);
-    return console.log('Could not connect to the DB');
-  }
-});
+mongoose.connect('122');
+
 var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 // DB Schema and Model
@@ -1046,8 +1031,9 @@ app.listen(port, ipaddress, function() {
   console.log('Express server started listening on %s:%d', ipaddress, port);
 });
 
-// Handle any uncaught exceptions to prevent a server crash
+// Gracefully logs an error message and kills the process
+// Supervisor will intercept it and restart the application
 process.on('uncaughtException', function(err) {
-    console.error(err);
+  console.error(err);
+  process.exit(1);
 });
-
