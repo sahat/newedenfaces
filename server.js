@@ -74,23 +74,25 @@ app.post('/api/report', function(req, res, next) {
 
   Character.findOne({ characterId: characterId }, function(err, character) {
     if (err) next(err);
-
     character.reportCount++;
-
     if (character.reportCount >= 3) {
       // Unfortunately node-request does not work with a relative path
       request.del('http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' + characterId);
+      res.send(200, character.name + ' has been deleted');
     } else {
       character.save(function(err) {
         if (err) next(err);
         console.log(character.name, 'has been reported');
-        res.send(200);
+        res.send(200, character.name + ' has been reported');
       });
-
     }
-
   });
 });
+
+
+/**
+ *
+ */
 app.put('/api/grid/:characterId', function(req, res) {
   if (helpers.isNumber(req.params.characterId)) {
     var characterId = req.params.characterId;

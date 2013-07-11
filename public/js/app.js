@@ -364,6 +364,16 @@ App.Views.CharacterSummary = Backbone.View.extend({
     //console.log(localStorage['reported-'+this.model.get('characterId')])
 
     $.post('/api/report', this.model.toJSON(), function(data) {
+
+      // JavaScript way of checking if string contains a substring
+      if (data.indexOf('deleted') !== -1) { // contains deleted
+        toastr.error(data);
+        Backbone.history.navigate('/', { trigger: true });
+      } else if (data.indexOf('reported') !== -1) { // contains reported
+        toastr.warning(data);
+      }
+
+      // Prevents users from reporting multiple times
       self.$el.find('#report').attr('disabled', true);
       localStorage['reported-' + self.model.get('characterId')] = 'True';
     });
