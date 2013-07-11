@@ -360,9 +360,8 @@ App.Views.CharacterSummary = Backbone.View.extend({
   },
 
   reportPlayer: function(e) {
-    var self = this;
-    //console.log(localStorage['reported-'+this.model.get('characterId')])
-
+    var $reportButton = this.$el.find('#report');
+    var characterId = this.model.get('characterId');
     $.post('/api/report', this.model.toJSON(), function(data) {
 
       // JavaScript way of checking if string contains a substring
@@ -374,8 +373,8 @@ App.Views.CharacterSummary = Backbone.View.extend({
       }
 
       // Prevents users from reporting multiple times
-      self.$el.find('#report').attr('disabled', true);
-      localStorage['reported-' + self.model.get('characterId')] = 'True';
+      $reportButton.attr('disabled', true);
+      localStorage['reported-' + characterId] = 'True';
     });
   },
 
