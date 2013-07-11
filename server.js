@@ -493,14 +493,10 @@ app.put('/api/vote', function(req, res, next) {
   var winner = req.body.winner;
   var loser = req.body.loser;
 
-  // Disallows voting for the same characters multiple times
   if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
     console.warn('Already voted, this vote will not be counted');
     return res.send(200);
   }
-
-  votedCharacters.push(winner, loser);
-
   async.parallel([
     function(callback){
       Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
@@ -517,27 +513,25 @@ app.put('/api/vote', function(req, res, next) {
   ],
   function(err) {
     if (err) return next(err);
-
-    // After the successful voting remove current IP addres from [viewedCharacters]
-    // so that user does not get stuck on the same two characters
+    votedCharacters.push(winner, loser);
     var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(ipAddress);
     viewedCharacters.splice(index, 1);
-
     res.send(200);
   });
 });
 
 
-app.get('/api/characters/worst', function(req, res) {
+/**
+ * GET /shame
+ * Top 25 worst characters for the hall of shame
+ */
+app.get('/api/characters/shame', function(req, res, next) {
   Character
   .find()
   .sort('-losses')
   .limit(25)
   .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
+    if (err) return next(err);
     res.send({ characters: characters});
   });
 });

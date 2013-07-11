@@ -616,8 +616,8 @@ App.Router = Backbone.Router.extend({
   hallOfShame: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/worst',
-      success: function(data) {
+      url: '/api/characters/shame',
+      success: function() {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
