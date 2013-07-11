@@ -55,7 +55,7 @@ App.Views.Home = Backbone.View.extend({
     var self = this;
     $.ajax({
       url: '/api/vote',
-      type: 'POST',
+      type: 'PUT',
       data: { 
         winner: winningModel.get('characterId'),
         loser: losingModel.get('characterId'),

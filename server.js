@@ -444,11 +444,6 @@ Character
  * Retrieves 2 characters per user and increments global counter.
  */
 app.get('/api/characters', function(req, res, next) {
-
-
-  // todo
-  // instead of shifting +2, randomly pick two and splice them from allCharacters
-
   var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
   var randomString = crypto.randomBytes(20).toString('hex');
 
@@ -501,7 +496,13 @@ app.get('/api/characters', function(req, res, next) {
     counter = counter + 2;
   }
 });
-app.post('/api/vote', function(req, res) {
+
+
+/**
+ * PUT /vote
+ * This where winner and loser scores are updated
+ */
+app.put('/api/vote', function(req, res) {
 
   // Verify that malicious user does not pass an empty POST data
   if (!req.body.winner || !req.body.loser) {
