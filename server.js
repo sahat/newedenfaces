@@ -25,15 +25,15 @@ var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
 var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
   process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
-// Globals
+
+// Application globals
 app = express();
 parser = new xml2js.Parser();
-
 mongoose.connect(config.mongoose);
+gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
-var gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
-// DB Schema and Model
+// Mongoose schema
 var Character = mongoose.model('Character', {
   characterId: { type: String, unique: true, index: true },
   name: String,
@@ -51,16 +51,12 @@ var Character = mongoose.model('Character', {
 });
 
 
-// all environments
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.use(express.favicon(__dirname + '/public/favicon.ico')); 
+// Express configuration
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser());  
-app.use(express.session({ secret: 'lolsec'}));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Error handling middleware
 app.use(function(err, req, res, next) {
@@ -68,37 +64,30 @@ app.use(function(err, req, res, next) {
   res.send(500);
 });
 
+
 /**
- * Routes
+ * POST /report
+ * Reported players will be automatically deleted after 3 strikes
  */
-app.post('/api/report', function(req, res) {
-  Character.findOne({ characterId: req.body.characterId }, function(err, character) {
-    if (err) {
-      console.log(err);
-      return res.send(500, err);
-    }
+app.post('/api/report', function(req, res, next) {
+  var characterId = req.body.characterId;
 
-    character.reportCount += 1;
+  Character.findOne({ characterId: characterId }, function(err, character) {
+    if (err) next(err);
 
-    if (character.reportCount >= 10) {
-      // remove character from DateB
-      Character.remove({ characterId: req.body.characterId }, function (err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, err);
-        }
-        console.log('Character has been removed');
-        res.send(200, {'message': 'Character has been removed'});
-      });
+    character.reportCount++;
+
+    if (character.reportCount >= 3) {
+      // Unfortunately node-request does not work with a relative path
+      request.del('http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' + characterId);
     } else {
       character.save(function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, err);
-        }
-        res.send(200, {'message': 'Character has been reported++'});
+        if (err) next(err);
+        console.log(character.name, 'has been reported');
       });
+
     }
+
   });
 });
 app.put('/api/grid/:characterId', function(req, res) {
@@ -936,6 +925,8 @@ app.post('/api/characters', function(req, res) {
     }
   ]);
 });
+
+
 app.del('/api/characters/:characterId', function(req, res) {
   Character.remove({ characterId: req.params.characterId }, function(err) {
     if (err) {
@@ -1014,6 +1005,8 @@ app.del('/api/characters/:characterId', function(req, res) {
     });
   });
 });
+
+
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
     if (err) {
@@ -1023,6 +1016,7 @@ app.get('/api/characters/:id', function(req, res) {
     res.send(character);
   });
 });
+
 
 // PushState redirects
 app.get('/add', function(req, res) {
@@ -1050,6 +1044,7 @@ app.get('/characters/:id', function(req, res) {
 });
 
 
+// Starts the express.js application
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express server started listening on %s:%d', IP_ADDRESS, PORT);
 });
