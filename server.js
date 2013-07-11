@@ -47,10 +47,20 @@ var Character = mongoose.model('Character', {
   bloodline: String,
   wins: { type: Number, default: 0, index: true },
   losses: { type: Number, default: 0 },
-  reportCount: { type: Number, default: 0 }
+  reportCount: { type: Number, default: 0 },
+  matches: [
+    {
+      date: Date,
+      winner: String,
+      loser: String
+    }
+  ]
 });
 
-
+var Match = mongoose.model('Match', {
+  date: Date,
+  characters: Array
+});
 
 
 // Express configuration
