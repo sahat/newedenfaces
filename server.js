@@ -395,16 +395,6 @@ setInterval(function() {
   });
 }, 86400000);
 
-app.get('/api/count', function(req, res) {
-  Character.count({}, function(err, count) {
-    if (err) {
-      console.log('Error processing count');
-      return res.send(500, err);
-    }
-
-    res.send({ count: count });
-  });
-});
 
 // GLOBAL VARIABLES
 var counter = 0;
