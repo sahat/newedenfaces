@@ -71,13 +71,12 @@ app.use(function(err, req, res, next) {
  */
 app.post('/api/report', function(req, res, next) {
   var characterId = req.body.characterId;
-
   Character.findOne({ characterId: characterId }, function(err, character) {
     if (err) next(err);
     character.reportCount++;
     if (character.reportCount >= 3) {
-      // Unfortunately node-request does not work with a relative path
       request.del('http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' + characterId);
+      console.log(character.name, 'has been deleted');
       res.send(200, character.name + ' has been deleted');
     } else {
       character.save(function(err) {
@@ -930,81 +929,53 @@ app.post('/api/characters', function(req, res) {
 });
 
 
-app.del('/api/characters/:characterId', function(req, res) {
-  Character.remove({ characterId: req.params.characterId }, function(err) {
-    if (err) {
-      console.log(err);
-      return res.send(500, err);
-    }
+/**
+ * DEL /characterId
+ * Delete a character and all its images from database
+ * All five images are deleted in concurrently with async.parallel
+ */
+app.del('/api/characters/:characterId', function(req, res, next) {
+  var characterId = req.params.characterId;
 
-    console.log('Character has been removed');
-    
-    // Now remove image files associated with this character
-    async.parallel({
-      one: function(callback){
-        var filename32 = req.params.characterId + '_32.jpg';
-        gfs.remove({ filename: filename32 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success removing 32px from gridfs!');
+  Character.remove({ characterId: characterId }, function(err) {
+    if (err) next(err);
+
+    async.parallel([
+      function(callback){
+        gfs.remove({ filename: characterId + '_32.jpg' }, function (err) {
+          if (err) console.error(err);
           callback(null);
         });
       },
-      two: function(callback) {
-        var filename64 = req.params.characterId + '_64.jpg';
-        gfs.remove({ filename: filename64 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success removing 64px from gridfs!');
+      function(callback) {
+        gfs.remove({ filename: characterId + '_64.jpg' }, function (err) {
+          if (err) console.error(err);
           callback(null);
         });        
       },
-      three: function(callback){
-        var filename128 = req.params.characterId + '_128.jpg';
-        gfs.remove({ filename: filename128 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success removing 128px from gridfs!');
+      function(callback){
+        gfs.remove({ filename: characterId + '_128.jpg' }, function (err) {
+          if (err) console.error(err);
           callback(null);
         });   
       },
-      four: function(callback){
-        var filename256 = req.params.characterId + '_256.jpg';
-        gfs.remove({ filename: filename256 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success removing 256px from gridfs!');
+      function(callback){
+        gfs.remove({ filename: characterId + '_256.jpg' }, function (err) {
+          if (err) console.error(err);
           callback(null);
         });  
       },
-      five: function(callback){
-        var filename512 = req.params.characterId + '_512.jpg';
-        gfs.remove({ filename: filename512 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success removing 512px from gridfs!');
+      function(callback){
+        gfs.remove({ filename: characterId + '_512.jpg' }, function (err) {
+          if (err) console.error(err);
           callback(null);
         });
       }
-    },
+    ],
     function(err) {
-      if (err) {
-        console.log(err);
-        return res.send(500, err);
-      }
-      console.log('Character and files have been removed successfully');
-
-      return res.send(200, 'Character and files have been removed successfully');
+      if (err) next(err);
+      console.log('Character and its images have been removed');
+      res.send(200);
     });
   });
 });
