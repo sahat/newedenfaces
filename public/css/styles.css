@@ -29,6 +29,11 @@ kbd {
 }
 #wrap {
   min-height: 100%;
+  margin: 0 auto -240px;
+}
+
+#push {
+  height: 240px;
 }
 
 #content {
