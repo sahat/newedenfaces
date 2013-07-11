@@ -469,12 +469,19 @@ App.Views.AddCharacter = Backbone.View.extend({
 
     var helpBlock = this.$el.find('.help-block');
     var controlGroup = this.$el.find('.control-group');
-    var inputField = this.$el.find('input');
+    var inputField = this.$el.find('input[name=addcharacter]');
     var submitBtn = this.$el.find('button');
+    var gender = this.$el.find('input:radio[name=genderRadios]:checked').val();
+
+    if (!gender) {
+      return toastr.error('Please specify character\'s gender');
+    }
 
     var newCharacter = new App.Models.Character({
-      name: inputField.val()
+      name: inputField.val(),
+      gender: gender
     });
+
 
     submitBtn.button('loading');
 
@@ -484,7 +491,6 @@ App.Views.AddCharacter = Backbone.View.extend({
         toastr.success('Character has been added successfully');
       },
       error: function(model, response) {
-        toastr.error(response.responseText);
         controlGroup.addClass('error');
         submitBtn.removeClass('btn-primary').addClass('btn-danger');
         submitBtn.button('reset');

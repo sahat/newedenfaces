@@ -644,8 +644,8 @@ app.get('/api/leaderboard', function(req, res, next) {
  * Long and complex due to XML parsing and parallel image saving
  */
 app.post('/api/characters', function(req, res, next) {
-  if (!charNameInput) return res.send(500, 'Character name cannot be blank');
   var charNameInput = req.body.name;
+  if (!charNameInput) return next(new Error('Character name cannot be blank'));
   charNameInput = charNameInput.replace(/\s/g, '%20'); // strip space characters
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
 
