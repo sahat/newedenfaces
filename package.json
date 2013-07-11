@@ -16,7 +16,6 @@
     "request": "*",
     "xml2js": "*",
     "mongoose": "*",
-    "sendgrid": "*",
     "mongodb": "*",
     "gridfs-stream": "*",
     "underscore":"*",

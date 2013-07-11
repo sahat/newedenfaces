@@ -10,7 +10,6 @@ var express = require('express'),
     newrelic = require('newrelic'),
     mongoose = require('mongoose'),
     Grid = require('gridfs-stream'),
-    SendGrid = require('sendgrid').SendGrid,
     _ = require('underscore');
 
 // Helpers
