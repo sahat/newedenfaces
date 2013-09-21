@@ -267,6 +267,41 @@ App.Views.Character = Backbone.View.extend({
 
   template: template('character-template'),
 
+  events: {
+    'click #female': 'female',
+    'click #male': 'male',
+    'keypress body': 'keycode'
+
+  },
+
+  keycode: function(e) {
+    console.log(e);
+    if (e == 70) {
+      console.log('pressed female');
+    } else if (e == 7) {
+      console.log('pressed M');
+    }
+  },
+
+  female: function() {
+    var self = this;
+    self.$el.remove();
+    $.post('/gender', { characterId: this.model.get('characterId'), gender: 'female' }, function(data) {
+      
+      return false;
+    });
+  },
+
+
+  male: function() {
+    var self = this;
+    self.$el.remove();
+    $.post('/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
+      console.log(data);
+      return false;
+    });
+  },
+
   render: function () {
     var data = {
       model: this.model.toJSON(),
@@ -338,6 +373,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
   events: {
     'click #report': 'reportPlayer',
+    'click #wrong-gender': 'wrongGender',
     'click #update': 'updateAvatar'
   },
 
@@ -348,6 +384,13 @@ App.Views.CharacterSummary = Backbone.View.extend({
       success: function() {
         toastr.success('Updated successfully');
       }
+    });
+  },
+
+  wrongGender: function() {
+    var characterId = this.model.get('characterId');
+    $.post('/api/wrong-gender', { characterId: characterId }, function(data) {
+      toastr.info('Your report has been submitted');
     });
   },
 
@@ -485,7 +528,6 @@ App.Views.AddCharacter = Backbone.View.extend({
       name: inputField.val(),
       gender: gender
     });
-
 
 
     newCharacter.save(null, {

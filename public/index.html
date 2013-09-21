@@ -353,6 +353,9 @@
             <strong>Race:</strong> <%= model.race %>
             <br>
             <strong>Bloodline:</strong> <%= model.bloodline %>
+            <br><br>
+            <button id="female" class="btn btn-danger">Female</button>
+            <button id="male" class="btn btn-primary">Male</button>
         </p>
     </div>
 </script>
@@ -395,10 +398,18 @@
         <a class="btn btn-small" href="https://gate.eveonline.com/Profile/<%= model.name %>">EVE Profile</a>
         <button id="update" class="btn btn-primary btn-small">Update Avatar</button>
         <button id="report" class="btn btn-warning btn-small">Report</button>
+        <button id="wrong-gender" class="btn btn-danger btn-small">Wrong Gender</button>
     </div>
     <ul class="inline">
         <li><strong>Race:</strong> <%= model.race %></li>
         <li><strong>Bloodline:</strong> <%= model.bloodline %></li>
+        <li><strong>Gender:</strong> 
+          <% if (model.gender) { %> 
+            <%= model.gender.charAt(0).toUpperCase() + model.gender.slice(1) %>
+          <% } else { %> 
+            Undetermined 
+          <% } %>
+        </li>
     </ul>
 
     <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg"><img class="img-polaroid" src="<%= model.image256 %>"></a>

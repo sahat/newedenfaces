@@ -49,6 +49,7 @@ var Character = mongoose.model('Character', {
   image512: String,
   race: String,
   gender: String,
+  wrongGender: Boolean,
   bloodline: String,
   wins: { type: Number, default: 0, index: true },
   losses: { type: Number, default: 0 },
@@ -454,7 +455,7 @@ app.get('/api/characters', function(req, res, next) {
     });
 
   } else {
-    console.log('Global: ' + counter + ' out of ' + allCharacters.length);
+    //console.log('Global: ' + counter + ' out of ' + allCharacters.length);
     nonces.push(randomString);
 
     if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
@@ -597,6 +598,7 @@ app.get('/api/characters/female', function(req, res) {
 });
 
 
+// displays character count and used for search bar autocomplete
 app.get('/api/characters/all', function(req, res) {
   Character
   .find()
@@ -784,7 +786,7 @@ app.post('/api/characters', function(req, res, next) {
   charNameInput = charNameInput.replace(/\s/g, '%20'); // strip space characters
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
 
-  console.log(characterNameInput);
+  console.log(charNameInput);
 
   async.waterfall([
     function(callback){
@@ -1114,13 +1116,41 @@ app.del('/api/characters/:characterId', function(req, res, next) {
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
     if (err) return next(err);
-    console.log(character);
     var characterCopy = character.toObject();
     characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
     res.send(characterCopy);
   });
 });
 
+
+// app.post('/gender', function(req, res) {
+//   var id = req.body.characterId;
+//   var gender = req.body.gender;
+
+//   Character.findOne({ characterId: id}, function(err, character) {
+//     if (character) {
+//       console.log(character);
+//       character.gender = gender;
+//       character.wrongGender = false;
+//       character.save(function(err) {
+//         if (err) throw err;
+//         res.send('updated okay!');
+//       })
+//     }
+//   });
+// });
+
+app.post('/api/wrong-gender', function(req, res) {
+  var id = req.body.characterId;
+  Character.findOne({ characterId: id }, function(err, user) {
+    if (err) return next(err);
+    user.wrongGender = true;
+    user.save(function(err) {
+      if (err) return next(err);
+      res.send(200, 'Successfully notified about wrong character gender');
+    });
+  });
+});
 
 // PushState redirects
 app.get('/add', function(req, res) {
