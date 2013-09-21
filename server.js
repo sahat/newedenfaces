@@ -1059,11 +1059,11 @@ app.get('/characters/:id', function(req, res) {
 
 
 app.get('/male', function(req, res) {
-  res.redirect('/#male/');
+  res.redirect('/#male');
 });
 
 app.get('/female', function(req, res) {
-  res.redirect('/#female/');
+  res.redirect('/#female');
 });
 
 app.get('/male/:race', function(req, res) {

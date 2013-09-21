@@ -544,6 +544,8 @@ App.Router = Backbone.Router.extend({
     '':                     'home',
     'hall-of-shame':        'hallOfShame',
     'top':                  'topCharacters',
+    'male':                 'maleCharacters',
+    'female':               'femaleCharacters',
     'top/:race':            'topRace',
     'top/:race/:bloodline': 'topBloodline',
     'azlist':               'alphabeticalCharacters',
@@ -615,6 +617,34 @@ App.Router = Backbone.Router.extend({
     var characters = new App.Collections.Characters();
     characters.fetch({
       url: '/api/characters/top',
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+  maleCharacters: function() {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/male',
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+  femaleCharacters: function() {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/female',
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
