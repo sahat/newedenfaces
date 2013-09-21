@@ -268,39 +268,39 @@ App.Views.Character = Backbone.View.extend({
   template: template('character-template'),
 
   events: {
-    'click #female': 'female',
-    'click #male': 'male',
-    'keypress body': 'keycode'
+    //'click #female': 'female',
+    //'click #male': 'male',
+    //'keypress body': 'keycode'
 
   },
 
-  keycode: function(e) {
-    console.log(e);
-    if (e == 70) {
-      console.log('pressed female');
-    } else if (e == 7) {
-      console.log('pressed M');
-    }
-  },
+  // keycode: function(e) {
+  //   console.log(e);
+  //   if (e == 70) {
+  //     console.log('pressed female');
+  //   } else if (e == 7) {
+  //     console.log('pressed M');
+  //   }
+  // },
 
-  female: function() {
-    var self = this;
-    self.$el.remove();
-    $.post('/gender', { characterId: this.model.get('characterId'), gender: 'female' }, function(data) {
+  // female: function() {
+  //   var self = this;
+  //   self.$el.remove();
+  //   $.post('/gender', { characterId: this.model.get('characterId'), gender: 'female' }, function(data) {
       
-      return false;
-    });
-  },
+  //     return false;
+  //   });
+  // },
 
 
-  male: function() {
-    var self = this;
-    self.$el.remove();
-    $.post('/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
-      console.log(data);
-      return false;
-    });
-  },
+  // male: function() {
+  //   var self = this;
+  //   self.$el.remove();
+  //   $.post('/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
+  //     console.log(data);
+  //     return false;
+  //   });
+  // },
 
   render: function () {
     var data = {
