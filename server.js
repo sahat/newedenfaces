@@ -21,15 +21,20 @@ var helpers = require('./helpers'),
 // OpenShift required environment variables
 // Defaults to 127.0.0.1:8080 if running on localhost
 var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
-  process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
+    process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
 var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
-  process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+    process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
 
 // Application globals
 app = express();
 parser = new xml2js.Parser();
-mongoose.connect(config.mongoose);
+mongoose.connect(config.mongoose, function(err) {
+  if (err) {
+    console.error('database connection error');
+    process.exit();
+  }
+});
 gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 
@@ -83,7 +88,7 @@ app.post('/api/report', function(req, res, next) {
     character.reportCount++;
     if (character.reportCount >= 3) {
       var url = 'http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' +
-        characterId + '?secretCode=' + config.secretCode;
+                characterId + '?secretCode=' + config.secretCode;
       request.del(url);
       console.log(character.name, 'has been removed by', ipAddress);
       res.send(200, character.name + ' has been removed');
@@ -493,21 +498,21 @@ app.put('/api/vote', function(req, res, next) {
   }
   async.parallel([
     function(callback){
-      var updateParameter = {
+      var updateCharacter = {
         $inc: { wins: 1 },
         $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
       };
-      Character.update({ characterId: winner }, updateParameter, function(err) {
+      Character.update({ characterId: winner }, updateCharacter, function(err) {
         if (err) return next(err);
         callback(null);
       });
     },
     function(callback) {
-      var updateParameter = {
+      var updateCharacter = {
         $inc: { losses: 1 },
         $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
       };
-      Character.update({ characterId: loser }, updateParameter, function(err) {
+      Character.update({ characterId: loser }, updateCharacter, function(err) {
         if (err) return next(err);
         callback(null);
       });
@@ -649,6 +654,8 @@ app.post('/api/characters', function(req, res, next) {
   if (!charNameInput) return next(new Error('Character name cannot be blank'));
   charNameInput = charNameInput.replace(/\s/g, '%20'); // strip space characters
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
+
+  console.log(characterNameInput);
 
   async.waterfall([
     function(callback){

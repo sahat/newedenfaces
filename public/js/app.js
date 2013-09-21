@@ -391,9 +391,15 @@ App.Views.CharacterSummary = Backbone.View.extend({
     // TODO: Fix this ugly code later
     var $pastMatches = this.$el.find('.past-matches');
     _.each(this.model.get('pastMatches'), function(match) {
-      var templateString = '<div><a href="/characters/' + match.winner + '"><img class="winner" src="/api/grid/' + match.winner + '_128.jpg"></a>' +
-        '<span class="versus">vs</span>' +
-        '<a href="/characters/' + match.loser + '"><img class="loser" src="/api/grid/' + match.loser + '_128.jpg"></a></div>';
+      var templateString = 
+      '<div class="well span3">' +
+        '<div class="text-center">' + new Date(match.date).toLocaleString() + '</div><br>' +
+          '<a href="/characters/' + match.winner + '">' +
+            '<img class="winner" src="/api/grid/' + match.winner + '_64.jpg">' + 
+          '</a>' +
+          '<span class="versus">vs</span>' +
+          '<a href="/characters/' + match.loser + '">' +
+          '<img class="loser" src="/api/grid/' + match.loser + '_64.jpg"></a></div>';
       $pastMatches.append(templateString);
     });
 
