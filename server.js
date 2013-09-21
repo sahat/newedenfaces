@@ -1021,6 +1021,33 @@ app.get('/characters/:id', function(req, res) {
 });
 
 
+
+app.get('/male', function(req, res) {
+  res.redirect('/#male/');
+});
+
+app.get('/female', function(req, res) {
+  res.redirect('/#female/');
+});
+
+app.get('/male/:race', function(req, res) {
+  res.redirect('/#male/' + req.params.race);
+});
+
+app.get('/female/:race', function(req, res) {
+  res.redirect('/#female/' + req.params.race);
+});
+
+app.get('/male/:race/:bloodline', function(req, res) {
+  res.redirect('/#male/' + req.params.race + '/' + req.params.bloodline);
+});
+
+app.get('/female/:race/:bloodline', function(req, res) {
+  res.redirect('/#female/' + req.params.race + '/' + req.params.bloodline);
+});
+
+
+
 // Starts the express application
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express server started listening on %s:%d', IP_ADDRESS, PORT);
