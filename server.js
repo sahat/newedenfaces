@@ -560,6 +560,42 @@ app.get('/api/characters/top', function(req, res) {
   });
 });
 
+/**
+ * All male characters
+ */
+app.get('/api/characters/male', function(req, res) {
+  Character
+  .find()
+  .where('gender', 'male')
+  .sort('-wins')
+  .limit(100)
+  .exec(function(err, characters) {
+    if (err) {
+      console.log(err);
+      return res.send(500, 'Error getting characters');
+    }
+    res.send({ characters: characters});
+  });
+});
+
+/**
+ * All male characters
+ */
+app.get('/api/characters/female', function(req, res) {
+  Character
+  .find()
+  .where('gender', 'female')
+  .sort('-wins')
+  .limit(100)
+  .exec(function(err, characters) {
+    if (err) {
+      console.log(err);
+      return res.send(500, 'Error getting characters');
+    }
+    res.send({ characters: characters});
+  });
+});
+
 
 app.get('/api/characters/all', function(req, res) {
   Character
