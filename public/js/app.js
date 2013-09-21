@@ -547,7 +547,11 @@ App.Router = Backbone.Router.extend({
     'male':                 'maleCharacters',
     'female':               'femaleCharacters',
     'top/:race':            'topRace',
+    'male/:race':           'maleRace',
+    'female/:race':         'femaleRace',
     'top/:race/:bloodline': 'topBloodline',
+    'male/:race/:bloodline': 'maleBloodline',
+    'female/:race/:bloodline': 'femaleBloodline',
     'azlist':               'alphabeticalCharacters',
     'add':                  'addCharacter',
     'characters/:id':       'characterDetails'
@@ -598,11 +602,53 @@ App.Router = Backbone.Router.extend({
     });
   },
 
-
-  topBloodline: function(race, bloodline) {
+  maleRace: function(race) {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/top/' + race + '/' + bloodline,
+      url: '/api/characters/male/' + race,
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+  femaleRace: function(race) {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/female/' + race,
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+
+  maleBloodline: function(race, bloodline) {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/male/' + race + '/' + bloodline,
+      success: function(data) {
+        App.Views.charactersView = new App.Views.Characters({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+  femaleBloodline: function(race, bloodline) {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/female/' + race + '/' + bloodline,
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
