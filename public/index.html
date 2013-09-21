@@ -170,7 +170,7 @@
 
 
                 <li class="hall-of-shame-menu"><a href="/hall-of-shame">Hall of Shame</a></li>
-                <li class="add-menu"><a href="/add">Add Character</a></li>
+                <li class="add-menu"><a href="/add">Add</a></li>
             </ul>
         </div>
     </div>
@@ -391,7 +391,7 @@
 </script>
 
 <script id="character-summary-template" type="text/template">
-    <div class="jumbotron"><img src="../img/<%= model.race %>.png"><%= model.name %>
+    <div class="jumbotron"><img src="/img/<%= model.race %>.png"><%= model.name %>
         <a class="btn btn-small" href="https://gate.eveonline.com/Profile/<%= model.name %>">EVE Profile</a>
         <button id="update" class="btn btn-primary btn-small">Update Avatar</button>
         <button id="report" class="btn btn-warning btn-small">Report</button>
@@ -414,7 +414,7 @@
 
 
     <div class="page-header">
-      <h1>Previous Matches <small>Winners are highlighted in green</small></h1>
+      <h2>Previous Matches <small>Winners are highlighted in green</small></h2>
     </div>
     <div class="past-matches"></div>
 
@@ -454,6 +454,7 @@
 <script src="js/backbone-min.js"></script>
 <!--<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>-->
 <script src="js/bootstrap.min.js"></script>
+<script src="js/retina.js"></script>
 <script src="js/toastr.js"></script>
 <script src="js/app.js"></script>
 </body>

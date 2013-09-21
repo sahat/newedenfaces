@@ -497,6 +497,7 @@ app.put('/api/vote', function(req, res, next) {
     return res.send(200);
   }
   async.parallel([
+    // update winer
     function(callback){
       var updateCharacter = {
         $inc: { wins: 1 },
@@ -507,6 +508,7 @@ app.put('/api/vote', function(req, res, next) {
         callback(null);
       });
     },
+    // update loser
     function(callback) {
       var updateCharacter = {
         $inc: { losses: 1 },
@@ -985,7 +987,10 @@ app.del('/api/characters/:characterId', function(req, res, next) {
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
     if (err) return next(err);
-    res.send(character);
+    console.log(character);
+    var characterCopy = character.toObject();
+    characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
+    res.send(characterCopy);
   });
 });
 

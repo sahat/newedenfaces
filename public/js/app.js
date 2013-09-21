@@ -403,8 +403,6 @@ App.Views.CharacterSummary = Backbone.View.extend({
       $pastMatches.append(templateString);
     });
 
-
-
     return this;
   },
 
