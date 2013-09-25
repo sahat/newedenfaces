@@ -7,7 +7,6 @@ var express = require('express'),
     path = require('path'),
     request = require('request'),
     xml2js = require('xml2js'),
-    newrelic = require('newrelic'),
     mongoose = require('mongoose'),
     Grid = require('gridfs-stream'),
     _ = require('underscore');
@@ -493,10 +492,10 @@ app.put('/api/vote', function(req, res, next) {
   var winner = req.body.winner;
   var loser = req.body.loser;
 
-  if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
-    console.warn('Already voted, this vote will not be counted');
-    return res.send(200);
-  }
+  // if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
+  //   console.warn('Already voted, this vote will not be counted');
+  //   return res.send(200);
+  // }
   async.parallel([
     // update winer
     function(callback){
