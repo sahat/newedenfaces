@@ -77,7 +77,8 @@ app.post('/api/report', function(req, res) {
     if (character) {
       character.reportCount++;
       if (character.reportCount >= 3) {
-        request.del('/api/characters/' + characterId + '?secretCode=' + config.secretCode);
+        var baseUrl = req.protocol + '://' + req.host;
+        request.del(baseUrl + '/api/characters/' + characterId + '?secretCode=' + config.secretCode);
         res.send(200, character.name + ' has been removed');
       } else {
         character.save(function(err) {
@@ -85,7 +86,31 @@ app.post('/api/report', function(req, res) {
           res.send(200, character.name + ' has been reported');
         });
       }
+    } else {
+      res.send(404);
     }
+  });
+});
+
+/**
+ * POST /report/gender
+ * Increment character's report count. After (3) successive strikes,
+ * that character gets deleted from the database.
+ */
+app.post('/api/report/gender', function(req, res) {
+  var characterId = req.body.characterId;
+  Character.findOne({ characterId: characterId }, function(err, user) {
+    if (err) throw err;
+    if (user) {
+      user.wrongGender = true;
+      user.save(function(err) {
+        if (err) throw err;
+        res.send(200);
+      });
+    } else {
+      res.send(404);
+    }
+
   });
 });
 
@@ -1101,19 +1126,10 @@ app.get('/api/characters/:id', function(req, res) {
 //   });
 // });
 
-app.post('/api/wrong-gender', function(req, res) {
-  var id = req.body.characterId;
-  Character.findOne({ characterId: id }, function(err, user) {
-    if (err) return next(err);
-    user.wrongGender = true;
-    user.save(function(err) {
-      if (err) return next(err);
-      res.send(200, 'Successfully notified about wrong character gender');
-    });
-  });
-});
 
-// PushState redirects
+/**
+ * Backbone pushstate redirects
+ */
 app.get('/add', function(req, res) {
   res.redirect('/#add');
 });
@@ -1137,8 +1153,6 @@ app.get('/top/:race/:bloodline', function(req, res) {
 app.get('/characters/:id', function(req, res) {
   res.redirect('/#characters/' + req.params.id);
 });
-
-
 
 app.get('/male', function(req, res) {
   res.redirect('/#male');
@@ -1164,9 +1178,6 @@ app.get('/female/:race/:bloodline', function(req, res) {
   res.redirect('/#female/' + req.params.race + '/' + req.params.bloodline);
 });
 
-
-
-// Starts the express application
 app.listen(PORT, IP_ADDRESS, function() {
-  console.log('Express server started listening on %s:%d', IP_ADDRESS, PORT);
+  console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
 });

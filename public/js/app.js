@@ -389,7 +389,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
   wrongGender: function() {
     var characterId = this.model.get('characterId');
-    $.post('/api/wrong-gender', { characterId: characterId }, function(data) {
+    $.post('/api/report/gender', { characterId: characterId }, function(data) {
       toastr.info('Your report has been submitted');
     });
   },
