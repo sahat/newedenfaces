@@ -562,17 +562,13 @@ app.get('/api/characters/female', function(req, res) {
   });
 });
 
-
-// displays character count and used for search bar autocomplete
+/**
+ * GET /api/characters/all
+ * Returns a list of all characters (name only)
+ */
 app.get('/api/characters/all', function(req, res) {
-  Character
-  .find()
-  .select('name characterId')
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
+  Character.find(null, 'name', function (err, characters) {
+    if (err) throw err;
     res.send({ characters: characters });
   });
 });
