@@ -516,7 +516,7 @@ app.put('/api/vote', function(req, res, next) {
 });
 
 /**
- * GET /shame
+ * GET /api/characters/shame
  * Return top (25) lowest ranked characters for the hall of shame
  */
 app.get('/api/characters/shame', function(req, res) {
@@ -530,17 +530,18 @@ app.get('/api/characters/shame', function(req, res) {
   });
 });
 
+/**
+ * GET /api/characters/top
+ * Return top (100) highest ranked characters.
+ */
 app.get('/api/characters/top', function(req, res) {
   Character
   .find()
   .sort('-wins')
   .limit(100)
   .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
+    if (err) throw err;
+    res.send({ characters: characters });
   });
 });
 
