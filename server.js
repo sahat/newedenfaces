@@ -78,8 +78,10 @@ app.post('/api/report', function(req, res) {
       character.reportCount++;
       if (character.reportCount >= 3) {
         var baseUrl = req.protocol + '://' + req.host;
-        request.del(baseUrl + '/api/characters/' + characterId + '?secretCode=' + config.secretCode);
-        res.send(200, character.name + ' has been removed');
+        request.del(baseUrl + '/api/characters/' + characterId + '?secretCode=' + config.secretCode, function(e, r, b) {
+          if (e) throw err;
+          res.send(200, character.name + ' has been removed');
+        });
       } else {
         character.save(function(err) {
           if (err) throw err;
@@ -111,6 +113,22 @@ app.post('/api/report/gender', function(req, res) {
       res.send(404);
     }
 
+  });
+});
+
+/**
+ * DEL /api/characters/:id
+ * Delete a character and all its images from database
+ * Requres the secret code as a querystring to prevent abuse
+ */
+app.del('/api/characters/:id', function(req, res) {
+  var characterId = req.params.id;
+  if (req.query.secretCode !== config.secretCode) {
+    return res.send(500, 'Invalid Secret Code');
+  }
+  Character.remove({ characterId: characterId }, function(err) {
+    if (err) throw err;
+    res.send(200);
   });
 });
 
@@ -1038,61 +1056,7 @@ app.post('/api/characters', function(req, res, next) {
 });
 
 
-/**
- * DEL /characterId
- * Delete a character and all its images from database
- * All five images are deleted in concurrently with async.parallel
- * This function requres the secret code as a querystring to prevent abuse
- */
-app.del('/api/characters/:characterId', function(req, res, next) {
-  var characterId = req.params.characterId;
 
-  if (req.query.secretCode !== config.secretCode) {
-    return next(new Error('Must have a valid secret code'));
-  }
-
-  Character.remove({ characterId: characterId }, function(err) {
-    if (err) return next(err);
-
-    async.parallel([
-      function(callback){
-        gfs.remove({ filename: characterId + '_32.jpg' }, function (err) {
-          if (err) console.error(err);
-          callback(null);
-        });
-      },
-      function(callback) {
-        gfs.remove({ filename: characterId + '_64.jpg' }, function (err) {
-          if (err) console.error(err);
-          callback(null);
-        });        
-      },
-      function(callback){
-        gfs.remove({ filename: characterId + '_128.jpg' }, function (err) {
-          if (err) console.error(err);
-          callback(null);
-        });   
-      },
-      function(callback){
-        gfs.remove({ filename: characterId + '_256.jpg' }, function (err) {
-          if (err) console.error(err);
-          callback(null);
-        });  
-      },
-      function(callback){
-        gfs.remove({ filename: characterId + '_512.jpg' }, function (err) {
-          if (err) console.error(err);
-          callback(null);
-        });
-      }
-    ],
-    function(err) {
-      if (err) return next(err);
-      console.log('Character', characterId, 'has been removed from GridFS');
-      res.send(200);
-    });
-  });
-});
 
 
 /**
