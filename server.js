@@ -85,10 +85,8 @@ app.post('/api/report', function(req, res) {
       if (character.reportCount >= 3) {
         var url = req.protocol + '://' + req.host + ':' + PORT +
           '/api/characters/' + characterId + '?secretCode=' + config.secretCode;
-        request.del(url, function(e, r, b) {
-          if (e) throw err;
-          res.send(r.statusCode, character.name + ' has been reported');
-        });
+        request.del(url);
+        res.send(200);
       } else {
         character.save(function(err) {
           if (err) throw err;
@@ -103,8 +101,8 @@ app.post('/api/report', function(req, res) {
 
 /**
  * POST /report/gender
- * Increment character's report count. After (3) successive strikes,
- * that character gets deleted from the database.
+ * Marks a character as being an invalid gender,
+ * e.g. Actual "male" avatar has been added as "female"
  */
 app.post('/api/report/gender', function(req, res) {
   var characterId = req.body.characterId;
@@ -119,7 +117,6 @@ app.post('/api/report/gender', function(req, res) {
     } else {
       res.send(404);
     }
-
   });
 });
 
@@ -129,10 +126,9 @@ app.post('/api/report/gender', function(req, res) {
  * Requres the secret code as a querystring to prevent abuse
  */
 app.del('/api/characters/:id', function(req, res) {
-  console.log('hitting it')
   var characterId = req.params.id;
   if (req.query.secretCode !== config.secretCode) {
-    return res.send(500, 'Invalid Secret Code');
+    return res.send(500);
   }
   Character.remove({ characterId: characterId }, function(err) {
     if (err) throw err;
