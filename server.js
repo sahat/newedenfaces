@@ -22,21 +22,17 @@ function isNumber() {
 
 var config = require('./config.js');
 
-
 // OpenShift Configuration
 var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
   process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
 var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
   process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
-
-// Application globals
 app = express();
 parser = new xml2js.Parser();
 
 mongoose.connect(config.mongoose);
 gfs = Grid(mongoose.connection.db, mongoose.mongo);
-
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -62,7 +58,6 @@ var Match = mongoose.model('Match', {
   characters: Array
 });
 
-
 // Express configuration
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -71,9 +66,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /**
  * POST /report
- * Reported players will be automatically deleted after 3 strikes
+ * Increment character's report count. After (3) successive strikes,
+ * that character will be deleted from the database.
  */
-app.post('/api/report', function(req, res, next) {
+app.post('/api/report', function(req, res) {
   var characterId = req.body.characterId;
   var ipAddress = req.connection.remoteAddress;
   Character.findOne({ characterId: characterId }, function(err, character) {
