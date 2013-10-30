@@ -11,6 +11,11 @@ var express = require('express'),
     Grid = require('gridfs-stream'),
     _ = require('underscore');
 
+var profiler = require('nodefly-v8-profiler');
+require('nodetime').profile({
+  accountKey: 'd8cfc901fdad39ee66c23d74a7b4b43e9541ba16',
+  appName: 'newedenfaces'
+});
 
 // My stuff
 var helpers = require('./helpers'),
