@@ -72,22 +72,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/api/report', function(req, res) {
   var characterId = req.body.characterId;
   var ipAddress = req.connection.remoteAddress;
+
   Character.findOne({ characterId: characterId }, function(err, character) {
-    if (err) return next(err);
-    character.reportCount++;
-    if (character.reportCount >= 3) {
-      var url = 'http://' + IP_ADDRESS + ':' + PORT + '/api/characters/' +
-                characterId + '?secretCode=' + config.secretCode;
-      request.del(url);
-      console.log(character.name, 'has been removed by', ipAddress);
-      res.send(200, character.name + ' has been removed');
-    } else {
-      character.save(function(err) {
-        if (err) return next(err);
-        console.log(character.name, 'has been reported by', ipAddress);
-        res.send(200, character.name + ' has been reported');
-      });
+    if (err) throw err;
+    if (character) {
+      character.reportCount++;
+      if (character.reportCount >= 3) {
+        request.del('/api/characters/' + characterId + '?secretCode=' + config.secretCode);
+        console.log(character.name, 'has been removed by', ipAddress);
+        res.send(200, character.name + ' has been removed');
+      } else {
+        character.save(function(err) {
+          if (err) return next(err);
+          console.log(character.name, 'has been reported by', ipAddress);
+          res.send(200, character.name + ' has been reported');
+        });
+      }
     }
+
   });
 });
 
