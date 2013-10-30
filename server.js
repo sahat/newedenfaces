@@ -69,14 +69,6 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// Error handling middleware
-app.use(function(err, req, res, next) {
-  console.error(new Date, err);
-  res.send(500);
-});
-
-
 /**
  * POST /report
  * Reported players will be automatically deleted after 3 strikes
