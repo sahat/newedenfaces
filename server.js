@@ -467,7 +467,7 @@ app.get('/api/characters', function(req, res, next) {
 
 /**
  * PUT /api/vote
- * Update winning and losing characters
+ * Update winning and losing count for characters
  */
 app.put('/api/vote', function(req, res) {
   var clientIpAddress = req.connection.remoteAddress;
@@ -500,7 +500,6 @@ app.put('/api/vote', function(req, res) {
     viewedCharacters.splice(index, 1);
     res.send(200);
   });
-
 });
 
 /**
@@ -534,38 +533,32 @@ app.get('/api/characters/top', function(req, res) {
 });
 
 /**
- * All male characters
+ * GET /api/characters/male
+ * Returns top (100) highest ranked male characters
  */
 app.get('/api/characters/male', function(req, res) {
   Character
-  .find()
   .where('gender', 'male')
   .sort('-wins')
   .limit(100)
   .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
+    if (err) throw err;
+    res.send({ characters: characters });
   });
 });
 
 /**
- * All male characters
+ * GET /api/characters/male
+ * Returns top (100) highest ranked female characters
  */
 app.get('/api/characters/female', function(req, res) {
   Character
-  .find()
   .where('gender', 'female')
   .sort('-wins')
   .limit(100)
   .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
+    if (err) throw err;
+    res.send({ characters: characters });
   });
 });
 
