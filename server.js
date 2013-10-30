@@ -1170,11 +1170,3 @@ app.get('/female/:race/:bloodline', function(req, res) {
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express server started listening on %s:%d', IP_ADDRESS, PORT);
 });
-
-
-// Gracefully logs an error message and kills the process
-// Supervisor will intercept it and restart the application
-process.on('uncaughtException', function(err) {
-  console.error(err);
-  process.exit(1);
-});
