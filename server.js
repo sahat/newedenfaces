@@ -1,44 +1,40 @@
 // NPM stuff
 var express = require('express'),
-    async = require('async'),
-    crypto = require('crypto'),
-    http = require('http'),
-    fs = require('fs'),
-    path = require('path'),
-    request = require('request'),
-    xml2js = require('xml2js'),
-    mongoose = require('mongoose'),
-    Grid = require('gridfs-stream'),
-    _ = require('underscore');
+  async = require('async'),
+  crypto = require('crypto'),
+  http = require('http'),
+  fs = require('fs'),
+  path = require('path'),
+  request = require('request'),
+  xml2js = require('xml2js'),
+  mongoose = require('mongoose'),
+  Grid = require('gridfs-stream'),
+  _ = require('underscore');
 
-var profiler = require('nodefly-v8-profiler');
 require('nodetime').profile({
   accountKey: 'd8cfc901fdad39ee66c23d74a7b4b43e9541ba16',
   appName: 'newedenfaces'
 });
 
-// My stuff
-var helpers = require('./helpers'),
-    config = require('./config.js');
+function isNumber() {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+var config = require('./config.js');
 
 
-// OpenShift required environment variables
-// Defaults to 127.0.0.1:8080 if running on localhost
+// OpenShift Configuration
 var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
-    process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
+  process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
 var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
-    process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+  process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
 
 // Application globals
 app = express();
 parser = new xml2js.Parser();
-mongoose.connect(config.mongoose, function(err) {
-  if (err) {
-    console.error('database connection error');
-    process.exit();
-  }
-});
+
+mongoose.connect(config.mongoose);
 gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 
@@ -112,7 +108,7 @@ app.post('/api/report', function(req, res, next) {
  *
  */
 app.put('/api/grid/:characterId', function(req, res) {
-  if (helpers.isNumber(req.params.characterId)) {
+  if (isNumber(req.params.characterId)) {
     var characterId = req.params.characterId;
   } else {
     return res.send(500, 'Character ID must be a number')
