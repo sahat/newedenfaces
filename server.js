@@ -568,19 +568,16 @@ app.get('/api/characters/shame', function(req, res) {
 /**
  * GET /api/characters/top
  * Return top (100) highest ranked characters.
- * Filter by query string.
+ * Filter gender, race, bloodline by a querystring.
  */
 app.get('/api/characters/top', function(req, res) {
-  var gender = req.query.gender;
-  var race = req.query.race;
-  var bloodline = req.query.bloodline;
-
-  var query = Character.find().sort('-wins').lean();
-
-  if (gender) {
-    query = query.where('gender').equals(gender);
+  var conditions = {};
+  for (var key in req.query) {
+    if (req.query.hasOwnProperty(key)) {
+      conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
+    }
   }
-
+  var query = Character.find(conditions).sort('-wins').lean();
   query.exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
@@ -588,28 +585,16 @@ app.get('/api/characters/top', function(req, res) {
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
       return 0;
     });
+    characters = characters.slice(0, 100);
     res.send({ characters: characters });
   });
 });
 
-app.get('/api/characters/top/:race', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  Character
-    .find()
-    .where('race').equals(race)
-    .sort('-wins')
-    .limit(100)
-    .exec(function(err, characters) {
-      if (err) {
-        console.log(err);
-        return res.send(500, 'Error getting characters');
-      }
-      res.send({ characters: characters});
-    });
-});
+//app.get('/api/characters/top/:race', function(req, res) {
+//});
 
 /**
- * GET /leaderboard
+ * GET /api/leaderboard
  * Returns Top 14 characters, sorted by the winning percentage
  */
 app.get('/api/leaderboard', function(req, res) {
