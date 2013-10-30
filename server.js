@@ -60,10 +60,16 @@ var Match = mongoose.model('Match', {
 });
 
 // Express configuration
+app.use(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
 
 /**
  * POST /report
@@ -77,10 +83,11 @@ app.post('/api/report', function(req, res) {
     if (character) {
       character.reportCount++;
       if (character.reportCount >= 3) {
-        var baseUrl = req.protocol + '://' + req.host;
-        request.del(baseUrl + '/api/characters/' + characterId + '?secretCode=' + config.secretCode, function(e, r, b) {
+        var url = req.protocol + '://' + req.host + ':' + PORT +
+          '/api/characters/' + characterId + '?secretCode=' + config.secretCode;
+        request.del(url, function(e, r, b) {
           if (e) throw err;
-          res.send(200, character.name + ' has been removed');
+          res.send(r.statusCode, character.name + ' has been reported');
         });
       } else {
         character.save(function(err) {
@@ -122,6 +129,7 @@ app.post('/api/report/gender', function(req, res) {
  * Requres the secret code as a querystring to prevent abuse
  */
 app.del('/api/characters/:id', function(req, res) {
+  console.log('hitting it')
   var characterId = req.params.id;
   if (req.query.secretCode !== config.secretCode) {
     return res.send(500, 'Invalid Secret Code');
