@@ -465,54 +465,48 @@ app.get('/api/characters', function(req, res, next) {
 
 
 /**
- * PUT /vote
- * This where winner and loser scores are updated
+ * PUT /api/vote
+ * Update winning and losing characters
  */
-app.put('/api/vote', function(req, res, next) {
+app.put('/api/vote', function(req, res) {
+//  if (!req.body.winner || !req.body.loser) {
+//    return res.send(500, 'Winner ID or Loser ID is missing');
+//  }
   var ipAddress = req.connection.remoteAddress;
-
-  if (!req.body.winner || !req.body.loser) {
-    return next(new Error('Winner/Loser IDs are invalid or empty'));
-  }
-
   var winner = req.body.winner;
   var loser = req.body.loser;
+  try {
+    async.parallel([
+      function(callback) {
+        var update = {
+          $inc: { wins: 1 },
+          $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
+        };
+        Character.update({ characterId: winner }, update, function(err) {
+          if (err) throw err;
+          callback(null);
+        });
+      },
+      function(callback) {
+        var update = {
+          $inc: { losses: 1 },
+          $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
+        };
+        Character.update({ characterId: loser }, update, function(err) {
+          if (err) throw err;
+          callback(null);
+        });
+      }
+    ], function(err) {
+      if (err) throw err;
+      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(ipAddress);
+      viewedCharacters.splice(index, 1);
+      res.send(200);
+    });
+  } catch(e) {
+    res.send(404);
+  }
 
-  // if (_.contains(votedCharacters , winner) || _.contains(votedCharacters, loser)) {
-  //   console.warn('Already voted, this vote will not be counted');
-  //   return res.send(200);
-  // }
-  async.parallel([
-    // update winer
-    function(callback){
-      var updateCharacter = {
-        $inc: { wins: 1 },
-        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
-      };
-      Character.update({ characterId: winner }, updateCharacter, function(err) {
-        if (err) return next(err);
-        callback(null);
-      });
-    },
-    // update loser
-    function(callback) {
-      var updateCharacter = {
-        $inc: { losses: 1 },
-        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
-      };
-      Character.update({ characterId: loser }, updateCharacter, function(err) {
-        if (err) return next(err);
-        callback(null);
-      });
-    }
-  ],
-  function(err) {
-    if (err) return next(err);
-    votedCharacters.push(winner, loser);
-    var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(ipAddress);
-    viewedCharacters.splice(index, 1);
-    res.send(200);
-  });
 });
 
 /**
