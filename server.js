@@ -31,7 +31,8 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
 app = express();
 parser = new xml2js.Parser();
 
-mongoose.connect(config.mongoose);
+mongoose.connect('localhost');
+//mongoose.connect(config.mongoose);
 gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 // Mongoose schema
@@ -469,43 +470,36 @@ app.get('/api/characters', function(req, res, next) {
  * Update winning and losing characters
  */
 app.put('/api/vote', function(req, res) {
-//  if (!req.body.winner || !req.body.loser) {
-//    return res.send(500, 'Winner ID or Loser ID is missing');
-//  }
-  var ipAddress = req.connection.remoteAddress;
+  var clientIpAddress = req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
-  try {
-    async.parallel([
-      function(callback) {
-        var update = {
-          $inc: { wins: 1 },
-          $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
-        };
-        Character.update({ characterId: winner }, update, function(err) {
-          if (err) throw err;
-          callback(null);
-        });
-      },
-      function(callback) {
-        var update = {
-          $inc: { losses: 1 },
-          $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
-        };
-        Character.update({ characterId: loser }, update, function(err) {
-          if (err) throw err;
-          callback(null);
-        });
-      }
-    ], function(err) {
-      if (err) throw err;
-      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(ipAddress);
-      viewedCharacters.splice(index, 1);
-      res.send(200);
-    });
-  } catch(e) {
-    res.send(404);
-  }
+  if (!winner || !loser) return res.send(404);
+  async.parallel([
+    function(callback) {
+      var update = {
+        $inc: { wins: 1 },
+        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
+      };
+      Character.update({ characterId: winner }, update, function(err) {
+        if (err) throw err;
+        callback(null);
+      });
+    },
+    function(callback) {
+      var update = {
+        $inc: { losses: 1 },
+        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
+      };
+      Character.update({ characterId: loser }, update, function(err) {
+        if (err) throw err;
+        callback(null);
+      });
+    }
+  ], function() {
+    var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(clientIpAddress);
+    viewedCharacters.splice(index, 1);
+    res.send(200);
+  });
 
 });
 
