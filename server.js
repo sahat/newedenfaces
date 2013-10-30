@@ -67,7 +67,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /**
  * POST /report
  * Increment character's report count. After (3) successive strikes,
- * that character will be deleted from the database.
+ * that character gets deleted from the database.
  */
 app.post('/api/report', function(req, res) {
   var characterId = req.body.characterId;
@@ -515,22 +515,20 @@ app.put('/api/vote', function(req, res, next) {
   });
 });
 
-
 /**
  * GET /shame
- * Top 25 worst characters for the hall of shame
+ * Return top (25) lowest ranked characters for the hall of shame
  */
-app.get('/api/characters/shame', function(req, res, next) {
+app.get('/api/characters/shame', function(req, res) {
   Character
   .find()
   .sort('-losses')
   .limit(25)
   .exec(function(err, characters) {
-    if (err) return next(err);
-    res.send({ characters: characters});
+    if (err) throw err;
+    res.send({ characters: characters });
   });
 });
-
 
 app.get('/api/characters/top', function(req, res) {
   Character
