@@ -453,12 +453,11 @@ Character
 
 
 /**
- * GET /characters
+ * GET /api/characters
  * Retrieves 2 characters per user and increments global counter.
  */
-app.get('/api/characters', function(req, res, next) {
-
-  var myIpAddress = req.header('x-forwarded-for') || req.connection.remoteAddress;
+app.get('/api/characters', function(req, res) {
+  var myIpAddress = req.connection.remoteAddress;
   var randomString = crypto.randomBytes(20).toString('hex');
 
   // When all characters have been voted on...
@@ -549,6 +548,8 @@ app.put('/api/vote', function(req, res) {
   });
 });
 
+
+
 /**
  * GET /api/characters/shame
  * Return top (25) lowest ranked characters for the hall of shame
@@ -573,10 +574,37 @@ app.get('/api/characters/top', function(req, res) {
   .find()
   .sort('-wins')
   .limit(100)
+  .lean()
   .exec(function(err, characters) {
     if (err) throw err;
+    characters.sort(function(a, b) {
+      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+      return 0;
+    });
     res.send({ characters: characters });
   });
+});
+
+/**
+ * GET /leaderboard
+ * Returns Top 14 characters, sorted by the winning percentage
+ */
+app.get('/api/leaderboard', function(req, res) {
+  Character
+    .find()
+    .sort('-wins')
+    .limit(14)
+    .lean()
+    .exec(function(err, characters) {
+      if (err) throw err;
+      characters.sort(function(a, b) {
+        if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+        if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+        return 0;
+      });
+      res.send({ characters: characters });
+    });
 });
 
 /**
@@ -588,8 +616,14 @@ app.get('/api/characters/male', function(req, res) {
   .where('gender', 'male')
   .sort('-wins')
   .limit(100)
+  .lean()
   .exec(function(err, characters) {
     if (err) throw err;
+    characters.sort(function(a, b) {
+      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+      return 0;
+    });
     res.send({ characters: characters });
   });
 });
@@ -603,8 +637,14 @@ app.get('/api/characters/female', function(req, res) {
   .where('gender', 'female')
   .sort('-wins')
   .limit(100)
+  .lean()
   .exec(function(err, characters) {
     if (err) throw err;
+    characters.sort(function(a, b) {
+      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+      return 0;
+    });
     res.send({ characters: characters });
   });
 });
@@ -756,30 +796,23 @@ app.get('/api/characters/female/:race/:bloodline', function(req, res) {
   });
 });
 
-
 /**
- * GET /leaderboard
- * Displays top 14 characters in the footer section
+ * GET /api/characters/:id
+ * Returns specified character
  */
-app.get('/api/leaderboard', function(req, res, next) {
-  Character
-  .find()
-  .sort('-wins')
-  .limit(14)
-  .lean()
-  .exec(function(err, characters) {
-    if (err) return next(err);
-
-    // Sort by winning percentage
-    characters.sort(function(a, b) {
-      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-      return 0;
-    });
-
-    res.send({ characters: characters });
+app.get('/api/characters/:id', function(req, res) {
+  Character.findOne({ characterId: req.params.id }, function(err, character) {
+    if (err) throw err;
+    if (character) {
+      var characterCopy = character.toObject();
+      characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
+      res.send(characterCopy);
+    } else {
+      res.send(404);
+    }
   });
 });
+
 
 
 /**
@@ -1060,25 +1093,6 @@ app.post('/api/characters', function(req, res, next) {
 });
 
 
-
-
-
-/**
- * GET /characters/:id
- * Returns JSON for a single specified character
- */
-app.get('/api/characters/:id', function(req, res) {
-  Character.findOne({ characterId: req.params.id }, function(err, character) {
-    if (err) throw err;
-    if (character) {
-      var characterCopy = character.toObject();
-      characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
-      res.send(characterCopy);
-    } else {
-      res.send(404);
-    }
-  });
-});
 
 
 // app.post('/gender', function(req, res) {
