@@ -568,14 +568,20 @@ app.get('/api/characters/shame', function(req, res) {
 /**
  * GET /api/characters/top
  * Return top (100) highest ranked characters.
+ * Filter by query string.
  */
 app.get('/api/characters/top', function(req, res) {
-  Character
-  .find()
-  .sort('-wins')
-  .limit(100)
-  .lean()
-  .exec(function(err, characters) {
+  var gender = req.query.gender;
+  var race = req.query.race;
+  var bloodline = req.query.bloodline;
+
+  var query = Character.find().sort('-wins').lean();
+
+  if (gender) {
+    query = query.where('gender').equals(gender);
+  }
+
+  query.exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
@@ -584,6 +590,22 @@ app.get('/api/characters/top', function(req, res) {
     });
     res.send({ characters: characters });
   });
+});
+
+app.get('/api/characters/top/:race', function(req, res) {
+  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
+  Character
+    .find()
+    .where('race').equals(race)
+    .sort('-wins')
+    .limit(100)
+    .exec(function(err, characters) {
+      if (err) {
+        console.log(err);
+        return res.send(500, 'Error getting characters');
+      }
+      res.send({ characters: characters});
+    });
 });
 
 /**
@@ -661,21 +683,6 @@ app.get('/api/characters/all', function(req, res) {
 });
 
 
-app.get('/api/characters/top/:race', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  Character
-  .find()
-  .where('race').equals(race)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
 
 app.get('/api/characters/male/:race', function(req, res) {
   var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
