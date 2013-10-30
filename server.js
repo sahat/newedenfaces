@@ -1069,10 +1069,14 @@ app.post('/api/characters', function(req, res, next) {
  */
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
-    if (err) return next(err);
-    var characterCopy = character.toObject();
-    characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
-    res.send(characterCopy);
+    if (err) throw err;
+    if (character) {
+      var characterCopy = character.toObject();
+      characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
+      res.send(characterCopy);
+    } else {
+      res.send(404);
+    }
   });
 });
 
