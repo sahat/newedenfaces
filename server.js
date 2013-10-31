@@ -38,11 +38,6 @@ gfs = Grid(mongoose.connection.db, mongoose.mongo);
 var Character = mongoose.model('Character', {
   characterId: { type: String, unique: true, index: true },
   name: String,
-  image32: String,
-  image64: String,
-  image128: String,
-  image256: String,
-  image512: String,
   race: String,
   gender: String,
   wrongGender: Boolean,
@@ -811,266 +806,58 @@ app.get('/api/characters/:id', function(req, res) {
  * Adds new character to the database.
  */
 app.post('/api/characters', function(req, res) {
-  var charName = decodeURIComponent(req.body.name);
   var gender = req.body.gender;
-
-  // try catch XML parses
-  // remove image reference fields and us EVE Online url
-
+  var charName = decodeURIComponent(req.body.name);
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charName;
-
   async.waterfall({
     characterNameToId: function(callback){
       request.get({ url: characterIdUrl }, function(e, r, xml) {
         if (e) throw e;
-        parser.parseString(xml, function(err, response) {
+        parser.parseString(xml, function(err, parsedXml) {
           if (err) throw err;
-          if (!response.eveapi || !response.eveapi.result[0] ||
-            !response.eveapi.result[0].rowset[0] || 
-            !response.eveapi.result[0].rowset[0].row[0]) {
-            
-            console.log('EVEAPI is not defined');
-            return res.send(500, 'Character name is not found');
-          
-
-          } else if (response.eveapi.error) {
-            console.log('Character name is not found');
-            return res.send(404, 'Character name is not found');
+          try {
+            var characterId = parsedXml.eveapi.result[0].rowset[0].row[0].$.characterID;
+          } catch(e) {
+            return res.send(404, 'Character ID Not Found');
           }
-
-          var characterId = response.eveapi.result[0].rowset[0].row[0].$.characterID;
-          var image32 = 'https://image.eveonline.com/Character/' + characterId + '_32.jpg';
-          var image64 = 'https://image.eveonline.com/Character/' + characterId + '_64.jpg';
-          var image128 = 'https://image.eveonline.com/Character/' + characterId + '_128.jpg';
-          var image256 = 'https://image.eveonline.com/Character/' + characterId + '_256.jpg';
-          var image512 = 'https://image.eveonline.com/Character/' + characterId + '_512.jpg';
-          var characterInfoUrl = 'https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=' + characterId;
-
-          // check if character already exists
-          Character.findOne({'characterId': characterId }, function(err, character) {
+          Character.findOne({ characterId: characterId }, function(err, character) {
             if (character) {
-              console.log('Character already exists');
-              return res.send(409, { characterId: character.characterId });
+              res.send(409, { characterId: character.characterId });
+            } else {
+              callback(null, characterId);
             }
-            callback(null, characterId, characterInfoUrl, image32, image64, image128, image256, image512);
           });
         });
       });
     },
-    function(characterId, characterInfoUrl, image32, image64, image128, image256, image512, waterfallCallback) {
-      // Save images into MonoLab
-      async.parallel({
-        one: function(callback){
-          var filename32 = image32.replace(/^.*[\\\/]/, '');
-          var filepath32 = path.join(__dirname, filename32);
-          var writestream32 = gfs.createWriteStream({ filename: filename32 });
-          var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
-
-          imageStream32.on('error', function(err) {
-            console.log('Streaming Error');
-            return res.send(500, err);
-          });
-
-          imageStream32.on('close', function(err) {
-            if (err) {
-              console.log(err);
-              return res.send(500, 'Open file error has occured');
-            }
-            var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
-            
-            gridstream.on('error', function(err) {
-              console.log('GridFS Streaming Error');
-              return res.send(500, err);
-            });
-
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath32)
-              callback(null, filename32);
-            });
-          });
-        },
-        two: function(callback) {
-          var filename64 = image64.replace(/^.*[\\\/]/, '');
-          var filepath64 = path.join(__dirname, filename64);
-          var writestream64 = gfs.createWriteStream({ filename: filename64 });
-          var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
-
-          imageStream64.on('error', function(err) {
-            console.log('Streaming Error');
-            return res.send(500, err);
-          });
-
-          imageStream64.on('close', function(err) {
-            if (err) {
-              console.log(err);
-              return res.send(500, 'File error has occured');
-            }
-            var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
-
-            gridstream.on('error', function(err) {
-              console.log('GridFS Streaming Error');
-              return res.send(500, err);
-            });
-
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath64);
-              callback(null, filename64);
-            });
-          });
-        },
-        three: function(callback){
-          var filename128 = image128.replace(/^.*[\\\/]/, '');
-          var filepath128 = path.join(__dirname, filename128);
-          var writestream128 = gfs.createWriteStream({ filename: filename128 });
-          var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
-
-          imageStream128.on('error', function(err) {
-            console.log('Streaming Error');
-            return res.send(500, err);
-          });
-
-          imageStream128.on('close', function(err) {
-            if (err) {
-              console.log(err);
-              return res.send(500, 'File error has occured');
-            }
-            var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
-            
-            gridstream.on('error', function(err) {
-              console.log('GridFS Streaming Error');
-              return res.send(500, err);
-            });
-
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath128);
-              callback(null, filename128);
-            });
-          });
-        },
-        four: function(callback){
-          var filename256 = image256.replace(/^.*[\\\/]/, '');
-          var filepath256 = path.join(__dirname, filename256);
-          var writestream256 = gfs.createWriteStream({ filename: filename256 });
-          var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
-
-          imageStream256.on('error', function(err) {
-            console.log('Streaming Error');
-            return res.send(500, err);
-          });
-
-          imageStream256.on('close', function(err) {
-            if (err) {
-              console.log(err);
-              return res.send(500, 'File error has occured');
-            }
-            var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
-
-            gridstream.on('error', function(err) {
-              console.log('GridFS Streaming Error');
-              return res.send(500, err);
-            });
-
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath256);
-              callback(null, filename256);
-            });
-          });
-        },
-        five: function(callback){
-          var filename512 = image512.replace(/^.*[\\\/]/, '');
-          var filepath512 = path.join(__dirname, filename512);
-          var writestream512 = gfs.createWriteStream({ filename: filename512 });
-          var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
-
-          imageStream512.on('error', function(err) {
-            console.log('Streaming Error');
-            return res.send(500, err);
-          });
-
-          imageStream512.on('close', function(err) {
-            if (err) {
-              console.log(err);
-              return res.send(500, 'File error has occured');
-            }
-            var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
-
-            gridstream.on('error', function(err) {
-              console.log('GridFS Streaming Error');
-              return res.send(500, err);
-            });
-
-            gridstream.on('close', function(err) {
-              fs.unlink(filepath512);
-              callback(null, filename512);
-            });
-          });
-        }
-      },
-      function(err, results) {
-          if (err) {
-            console.log(err);
-            return res.send(500, err);
+    characterInfo: function(characterId, callback) {
+      var characterInfoUrl = 'https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=' + characterId;
+      request.get({ url: characterInfoUrl }, function(e, r, xml) {
+        if (e) throw e;
+        parser.parseString(xml, function(err, parsedXml) {
+          if (err) throw err;
+          try {
+            var characterName = parsedXml.eveapi.result[0].characterName[0];
+            var race = parsedXml.eveapi.result[0].race[0];
+            var bloodline = parsedXml.eveapi.result[0].bloodline[0];
+          } catch(e) {
+            return res.send(404, 'Character Info Not Found');
           }
-          var filename32 = results.one;
-          var filename64 = results.two;
-          var filename128 = results.three;
-          var filename256 = results.four;
-          var filename512 = results.five;
-          waterfallCallback(null, characterId, characterInfoUrl, filename32, filename64, filename128, filename256, filename512);
-      });
-    },
-    function(characterId, characterInfoUrl, filename32, filename64, filename128, filename256, filename512, callback){
-      // get character info: race, bloodline, etc.
-      request.get({ url: characterInfoUrl }, function(err, r, body) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'Error in retrieving character information page');
-        }
-
-        parser.parseString(body, function(err, response) {
-          if (err) {
-            console.log(err);
-            return res.send(500, 'Error parsing XML');
-          }
-          if (!response.eveapi) {
-            console.log('EVEAPI is not defined');
-            return res.send(500, 'Character name is not found');
-          } else if (response.eveapi.error) {
-            console.log('404 while getting character info');
-            return res.send(404);
-          }
-      
-          var characterName = response.eveapi.result[0].characterName[0];
-          var race = response.eveapi.result[0].race[0];
-          var bloodline = response.eveapi.result[0].bloodline[0];
-          
           var character = new Character({
             characterId: characterId,
             name: characterName,
             race: race,
             bloodline: bloodline,
-            gender: gender || '',
-            image32: '/api/grid/' + filename32,
-            image64: '/api/grid/' + filename64,
-            image128: '/api/grid/' + filename128,
-            image256: '/api/grid/' + filename256,
-            image512: '/api/grid/' + filename512
+            gender: gender
           });
-
           character.save(function(err) {
-            if (err) {
-              console.log(err);
-              return res.send(500, 'Error while saving new character to database');
-            }
+            if (err) throw err;
             res.send(character);
           });
-          
         });
       });
-
-      callback(null, 'done');
     }
-  ]);
+  });
 });
 
 
