@@ -116,7 +116,7 @@ app.post('/api/report/gender', function(req, res) {
 
 /**
  * DEL /api/characters/:id
- * Delete a character and all its images from database
+ * Delete a character from the database
  * Requres the secret code as a querystring to prevent abuse
  */
 app.del('/api/characters/:id', function(req, res) {
@@ -565,13 +565,13 @@ app.get('/api/characters/shame', function(req, res) {
  * Filter gender, race, bloodline by a querystring.
  */
 app.get('/api/characters/top', function(req, res) {
-  var conditions = {};
+  var queryConditions = {};
   for (var key in req.query) {
     if (req.query.hasOwnProperty(key)) {
       conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  var query = Character.find(conditions).sort('-wins').lean();
+  var query = Character.find(queryConditions).sort('-wins').lean();
   query.exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
@@ -593,30 +593,9 @@ app.get('/api/characters/top', function(req, res) {
  */
 app.get('/api/leaderboard', function(req, res) {
   Character
-    .find()
-    .sort('-wins')
-    .limit(14)
-    .lean()
-    .exec(function(err, characters) {
-      if (err) throw err;
-      characters.sort(function(a, b) {
-        if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-        if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-        return 0;
-      });
-      res.send({ characters: characters });
-    });
-});
-
-/**
- * GET /api/characters/male
- * Returns top (100) highest ranked male characters
- */
-app.get('/api/characters/male', function(req, res) {
-  Character
-  .where('gender', 'male')
+  .find()
   .sort('-wins')
-  .limit(100)
+  .limit(14)
   .lean()
   .exec(function(err, characters) {
     if (err) throw err;
@@ -629,26 +608,6 @@ app.get('/api/characters/male', function(req, res) {
   });
 });
 
-/**
- * GET /api/characters/male
- * Returns top (100) highest ranked female characters
- */
-app.get('/api/characters/female', function(req, res) {
-  Character
-  .where('gender', 'female')
-  .sort('-wins')
-  .limit(100)
-  .lean()
-  .exec(function(err, characters) {
-    if (err) throw err;
-    characters.sort(function(a, b) {
-      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-      return 0;
-    });
-    res.send({ characters: characters });
-  });
-});
 
 /**
  * GET /api/characters/all
@@ -662,129 +621,9 @@ app.get('/api/characters/all', function(req, res) {
 });
 
 
-
-app.get('/api/characters/male/:race', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  Character
-  .find()
-  .where('gender', 'male')
-  .where('race').equals(race)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-
-app.get('/api/characters/female/:race', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  Character
-  .find()
-  .where('gender', 'female')
-  .where('race').equals(race)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-
-
-app.get('/api/characters/top/:race/:bloodline', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
-
-  if (req.params.bloodline === 'jin-mei') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
-        req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
-  } else if (req.params.bloodline === 'ni-kunni') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
-        req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
-  }
-
-  Character
-  .find()
-  .where('race').equals(race)
-  .where('bloodline').equals(bloodline)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-app.get('/api/characters/male/:race/:bloodline', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
-
-  if (req.params.bloodline === 'jin-mei') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
-        req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
-  } else if (req.params.bloodline === 'ni-kunni') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
-        req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
-  }
-
-  Character
-  .find()
-  .where('race').equals(race)
-  .where('bloodline').equals(bloodline)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-app.get('/api/characters/female/:race/:bloodline', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
-
-  if (req.params.bloodline === 'jin-mei') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
-        req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
-  } else if (req.params.bloodline === 'ni-kunni') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
-        req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
-  }
-
-  Character
-  .find()
-  .where('gender', 'female')
-  .where('race').equals(race)
-  .where('bloodline').equals(bloodline)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
 /**
  * GET /api/characters/:id
- * Returns specified character
+ * Returns one specified character.
  */
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
