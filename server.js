@@ -54,7 +54,7 @@ var Match = mongoose.model('Match', {
 });
 
 // Express configuration
-app.use(express.logger());
+app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
@@ -807,11 +807,11 @@ app.get('/api/characters/:id', function(req, res) {
  */
 app.post('/api/characters', function(req, res) {
   var gender = req.body.gender;
-  var charName = decodeURIComponent(req.body.name);
+  var charName = decodeURIComponent(req.body.name || '');
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charName;
-  async.waterfall({
-    characterNameToId: function(callback){
-      request.get({ url: characterIdUrl }, function(e, r, xml) {
+  async.waterfall([
+    function(callback) {
+      request.get(characterIdUrl, function(e, r, xml) {
         if (e) throw e;
         parser.parseString(xml, function(err, parsedXml) {
           if (err) throw err;
@@ -830,7 +830,7 @@ app.post('/api/characters', function(req, res) {
         });
       });
     },
-    characterInfo: function(characterId, callback) {
+    function(characterId, callback) {
       var characterInfoUrl = 'https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=' + characterId;
       request.get({ url: characterInfoUrl }, function(e, r, xml) {
         if (e) throw e;
@@ -854,10 +854,11 @@ app.post('/api/characters', function(req, res) {
             if (err) throw err;
             res.send(character);
           });
+          callback(null);
         });
       });
     }
-  });
+  ]);
 });
 
 
