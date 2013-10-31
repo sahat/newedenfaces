@@ -1,4 +1,3 @@
-// NPM stuff
 var express = require('express'),
   async = require('async'),
   crypto = require('crypto'),
@@ -808,18 +807,22 @@ app.get('/api/characters/:id', function(req, res) {
 
 
 /**
- * POST /characters
- * Adds new character to the database
- * Long and complex due to XML parsing and parallel image saving
+ * POST /api/characters
+ * Adds new character to the database.
  */
-app.post('/api/characters', function(req, res, next) {
-  var charNameInput = req.body.name;
+app.post('/api/characters', function(req, res) {
+  var charName = decodeURIComponent(req.body.name);
   var gender = req.body.gender;
-  if (!charNameInput) return next(new Error('Character name cannot be blank'));
-  charNameInput = charNameInput.replace(/\s/g, '%20'); // strip space characters
-  var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charNameInput;
+  if (!charName) {
+    return res.send(500);
+  }
 
-  console.log(charNameInput);
+  // use underscore to strp spaces
+  // try catch XML parses
+  // Grace Handle empty charname, do validation on clientside
+  // remove image reference fields and us EVE Online url
+
+  var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charName;
 
   async.waterfall([
     function(callback){
