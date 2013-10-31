@@ -813,33 +813,19 @@ app.get('/api/characters/:id', function(req, res) {
 app.post('/api/characters', function(req, res) {
   var charName = decodeURIComponent(req.body.name);
   var gender = req.body.gender;
-  if (!charName) {
-    return res.send(500);
-  }
 
-  // use underscore to strp spaces
   // try catch XML parses
-  // Grace Handle empty charname, do validation on clientside
   // remove image reference fields and us EVE Online url
 
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charName;
 
-  async.waterfall([
-    function(callback){
-      // get character id from character name
-      request.get({ url: characterIdUrl }, function(err, r, body) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'Error in retrieving character id');
-        }
-
-        parser.parseString(body, function(err, response) {
-          if (err) {
-            console.log('Exception in ParseString of adding new character');
-            return res.send(500, 'parseString exception');
-          }
-
-          if (!response.eveapi || !response.eveapi.result[0] || 
+  async.waterfall({
+    characterNameToId: function(callback){
+      request.get({ url: characterIdUrl }, function(e, r, xml) {
+        if (e) throw e;
+        parser.parseString(xml, function(err, response) {
+          if (err) throw err;
+          if (!response.eveapi || !response.eveapi.result[0] ||
             !response.eveapi.result[0].rowset[0] || 
             !response.eveapi.result[0].rowset[0].row[0]) {
             
