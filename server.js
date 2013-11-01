@@ -36,8 +36,7 @@ var Character = mongoose.model('Character', {
   wins: { type: Number, default: 0, index: true },
   losses: { type: Number, default: 0 },
   reports: { type: Number, default: 0 },
-  pastMatches: Array,
-  random: { type: Number, default: Math.random() }
+  random: { type: Number, default: Math.random(), index: true }
 });
 
 var Match = mongoose.model('Match', {
@@ -175,21 +174,13 @@ app.put('/api/vote', function(req, res) {
   if (!winner || !loser) return res.send(404);
   async.parallel([
     function(callback) {
-      var update = {
-        $inc: { wins: 1 },
-        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
-      };
-      Character.update({ characterId: winner }, update, function(err) {
+      Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
         if (err) throw err;
         callback(null);
       });
     },
     function(callback) {
-      var update = {
-        $inc: { losses: 1 },
-        $push: { pastMatches: { date: new Date, winner: winner, loser: loser } }
-      };
-      Character.update({ characterId: loser }, update, function(err) {
+      Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
         if (err) throw err;
         callback(null);
       });
@@ -284,9 +275,7 @@ app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
     if (err) throw err;
     if (character) {
-      var characterCopy = character.toObject();
-      characterCopy.pastMatches = characterCopy.pastMatches.slice(-4);
-      res.send(characterCopy);
+      res.send(character);
     } else {
       res.send(404);
     }
