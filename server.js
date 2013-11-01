@@ -49,11 +49,6 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-Character.find(function(err, characters) {
-  allCharacters = _.clone(characters);
-  allCharacters = _.shuffle(allCharacters);
-});
-
 /**
  * GET /api/characters
  * Retrieves 2 characters per user and increments global counter.
@@ -167,7 +162,6 @@ app.del('/api/characters/:id', function(req, res) {
  */
 // TODO: change to PUT /api/characters
 app.put('/api/vote', function(req, res) {
-  var clientIpAddress = req.connection.remoteAddress;
   var winner = req.body.winner;
   var loser = req.body.loser;
   if (!winner || !loser) return res.send(404);
@@ -185,8 +179,6 @@ app.put('/api/vote', function(req, res) {
       });
     }
   ], function() {
-    var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(clientIpAddress);
-    viewedCharacters.splice(index, 1);
     res.send(200);
   });
 });
@@ -218,7 +210,7 @@ app.get('/api/characters/top', function(req, res) {
       queryConditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  var query = Character.find(queryConditions).sort('-wins').lean();
+  var query = Character.find(queryConditions).where('gender', null).sort('-wins').lean();
   query.exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
@@ -342,26 +334,22 @@ app.post('/api/characters', function(req, res) {
   ]);
 });
 
+app.post('/gender', function(req, res) {
+  var id = req.body.characterId;
+  var gender = req.body.gender;
 
-
-
-// app.post('/gender', function(req, res) {
-//   var id = req.body.characterId;
-//   var gender = req.body.gender;
-
-//   Character.findOne({ characterId: id}, function(err, character) {
-//     if (character) {
-//       console.log(character);
-//       character.gender = gender;
-//       character.wrongGender = false;
-//       character.save(function(err) {
-//         if (err) throw err;
-//         res.send('updated okay!');
-//       })
-//     }
-//   });
-// });
-
+  Character.findOne({ characterId: id}, function(err, character) {
+    if (character) {
+      console.log(character);
+      character.gender = gender;
+      character.wrongGender = false;
+      character.save(function(err) {
+        if (err) throw err;
+        res.send('updated okay!');
+      })
+    }
+  });
+});
 
 /**
  * Backbone pushstate redirects
