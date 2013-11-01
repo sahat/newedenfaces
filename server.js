@@ -40,11 +40,6 @@ var Character = mongoose.model('Character', {
   voted: { type: Boolean, default: false }
 });
 
-var Match = mongoose.model('Match', {
-  date: Date,
-  characters: Array
-});
-
 // Express configuration
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -68,16 +63,36 @@ Character.find(function(err, characters) {
  * Retrieves 2 characters per user and increments global counter.
  */
 app.get('/api/characters', function(req, res) {
-  var clientIpAddress = req.connection.remoteAddress;
+  var choices = { 0: 'female', 1: 'male' };
+  var randomGender = choices[Math.round(Math.random())]
   Character
   .find({ random: { $near: [Math.random(), 0] } })
   .where('voted', false)
+  .where('gender', randomGender)
   .limit(2)
   .exec(function(err, characters) {
-    console.log(characters);
-    if (!characters.length) {
-      Character.update({}, { voted: false }, { multi: true }, function(err, nextRoundCharacters) {
-        res.send({ characters: nextRoundCharacters });
+    if (characters.length < 2) {
+      var oppositeRandomGender = randomGender === 'female' ? 'male' : 'female';
+      Character
+      .find({ random: { $near: [Math.random(), 0] } })
+      .where('voted', false)
+      .where('gender', choices[Math.round(Math.random())])
+      .limit(2)
+      .exec(function(err, characters) {
+        if (characters.length < 2) {
+          Character.find(function(err, characters) {
+            characters.forEach(function(elem, index, array) {
+              elem.voted = false;
+              elem.random = [Math.random(), 0]
+              elem.save(function(err) {
+                console.log('Updating...');
+              });
+              res.send({ error: 'Hold your horses, working...' });
+            });
+          });
+        } else {
+          res.send({ characters: characters });
+        }
       });
     } else {
       res.send({ characters: characters });
