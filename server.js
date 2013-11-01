@@ -16,17 +16,14 @@ require('nodetime').profile({
 var config = require('./config.js');
 
 // OpenShift Configuration
-var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
-  process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
-var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
-  process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+var IP_ADDRESS = process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
+var PORT = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
 
 app = express();
 parser = new xml2js.Parser();
 
 mongoose.connect('localhost');
 //mongoose.connect(config.mongoose);
-gfs = Grid(mongoose.connection.db, mongoose.mongo);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -38,8 +35,9 @@ var Character = mongoose.model('Character', {
   bloodline: String,
   wins: { type: Number, default: 0, index: true },
   losses: { type: Number, default: 0 },
-  reportCount: { type: Number, default: 0 },
-  pastMatches: Array
+  reports: { type: Number, default: 0 },
+  pastMatches: Array,
+  random: { type: Number, default: Math.random() }
 });
 
 var Match = mongoose.model('Match', {
@@ -54,10 +52,52 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+
+// GLOBAL VARIABLES
+var counter = 0;
+var allCharacters = [];
+var viewedCharacters = [];
+
+Character.find(function(err, characters) {
+  allCharacters = _.clone(characters);
+  allCharacters = _.shuffle(allCharacters);
+});
+
+/**
+ * GET /api/characters
+ * Retrieves 2 characters per user and increments global counter.
+ */
+app.get('/api/characters', function(req, res) {
+  var clientIpAddress = req.connection.remoteAddress;
+
+  if (counter > allCharacters.length) {
+    console.log('reached the end;');
+    Character.find(function(err, characters) {
+      if (err) throw err;
+      console.log(characters);
+      counter = 0;
+      viewedCharacters = [];
+      allCharacters = _.clone(characters);
+      allCharacters = _.shuffle(allCharacters);
+      res.send(allCharacters.slice(counter, counter + 2));
+      counter += 2;
+    });
+  } else {
+    console.log('not at the end');
+    if (_.contains(_.pluck(viewedCharacters, 'ip'), clientIpAddress)) {
+      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(clientIpAddress);
+      var currentCounter = viewedCharacters[index].counter;
+      res.send({ characters: allCharacters.slice(currentCounter, currentCounter + 2) });
+    } else {
+      res.send({ characters: allCharacters.slice(counter, counter + 2) });
+      viewedCharacters.push({
+        ip: clientIpAddress,
+        counter: counter
+      });
+      counter += 2;
+    }
+  }
+});
 
 /**
  * POST /report
@@ -69,8 +109,8 @@ app.post('/api/report', function(req, res) {
   Character.findOne({ characterId: characterId }, function(err, character) {
     if (err) throw err;
     if (character) {
-      character.reportCount++;
-      if (character.reportCount >= 3) {
+      character.reports++;
+      if (character.reports >= 3) {
         var url = req.protocol + '://' + req.host + ':' + PORT +
           '/api/characters/' + characterId + '?secretCode=' + config.secretCode;
         request.del(url);
@@ -124,56 +164,6 @@ app.del('/api/characters/:id', function(req, res) {
   });
 });
 
-// GLOBAL VARIABLES
-var counter = 0;
-var totalCount = 0;
-var allCharacters = [];
-var votedCharacters = [];
-var nonces = [];
-var viewedCharacters = [];
-
-Character
-.find()
-.exec(function(err, characters) {
-  allCharacters = _.clone(characters);
-  allCharacters = _.shuffle(allCharacters);
-});
-
-
-/**
- * GET /api/characters
- * Retrieves 2 characters per user and increments global counter.
- */
-app.get('/api/characters', function(req, res) {
-  var clientIpAddress = req.connection.remoteAddress;
-
-  if (counter > allCharacters.length) {
-    Character.find(function(err, characters) {
-      if (err) throw err;
-      counter = 0;
-      viewedCharacters = [];
-      allCharacters = _.clone(characters);
-      allCharacters = _.shuffle(allCharacters);
-      res.send(allCharacters.slice(counter, counter + 2));
-      counter += 2;
-    });
-  } else {
-    if (_.contains(_.pluck(viewedCharacters, 'ip'), clientIpAddress)) {
-      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(clientIpAddress);
-      var currentCounter = viewedCharacters[index].counter;
-      res.send({ characters: allCharacters.slice(currentCounter, currentCounter + 2) });
-    } else {
-      res.send({ characters: allCharacters.slice(counter, counter + 2) });
-      viewedCharacters.push({
-        ip: clientIpAddress,
-        counter: counter
-      });
-      counter += 2;
-    }
-  }
-});
-
-
 /**
  * PUT /api/vote
  * Update winning and losing count for characters.
@@ -210,8 +200,6 @@ app.put('/api/vote', function(req, res) {
     res.send(200);
   });
 });
-
-
 
 /**
  * GET /api/characters/shame
