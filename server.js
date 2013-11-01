@@ -1,3 +1,5 @@
+// TODO: add hotness meter
+
 var express = require('express'),
   async = require('async'),
   http = require('http'),
@@ -22,8 +24,8 @@ var PORT = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
 app = express();
 parser = new xml2js.Parser();
 
-mongoose.connect('localhost');
-//mongoose.connect(config.mongoose);
+//mongoose.connect('localhost');
+mongoose.connect(config.mongoose);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -46,12 +48,6 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-// GLOBAL VARIABLES
-var counter = 0;
-var allCharacters = [];
-var viewedCharacters = [];
 
 Character.find(function(err, characters) {
   allCharacters = _.clone(characters);
