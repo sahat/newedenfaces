@@ -258,6 +258,13 @@ app.get('/api/characters/all', function(req, res) {
   });
 });
 
+app.get('/api/characters/wrong-gender', function(req, res) {
+  Character.where('wrongGender', true).exec(function (err, characters) {
+    if (err) throw err;
+    res.send({ characters: characters });
+  });
+});
+
 /**
  * GET /api/characters/:id
  * Returns one specified character.
@@ -400,6 +407,10 @@ app.get('/male/:race/:bloodline', function(req, res) {
 
 app.get('/female/:race/:bloodline', function(req, res) {
   res.redirect('/#female/' + req.params.race + '/' + req.params.bloodline);
+});
+
+app.get('/wrong-gender', function(req, res) {
+  res.redirect('/#wrong-gender');
 });
 
 app.listen(PORT, IP_ADDRESS, function() {
