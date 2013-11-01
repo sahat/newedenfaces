@@ -366,6 +366,38 @@ App.Views.Characters = Backbone.View.extend({
 
 });
 
+
+// CharactersGender Collection View
+App.Views.CharactersGender = Backbone.View.extend({
+
+  tagName: 'ul',
+
+  className: 'media-list',
+
+  template: template('menu-leaderboard-template'),
+
+  selectMenuItem: function(menuItem) {
+    $('.navbar .nav li').removeClass('active');
+    if (menuItem) {
+      $('.' + menuItem).addClass('active');
+    }
+  },
+
+  addOne: function(character, index) {
+    // create new character view
+    var characterView = new App.Views.Character({ model: character, position: index + 1 });
+    // apend to <tbody>
+    this.$el.append(characterView.render().el);
+  },
+
+  render: function() {
+    $('#content').html(this.template());
+    this.collection.each(this.addOne, this);
+    return this;
+  }
+
+});
+
 // Character Summary View
 App.Views.CharacterSummary = Backbone.View.extend({
 
@@ -562,6 +594,14 @@ App.Views.AddCharacter = Backbone.View.extend({
 App.Router = Backbone.Router.extend({
 
   initialize: function() {
+    $('.container').html(
+      '<div class="loading">' +
+        '<div class="track"></div>' +
+        '<div class="spinner">' +
+          '<div class="mask">' +
+            '<div class="maskedCircle"></div>' +
+          '</div>' +
+      '</div>');
     var characters = new App.Collections.Characters();
     characters.fetch({
       url: '/api/characters/all',
@@ -616,16 +656,30 @@ App.Router = Backbone.Router.extend({
     });
   },
 
-  wrongGender: function() {
+  topCharacters: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/wrong-gender',
+      url: '/api/characters/top',
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-menu');
+      }
+    });
+  },
+
+  wrongGender: function() {
+    var characters = new App.Collections.Characters();
+    characters.fetch({
+      url: '/api/characters/wrong-gender',
+      success: function(data) {
+        App.Views.charactersGenderView = new App.Views.CharactersGender({
+          collection: characters
+        });
+        $('#content').html(App.Views.charactersGenderView.render().el);
+        App.Views.charactersGenderView.selectMenuItem('top-menu');
       }
     });
   },
@@ -705,20 +759,6 @@ App.Router = Backbone.Router.extend({
     var characters = new App.Collections.Characters();
     characters.fetch({
       url: '/api/characters/top?gender=female&race=' + race + '&bloodline=' + bloodline,
-      success: function(data) {
-        App.Views.charactersView = new App.Views.Characters({
-          collection: characters
-        });
-        $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
-      }
-    });
-  },
-
-  topCharacters: function() {
-    var characters = new App.Collections.Characters();
-    characters.fetch({
-      url: '/api/characters/top',
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
