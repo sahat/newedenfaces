@@ -36,7 +36,8 @@ var Character = mongoose.model('Character', {
   wins: { type: Number, default: 0, index: true },
   losses: { type: Number, default: 0 },
   reports: { type: Number, default: 0 },
-  random: { type: Number, default: Math.random(), index: true }
+  random: { type: [Number], index: '2d' },
+  voted: { type: Boolean, default: false }
 });
 
 var Match = mongoose.model('Match', {
@@ -68,34 +69,20 @@ Character.find(function(err, characters) {
  */
 app.get('/api/characters', function(req, res) {
   var clientIpAddress = req.connection.remoteAddress;
-
-  if (counter > allCharacters.length) {
-    console.log('reached the end;');
-    Character.find(function(err, characters) {
-      if (err) throw err;
-      console.log(characters);
-      counter = 0;
-      viewedCharacters = [];
-      allCharacters = _.clone(characters);
-      allCharacters = _.shuffle(allCharacters);
-      res.send(allCharacters.slice(counter, counter + 2));
-      counter += 2;
-    });
-  } else {
-    console.log('not at the end');
-    if (_.contains(_.pluck(viewedCharacters, 'ip'), clientIpAddress)) {
-      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(clientIpAddress);
-      var currentCounter = viewedCharacters[index].counter;
-      res.send({ characters: allCharacters.slice(currentCounter, currentCounter + 2) });
-    } else {
-      res.send({ characters: allCharacters.slice(counter, counter + 2) });
-      viewedCharacters.push({
-        ip: clientIpAddress,
-        counter: counter
+  Character
+  .find({ random: { $near: [Math.random(), 0] } })
+  .where('voted', false)
+  .limit(2)
+  .exec(function(err, characters) {
+    console.log(characters);
+    if (!characters.length) {
+      Character.update({}, { voted: false }, { multi: true }, function(err, nextRoundCharacters) {
+        res.send({ characters: nextRoundCharacters });
       });
-      counter += 2;
+    } else {
+      res.send({ characters: characters });
     }
-  }
+  });
 });
 
 /**
@@ -167,6 +154,7 @@ app.del('/api/characters/:id', function(req, res) {
  * PUT /api/vote
  * Update winning and losing count for characters.
  */
+// TODO: change to PUT /api/characters
 app.put('/api/vote', function(req, res) {
   var clientIpAddress = req.connection.remoteAddress;
   var winner = req.body.winner;
@@ -174,13 +162,13 @@ app.put('/api/vote', function(req, res) {
   if (!winner || !loser) return res.send(404);
   async.parallel([
     function(callback) {
-      Character.update({ characterId: winner }, { $inc: { wins: 1 } }, function(err) {
+      Character.update({ characterId: winner }, { $inc: { wins: 1 }, $set: { voted: true } }, function(err) {
         if (err) throw err;
         callback(null);
       });
     },
     function(callback) {
-      Character.update({ characterId: loser }, { $inc: { losses: 1 } }, function(err) {
+      Character.update({ characterId: loser }, { $inc: { losses: 1 }, $set: { voted: true } }, function(err) {
         if (err) throw err;
         callback(null);
       });
@@ -284,7 +272,7 @@ app.get('/api/characters/:id', function(req, res) {
 
 /**
  * POST /api/characters
- * Adds new character to the database.
+ * Adds a character to the database.
  */
 app.post('/api/characters', function(req, res) {
   var gender = req.body.gender;
@@ -329,7 +317,8 @@ app.post('/api/characters', function(req, res) {
             name: name,
             race: race,
             bloodline: bloodline,
-            gender: gender
+            gender: gender,
+            random: [Math.random(), 0]
           });
           character.save(function(err) {
             if (err) throw err;
