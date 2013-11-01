@@ -21,6 +21,7 @@
     "underscore":"*",
     "newrelic": "*",
     "cron": "*",
-    "async": "*"
+    "async": "*",
+    "nodetime": "*"
   }
 }

@@ -1,23 +1,17 @@
 var express = require('express'),
   async = require('async'),
-  crypto = require('crypto'),
   http = require('http'),
   fs = require('fs'),
   path = require('path'),
   request = require('request'),
   xml2js = require('xml2js'),
   mongoose = require('mongoose'),
-  Grid = require('gridfs-stream'),
   _ = require('underscore');
 
 require('nodetime').profile({
   accountKey: 'd8cfc901fdad39ee66c23d74a7b4b43e9541ba16',
   appName: 'newedenfaces'
 });
-
-function isNumber() {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
 
 var config = require('./config.js');
 
@@ -116,7 +110,7 @@ app.post('/api/report/gender', function(req, res) {
 
 /**
  * DEL /api/characters/:id
- * Delete a character and all its images from database
+ * Delete a character from the database
  * Requres the secret code as a querystring to prevent abuse
  */
 app.del('/api/characters/:id', function(req, res) {
@@ -130,299 +124,6 @@ app.del('/api/characters/:id', function(req, res) {
   });
 });
 
-
-/**
- *
- */
-app.put('/api/grid/:characterId', function(req, res) {
-  if (isNumber(req.params.characterId)) {
-    var characterId = req.params.characterId;
-  } else {
-    return res.send(500, 'Character ID must be a number')
-  }
-  
-  async.parallel({
-    one: function(callback){
-      var image32 = 'https://image.eveonline.com/Character/' + characterId + '_32.jpg';
-      var filename32 = image32.replace(/^.*[\\\/]/, '');
-      var filepath32 = path.join(__dirname, filename32);
-      var writestream32 = gfs.createWriteStream({ filename: filename32 });
-      var imageStream32 = request(image32).pipe(fs.createWriteStream(filepath32));
-
-      imageStream32.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      writestream32.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      imageStream32.on('close', function(err) {
-        if (err) {
-          console.error(err);
-          return res.send(500, 'File error has occured');
-        }
-        gfs.remove({ filename: filename32 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success!');
-          var gridstream = fs.createReadStream(filepath32).pipe(writestream32);
-          gridstream.on('error', function(err) {
-            console.log('GridFS stream error during character add on 32px');
-            return res.send(500, err);
-          });
-          gridstream.on('close', function(err) {
-            fs.unlink(filepath32);
-            callback(null, filename32);
-          });
-        });
-      });
-    },
-    two: function(callback) {
-      var image64 = 'https://image.eveonline.com/Character/' + characterId + '_64.jpg';
-      var filename64 = image64.replace(/^.*[\\\/]/, '');
-      var filepath64 = path.join(__dirname, filename64);
-      var writestream64 = gfs.createWriteStream({ filename: filename64 });
-      var imageStream64 = request(image64).pipe(fs.createWriteStream(filepath64));
-
-      imageStream64.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      writestream64.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      imageStream64.on('close', function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'File error has occured');
-        }
-        gfs.remove({ filename: filename64 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success!');
-          var gridstream = fs.createReadStream(filepath64).pipe(writestream64);
-          gridstream.on('error', function(err) {
-            console.log('GridFS stream error during character add on 64px');
-            return res.send(500, err);
-          });
-          gridstream.on('close', function(err) {
-            fs.unlink(filepath64);
-            callback(null, filename64);
-          });
-        });
-      });
-    },
-    three: function(callback){
-      var image128 = 'https://image.eveonline.com/Character/' + characterId + '_128.jpg'; 
-      var filename128 = image128.replace(/^.*[\\\/]/, '');
-      var filepath128 = path.join(__dirname, filename128);
-      var writestream128 = gfs.createWriteStream({ filename: filename128 });
-      var imageStream128 = request(image128).pipe(fs.createWriteStream(filepath128));
-
-      imageStream128.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      writestream128.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      imageStream128.on('close', function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'File error has occured');
-        }
-        gfs.remove({ filename: filename128 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success!');
-          var gridstream = fs.createReadStream(filepath128).pipe(writestream128);
-          gridstream.on('error', function(err) {
-            console.log('GridFS stream error during character add on 128px');
-            return res.send(500, err);
-          });
-          gridstream.on('close', function(err) {
-            fs.unlink(filepath128);
-            callback(null, filename128);
-          });
-        });
-
-        
-      });
-    },
-    four: function(callback){
-      var image256 = 'https://image.eveonline.com/Character/' + characterId + '_256.jpg'; 
-      var filename256 = image256.replace(/^.*[\\\/]/, '');
-      var filepath256 = path.join(__dirname, filename256);
-      var writestream256 = gfs.createWriteStream({ filename: filename256 });
-      var imageStream256 = request(image256).pipe(fs.createWriteStream(filepath256));
-
-      imageStream256.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      writestream256.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      imageStream256.on('close', function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'File error has occured');
-        }
-        gfs.remove({ filename: filename256 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success!');
-          var gridstream = fs.createReadStream(filepath256).pipe(writestream256);
-          gridstream.on('error', function(err) {
-            console.log('GridFS stream error during character add on 256px');
-            return res.send(500, err);
-          });
-          gridstream.on('close', function(err) {
-            fs.unlink(filepath256);
-            callback(null, filename256);
-          });
-        });
-      });
-    },
-    five: function(callback){
-      var image512 = 'https://image.eveonline.com/Character/' + characterId + '_512.jpg';
-      var filename512 = image512.replace(/^.*[\\\/]/, '');
-      var filepath512 = path.join(__dirname, filename512);
-      var writestream512 = gfs.createWriteStream({ filename: filename512 });
-      var imageStream512 = request(image512).pipe(fs.createWriteStream(filepath512));
-      
-      imageStream512.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      writestream512.on('error', function(err) {
-        console.log('Streaming Error');
-        return res.send(500, err);
-      });
-
-      imageStream512.on('close', function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'File error has occured');
-        }
-        gfs.remove({ filename: filename512 }, function (err) {
-          if (err) {
-            console.log('Error removing file from GridFS');
-            return res.send(500, 'Failed to remove image from gridfs');
-          }
-          console.log('success!');
-          var gridstream = fs.createReadStream(filepath512).pipe(writestream512);
-          gridstream.on('error', function(err) {
-            console.log('GridFS stream error during character add on 512px');
-            return res.send(500, err);
-          });
-          gridstream.on('close', function(err) {
-            fs.unlink(filepath512);
-            callback(null, filename512);
-          });
-        });
-
-      });
-    }
-  },
-  function(err, results) {
-    if (err) {
-      console.log(err);
-      return res.send(500, err);
-    }
-    console.log(results);
-
-    var filename32 = results.one;
-    var filename64 = results.two;
-    var filename128 = results.three;
-    var filename256 = results.four;
-    var filename512 = results.five;
-
-    Character.findOne({ characterId: req.params.characterId }, function(err, character) {
-      if (err) {
-        return res.send(500, err);
-      }
-      if (!character) {
-        return res.send(500, 'No such character');
-      }
-      character.image32 = '/api/grid/' + filename32;
-      character.image64 = '/api/grid/' + filename64;
-      character.image128 ='/api/grid/' + filename128;
-      character.image256 = '/api/grid/' + filename256;
-      character.image512 = '/api/grid/' + filename512;
-
-      character.save(function(err) {
-        if (err) {
-          console.log(err);
-          return res.send(500, 'Error while saving new character to database');
-        }
-        res.send(character);
-      });
-    });
-
-  });
-});
-app.get('/api/grid/:filename', function(req, res) {
-  var filename = req.params.filename;
-  var gfs = Grid(mongoose.connection.db, mongoose.mongo);
-  var readstream = gfs.createReadStream({
-    filename: filename
-  });
-  readstream.pipe(res);
-  readstream.on('error', function(err) {
-    return res.send(500, 'Error while retriving a file from database');
-  });
-});
-
-// update count every hour
-setInterval(function() {
-  Character.count({}, function(err, count) {
-    totalCount = count;
-  });
-}, 3600000);
-
-// delete lowest ranked character
-setInterval(function() {
-  Character
-  .find()
-  .sort('-losses')
-  .limit(1)
-  .exec(function(err, data) {
-    if (err) {
-      return res.send(500, err);
-    }
-    Character.remove({ characterId: data[0].characterId }, function(err) {
-      if (err) {
-        console.log('Error in removing the biggest loser from the system');
-        return res.send(500, err);
-      }
-      console.log('Lowest ranking character successfully deleted');
-    });
-  });
-}, 86400000);
-
-
 // GLOBAL VARIABLES
 var counter = 0;
 var totalCount = 0;
@@ -431,17 +132,10 @@ var votedCharacters = [];
 var nonces = [];
 var viewedCharacters = [];
 
-
-Character.count({}, function(err, count) {
-  totalCount = count;
-});
-
-
 Character
 .find()
 .exec(function(err, characters) {
   allCharacters = _.clone(characters);
-  console.log('Finished fetching characters from DB.');
   allCharacters = _.shuffle(allCharacters);
 });
 
@@ -451,63 +145,38 @@ Character
  * Retrieves 2 characters per user and increments global counter.
  */
 app.get('/api/characters', function(req, res) {
-  var myIpAddress = req.connection.remoteAddress;
-  var randomString = crypto.randomBytes(20).toString('hex');
+  var clientIpAddress = req.connection.remoteAddress;
 
-  // When all characters have been voted on...
   if (counter > allCharacters.length) {
-
-     console.log('----reached the end------');
-
-    // Retrieve new set of characters in case new characters have been
-    // added since the last query, and then shuffle them.
     Character.find(function(err, characters) {
-      if (err) {
-        console.log(err);
-        return res.send(500, err);
-      }
-
-
+      if (err) throw err;
       counter = 0;
-      votedCharacters = []; // stores character ids
-      viewedCharacters = []; // stores user ip addresses + counter
-      nonces = [];
-
+      viewedCharacters = [];
       allCharacters = _.clone(characters);
       allCharacters = _.shuffle(allCharacters);
-
       res.send(allCharacters.slice(counter, counter + 2));
-      counter = counter + 2;
+      counter += 2;
     });
-
   } else {
-    //console.log('Global: ' + counter + ' out of ' + allCharacters.length);
-    nonces.push(randomString);
-
-    if (_.contains(_.pluck(viewedCharacters, 'ip'), myIpAddress)) {
-      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(myIpAddress);
-      var myCounter = viewedCharacters[index].counter;
-      return res.send({ nonce: randomString, characters: allCharacters.slice(myCounter, myCounter + 2) });
+    if (_.contains(_.pluck(viewedCharacters, 'ip'), clientIpAddress)) {
+      var index = viewedCharacters.map(function(e) { return e.ip; }).indexOf(clientIpAddress);
+      var currentCounter = viewedCharacters[index].counter;
+      res.send({ characters: allCharacters.slice(currentCounter, currentCounter + 2) });
+    } else {
+      res.send({ characters: allCharacters.slice(counter, counter + 2) });
+      viewedCharacters.push({
+        ip: clientIpAddress,
+        counter: counter
+      });
+      counter += 2;
     }
-
-    viewedCharacters.push({
-      ip: myIpAddress,
-      counter: counter
-    });
-
-    // add a random hash string
-
-
-    res.send({ nonce: randomString, characters: allCharacters.slice(counter, counter + 2) });
-
-    counter = counter + 2;
   }
 });
 
 
 /**
  * PUT /api/vote
- * Update winning and losing count for characters
+ * Update winning and losing count for characters.
  */
 app.put('/api/vote', function(req, res) {
   var clientIpAddress = req.connection.remoteAddress;
@@ -565,13 +234,13 @@ app.get('/api/characters/shame', function(req, res) {
  * Filter gender, race, bloodline by a querystring.
  */
 app.get('/api/characters/top', function(req, res) {
-  var conditions = {};
+  var queryConditions = {};
   for (var key in req.query) {
     if (req.query.hasOwnProperty(key)) {
       conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  var query = Character.find(conditions).sort('-wins').lean();
+  var query = Character.find(queryConditions).sort('-wins').lean();
   query.exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
@@ -589,55 +258,13 @@ app.get('/api/characters/top', function(req, res) {
 
 /**
  * GET /api/leaderboard
- * Returns Top 14 characters, sorted by the winning percentage
+ * Returns Top 14 characters, sorted by the winning percentage.
  */
 app.get('/api/leaderboard', function(req, res) {
   Character
-    .find()
-    .sort('-wins')
-    .limit(14)
-    .lean()
-    .exec(function(err, characters) {
-      if (err) throw err;
-      characters.sort(function(a, b) {
-        if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-        if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-        return 0;
-      });
-      res.send({ characters: characters });
-    });
-});
-
-/**
- * GET /api/characters/male
- * Returns top (100) highest ranked male characters
- */
-app.get('/api/characters/male', function(req, res) {
-  Character
-  .where('gender', 'male')
+  .find()
   .sort('-wins')
-  .limit(100)
-  .lean()
-  .exec(function(err, characters) {
-    if (err) throw err;
-    characters.sort(function(a, b) {
-      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-      return 0;
-    });
-    res.send({ characters: characters });
-  });
-});
-
-/**
- * GET /api/characters/male
- * Returns top (100) highest ranked female characters
- */
-app.get('/api/characters/female', function(req, res) {
-  Character
-  .where('gender', 'female')
-  .sort('-wins')
-  .limit(100)
+  .limit(14)
   .lean()
   .exec(function(err, characters) {
     if (err) throw err;
@@ -661,130 +288,9 @@ app.get('/api/characters/all', function(req, res) {
   });
 });
 
-
-
-app.get('/api/characters/male/:race', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  Character
-  .find()
-  .where('gender', 'male')
-  .where('race').equals(race)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-
-app.get('/api/characters/female/:race', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  Character
-  .find()
-  .where('gender', 'female')
-  .where('race').equals(race)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-
-
-app.get('/api/characters/top/:race/:bloodline', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
-
-  if (req.params.bloodline === 'jin-mei') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
-        req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
-  } else if (req.params.bloodline === 'ni-kunni') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
-        req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
-  }
-
-  Character
-  .find()
-  .where('race').equals(race)
-  .where('bloodline').equals(bloodline)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-app.get('/api/characters/male/:race/:bloodline', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
-
-  if (req.params.bloodline === 'jin-mei') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
-        req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
-  } else if (req.params.bloodline === 'ni-kunni') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
-        req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
-  }
-
-  Character
-  .find()
-  .where('race').equals(race)
-  .where('bloodline').equals(bloodline)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
-app.get('/api/characters/female/:race/:bloodline', function(req, res) {
-  var race = req.params.race.charAt(0).toUpperCase() + req.params.race.slice(1);
-  var bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1);
-
-  if (req.params.bloodline === 'jin-mei') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,4) +
-        req.params.bloodline.charAt(4).toUpperCase() + req.params.bloodline.slice(5);
-  } else if (req.params.bloodline === 'ni-kunni') {
-    bloodline = req.params.bloodline.charAt(0).toUpperCase() + req.params.bloodline.slice(1,3) +
-        req.params.bloodline.charAt(3).toUpperCase() + req.params.bloodline.slice(4);
-  }
-
-  Character
-  .find()
-  .where('gender', 'female')
-  .where('race').equals(race)
-  .where('bloodline').equals(bloodline)
-  .sort('-wins')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) {
-      console.log(err);
-      return res.send(500, 'Error getting characters');
-    }
-    res.send({ characters: characters});
-  });
-});
-
 /**
  * GET /api/characters/:id
- * Returns specified character
+ * Returns one specified character.
  */
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
@@ -798,8 +304,6 @@ app.get('/api/characters/:id', function(req, res) {
     }
   });
 });
-
-
 
 /**
  * POST /api/characters
@@ -837,7 +341,7 @@ app.post('/api/characters', function(req, res) {
         parser.parseString(xml, function(err, parsedXml) {
           if (err) throw err;
           try {
-            var characterName = parsedXml.eveapi.result[0].characterName[0];
+            var name = parsedXml.eveapi.result[0].characterName[0];
             var race = parsedXml.eveapi.result[0].race[0];
             var bloodline = parsedXml.eveapi.result[0].bloodline[0];
           } catch(e) {
@@ -845,7 +349,7 @@ app.post('/api/characters', function(req, res) {
           }
           var character = new Character({
             characterId: characterId,
-            name: characterName,
+            name: name,
             race: race,
             bloodline: bloodline,
             gender: gender
