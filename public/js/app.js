@@ -11,6 +11,10 @@ window.template = function(id) {
   return _.template($('#' + id).html());
 };
 
+App.Views.Character = Backbone.View.extend({
+
+});
+
 // Character Model
 App.Models.Character = Backbone.Model.extend({
 
@@ -52,7 +56,7 @@ App.Views.Home = Backbone.View.extend({
       type: 'PUT',
       data: { 
         winner: winningModel.get('characterId'),
-        loser: losingModel.get('characterId'),
+        loser: losingModel.get('characterId')
       },
       success: function() {
         self.collection.fetch({
@@ -105,7 +109,7 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
   template: template('character-thumbnail-template'),
 
   events: {
-    'click img': 'winner',
+    'click img': 'winner'
   },
 
   winner: function() {
@@ -267,20 +271,31 @@ App.Views.Character = Backbone.View.extend({
 
   template: template('character-template'),
 
+  render: function () {
+    var data = {
+      model: this.model.toJSON(),
+      position: this.options.position
+    }
+
+    this.$el.html(this.template(data));
+    return this;
+  }
+
+});
+
+
+// Character View
+App.Views.CharacterGenderCharacter = Backbone.View.extend({
+
+  tagName: 'li',
+
+  className: 'media',
+
+  template: template('gender-template'),
+
   events: {
     'click #female': 'female',
-    'click #male': 'male',
-    'keypress body': 'keycode'
-
-  },
-
-  keycode: function(e) {
-    console.log(e);
-    if (e == 70) {
-      console.log('pressed female');
-    } else if (e == 7) {
-      console.log('pressed M');
-    }
+    'click #male': 'male'
   },
 
   female: function() {
@@ -313,7 +328,6 @@ App.Views.Character = Backbone.View.extend({
   }
 
 });
-
 
 
 // Characters Collection View
@@ -463,21 +477,6 @@ App.Views.CharacterSummary = Backbone.View.extend({
       mainClass: 'my-mfp-zoom-in'
     });
 
-    // TODO: Fix this ugly code later
-    var $pastMatches = this.$el.find('.past-matches');
-    _.each(this.model.get('pastMatches'), function(match) {
-      var templateString = 
-      '<div class="well span3">' +
-        '<div class="text-center">' + new Date(match.date).toLocaleString() + '</div><br>' +
-          '<a href="/characters/' + match.winner + '">' +
-            '<img class="winner" src="/api/grid/' + match.winner + '_64.jpg">' + 
-          '</a>' +
-          '<span class="versus">vs</span>' +
-          '<a href="/characters/' + match.loser + '">' +
-          '<img class="loser" src="/api/grid/' + match.loser + '_64.jpg"></a></div>';
-      $pastMatches.append(templateString);
-    });
-
     return this;
   },
 
@@ -594,7 +593,7 @@ App.Views.AddCharacter = Backbone.View.extend({
 App.Router = Backbone.Router.extend({
 
   initialize: function() {
-    $('.container').html(
+    $('#content').html(
       '<div class="loading">' +
         '<div class="track"></div>' +
         '<div class="spinner">' +

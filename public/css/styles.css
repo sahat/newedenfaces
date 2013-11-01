@@ -380,7 +380,7 @@ ul.inline>li {
 /* Loading animation container */
 .loading {
   position: absolute;
-  top: 25%;
+  top: 30%;
   left: 50%;
   width: 28px;
   height: 28px;
