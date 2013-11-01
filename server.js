@@ -210,15 +210,14 @@ app.get('/api/characters/top', function(req, res) {
       queryConditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  var query = Character.find(queryConditions).where('gender', null).sort('-wins').lean();
-  query.exec(function(err, characters) {
+  Character.find(queryConditions).sort('-wins').lean().exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
       return 0;
     });
-    characters = characters.slice(0, 100);
+    characters = characters.slice(0, 10);
     res.send({ characters: characters });
   });
 });
