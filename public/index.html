@@ -80,8 +80,6 @@
                     </ul>
                 </li>
 
-
-
                 <li class="top-menu dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         Female
@@ -334,7 +332,7 @@
 
 <script id="leaderboard-item-template" type="text/template">
     <a href="/characters/<%= characterId %>" class="tip" rel="tooltip" title="Wins: <%= wins %> &rarr; Losses: <%= losses %>">
-        <img src="<%= image64 %>">
+        <img src="http://image.eveonline.com/Character/<%= characterId %>_64.jpg">
     </a>
 </script>
 
@@ -345,7 +343,7 @@
 <script id="character-template" type="text/template">
     <span class="position pull-left"><%= position %></span>
     <a class="pull-left" href="/characters/<%= model.characterId %>">
-        <img class="media-object" src="<%= model.image128 %>">
+        <img class="media-object" src="http://image.eveonline.com/Character/<%= model.characterId %>_128.jpg">
     </a>
     <div class="media-body">
         <h4 class="media-heading"><a href="/characters/<%= model.characterId %>"><%= model.name %></a></h4>
@@ -409,7 +407,7 @@
         </li>
     </ul>
 
-    <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg"><img class="img-polaroid" src="<%= model.image256 %>"></a>
+    <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg"><img class="img-polaroid" src="http://image.eveonline.com/Character/<%= model.characterId %>_256.jpg"></a>
     <div class="popover right">
         <div class="arrow"></div>
         <h3 class="popover-title pagination-centered">Winning Percentage</h3>
@@ -418,8 +416,6 @@
             Wins: <strong><%= model.wins %></strong> Losses: <strong><%= model.losses %></strong>
         </div>
     </div>
-
-
 
     <div class="page-header">
       <h2>Previous Matches <small>Winners are highlighted in green</small></h2>
@@ -451,7 +447,6 @@
 
   ga('create', 'UA-41595519-1', 'newedenfaces.com');
   ga('send', 'pageview');
-
 </script>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -459,7 +454,6 @@
 <script src="js/underscore-min.js"></script>
 <script src="js/jquery.magnific-popup.min.js"></script>
 <script src="js/backbone-min.js"></script>
-<!--<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>-->
 <script src="js/bootstrap.min.js"></script>
 <script src="js/toastr.js"></script>
 <script src="js/app.js"></script>
