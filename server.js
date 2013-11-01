@@ -76,7 +76,7 @@ app.get('/api/characters', function(req, res) {
       Character
       .find({ random: { $near: [Math.random(), 0] } })
       .where('voted', false)
-      .where('gender', choices[Math.round(Math.random())])
+      .where('gender', oppositeRandomGender)
       .limit(2)
       .exec(function(err, characters) {
         if (characters.length < 2) {
