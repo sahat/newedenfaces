@@ -22,15 +22,11 @@ App.Models.Character = Backbone.Model.extend({
 
 // Characters Collection
 App.Collections.Characters = Backbone.Collection.extend({
-
   model: App.Models.Character,
-
   url: '/api/characters',
-
   parse: function(response) {
     return response.characters;
   }
-
 });
 
 
@@ -636,7 +632,7 @@ App.Router = Backbone.Router.extend({
   topRace: function(race) {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/top/' + race,
+      url: '/api/characters/top/?race=' + race,
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
@@ -650,7 +646,7 @@ App.Router = Backbone.Router.extend({
   maleRace: function(race) {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/male/' + race,
+      url: '/api/characters/top?gender=male&race=' + race,
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
@@ -664,7 +660,7 @@ App.Router = Backbone.Router.extend({
   femaleRace: function(race) {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/female/' + race,
+      url: '/api/characters/top?gender=female&race=' + race,
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
@@ -679,7 +675,7 @@ App.Router = Backbone.Router.extend({
   maleBloodline: function(race, bloodline) {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/male/' + race + '/' + bloodline,
+      url: '/api/characters/top?gender=male&race=' + race + '&bloodline=' + bloodline,
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
@@ -693,7 +689,7 @@ App.Router = Backbone.Router.extend({
   femaleBloodline: function(race, bloodline) {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/female/' + race + '/' + bloodline,
+      url: '/api/characters/top?gender=female&race=' + race + '&bloodline=' + bloodline,
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
@@ -721,7 +717,7 @@ App.Router = Backbone.Router.extend({
   maleCharacters: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/male',
+      url: '/api/characters/top?gender=male',
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
@@ -735,7 +731,7 @@ App.Router = Backbone.Router.extend({
   femaleCharacters: function() {
     var characters = new App.Collections.Characters();
     characters.fetch({
-      url: '/api/characters/female',
+      url: '/api/characters/top?gender=female',
       success: function(data) {
         App.Views.charactersView = new App.Views.Characters({
           collection: characters

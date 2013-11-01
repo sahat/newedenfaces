@@ -204,7 +204,7 @@ app.get('/api/characters/top', function(req, res) {
   var queryConditions = {};
   for (var key in req.query) {
     if (req.query.hasOwnProperty(key)) {
-      conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
+      queryConditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
   var query = Character.find(queryConditions).sort('-wins').lean();
