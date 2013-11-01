@@ -204,26 +204,22 @@ app.get('/api/characters/shame', function(req, res) {
  * Filter gender, race, bloodline by a querystring.
  */
 app.get('/api/characters/top', function(req, res) {
-  var queryConditions = {};
+  var conditions = {};
   for (var key in req.query) {
     if (req.query.hasOwnProperty(key)) {
-      queryConditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
+      conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  Character.find(queryConditions).sort('-wins').lean().exec(function(err, characters) {
+  Character.find(conditions).sort('-wins').limit(100).exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
       return 0;
     });
-    characters = characters.slice(0, 10);
-    res.send({ characters: characters });
+    res.send({ characters: characters.slice(0, 100) });
   });
 });
-
-//app.get('/api/characters/top/:race', function(req, res) {
-//});
 
 /**
  * GET /api/leaderboard
