@@ -26,8 +26,8 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
 app = express();
 parser = new xml2js.Parser();
 
-//mongoose.connect('localhost');
-mongoose.connect(config.mongoose);
+mongoose.connect('localhost');
+//mongoose.connect(config.mongoose);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -158,28 +158,31 @@ app.del('/api/characters/:id', function(req, res) {
  * PUT /api/vote
  * Update winning and losing count for characters.
  */
-// TODO: change to PUT /api/characters
 app.put('/api/characters', function(req, res) {
   var winner = req.body.winner;
   var loser = req.body.loser;
   if (!winner || !loser) return res.send(404);
-  async.parallel([
-    function(callback) {
-      Character.update({ characterId: winner }, { $inc: { wins: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
-        if (err) throw err;
-        callback(null);
-      });
-    },
-    function(callback) {
-      Character.update({ characterId: loser }, { $inc: { losses: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
-        if (err) throw err;
-        callback(null);
-      });
-    }
-  ], function() {
-    res.send(200);
+  Character.findOne({ characterId: winner }, function(err, winner) {
+    Character.findOne({ characterId: loser }, function(err, loser) {
+      if (winner.voted || loser.voted) return res.send(200);
+      winner.wins++;
+      winner.voted = true;
+      winner.save();
+      loser.losses++;
+      loser.voted = true;
+      loser.save();
+      res.send(200);
+    });
   });
 });
+
+// Character.update({ characterId: loser }, { $inc: { losses: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
+//         if (err) throw err;
+//         Character.update({ characterId: winner }, { $inc: { wins: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
+//           if (err) throw err;
+//           res.send(200);
+//         });
+//       });
 
 /**
  * GET /api/characters/shame
