@@ -18,8 +18,10 @@ require('nodetime').profile({
 var config = require('./config.js');
 
 // OpenShift Configuration
-var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_PORT || '127.0.0.1';
-var PORT = process.env.OPENSHIFT_NODEJS_IP || 8000;
+var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
+  process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
+var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
+  process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
 app = express();
 parser = new xml2js.Parser();
