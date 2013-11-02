@@ -24,8 +24,8 @@ var PORT = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
 app = express();
 parser = new xml2js.Parser();
 
-//mongoose.connect('localhost');
-mongoose.connect(config.mongoose);
+mongoose.connect('localhost');
+//mongoose.connect(config.mongoose);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -62,6 +62,7 @@ app.get('/api/characters', function(req, res) {
   .where('gender', randomGender)
   .limit(2)
   .exec(function(err, characters) {
+  	if (err) throw err;
     if (characters.length < 2) {
       var oppositeRandomGender = randomGender === 'female' ? 'male' : 'female';
       Character
@@ -70,15 +71,15 @@ app.get('/api/characters', function(req, res) {
       .where('gender', oppositeRandomGender)
       .limit(2)
       .exec(function(err, characters) {
+      	if (err) throw err;
         if (characters.length < 2) {
           Character.find(function(err, characters) {
-            characters.forEach(function(elem, index, array) {
-              elem.voted = false;
-              elem.random = [Math.random(), 0]
-              elem.save(function(err) {
+            characters.forEach(function(character, index, array) {
+              character.voted = false;
+              character.save(function(err) {
                 console.log('Updating...');
               });
-              res.send({ error: 'Hold your horses, working...' });
+              res.send(200);
             });
           });
         } else {
@@ -167,13 +168,13 @@ app.put('/api/vote', function(req, res) {
   if (!winner || !loser) return res.send(404);
   async.parallel([
     function(callback) {
-      Character.update({ characterId: winner }, { $inc: { wins: 1 }, $set: { voted: true } }, function(err) {
+      Character.update({ characterId: winner }, { $inc: { wins: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
         if (err) throw err;
         callback(null);
       });
     },
     function(callback) {
-      Character.update({ characterId: loser }, { $inc: { losses: 1 }, $set: { voted: true } }, function(err) {
+      Character.update({ characterId: loser }, { $inc: { losses: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
         if (err) throw err;
         callback(null);
       });
