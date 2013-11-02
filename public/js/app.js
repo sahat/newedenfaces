@@ -177,9 +177,8 @@ App.Views.Character = Backbone.View.extend({
 
 });
 
-
-// Character View
-App.Views.CharacterGenderCharacter = Backbone.View.extend({
+// Character View with Gender buttons
+App.Views.CharacterGender = Backbone.View.extend({
 
   tagName: 'li',
 
@@ -192,11 +191,20 @@ App.Views.CharacterGenderCharacter = Backbone.View.extend({
     'click #male': 'male'
   },
 
+  render: function () {
+    var data = {
+      model: this.model.toJSON(),
+      position: this.options.position
+    }
+
+    this.$el.html(this.template(data));
+    return this;
+  },
+
   female: function() {
     var self = this;
     self.$el.remove();
     $.post('/api/gender', { characterId: this.model.get('characterId'), gender: 'female' }, function(data) {
-      
       return false;
     });
   },
@@ -206,18 +214,39 @@ App.Views.CharacterGenderCharacter = Backbone.View.extend({
     var self = this;
     self.$el.remove();
     $.post('/api/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
-      console.log(data);
       return false;
     });
   },
 
-  render: function () {
-    var data = {
-      model: this.model.toJSON(),
-      position: this.options.position
-    }
+});
 
-    this.$el.html(this.template(data));
+
+// Character View for Wrong Gender
+App.Views.WrongGender = Backbone.View.extend({
+
+  tagName: 'li',
+
+  className: 'media',
+
+  template: template('menu-leaderboard-template'),
+
+  selectMenuItem: function(menuItem) {
+    $('.navbar .nav li').removeClass('active');
+    if (menuItem) {
+      $('.' + menuItem).addClass('active');
+    }
+  },
+
+  addOne: function(character, index) {
+    // create new character view
+    var characterView = new App.Views.CharacterGender({ model: character, position: index + 1 });
+    // apend to <tbody>
+    this.$el.append(characterView.render().el);
+  },
+
+  render: function() {
+    $('#content').html(this.template());
+    this.collection.each(this.addOne, this);
     return this;
   }
 
@@ -563,11 +592,11 @@ App.Router = Backbone.Router.extend({
     characters.fetch({
       url: '/api/characters/wrong-gender',
       success: function(data) {
-        App.Views.charactersGenderView = new App.Views.CharactersGender({
+        App.Views.wrongGenderView = new App.Views.WrongGender({
           collection: characters
         });
-        $('#content').html(App.Views.charactersGenderView.render().el);
-        App.Views.charactersGenderView.selectMenuItem('top-menu');
+        $('#content').html(App.Views.wrongGenderView.render().el);
+        App.Views.wrongGenderView.selectMenuItem('top-menu');
       }
     });
   },
@@ -704,6 +733,7 @@ App.Router = Backbone.Router.extend({
 
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
+    
 
         characterSummaryView.selectMenuItem();
       }
