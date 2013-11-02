@@ -11,10 +11,6 @@ window.template = function(id) {
   return _.template($('#' + id).html());
 };
 
-App.Views.Character = Backbone.View.extend({
-
-});
-
 // Character Model
 App.Models.Character = Backbone.Model.extend({
 
@@ -126,80 +122,6 @@ App.Views.CharacterThumbnail = Backbone.View.extend({
 });
 
 
-// App.Views.Feedback = Backbone.View.extend({
-
-//   template: template('feedback-template'),
-
-//   events: {
-//     'submit': 'submit'
-//   },
-
-//   submit: function(e) {
-//     e.preventDefault();
-
-//     var newCharacter = new App.Models.Character({
-//       name: this.$('input[name=addcharacter]').val()
-//     });
-
-//     var characterName = this.$el.find('input[name=characterName]');
-//     var characterNameHelpBlock = this.$el.find('#characterNameHelpBlock');
-
-//     var userInterfaceRadios = $('form input[type=radio]:checked');
-//     var userInterfaceHelpBlock = this.$el.find('#userInterfaceHelpBlock');
-
-
-//     var characterNameCG = this.$el.find('#characterNameCG');
-//     var userInterfaceCG = this.$el.find('#userInterfaceCG');
-//     var messageCG = this.$el.find('#messageCG');
-
-//     var message = $('textarea').val();
-   
-//     var submitBtn = this.$el.find('button');
-
-//     // validation error occured, find out which one
-//     if (!characterName.val() || !userInterfaceRadios.length) {     
-//       if (!characterName.val()) {
-//       characterNameCG.addClass('error');
-//       characterNameHelpBlock.text('This field cannot be blank');
-//       characterName.focus();
-//     }
-//       if (!userInterfaceRadios.length) {
-//         userInterfaceCG.addClass('error');
-//         userInterfaceHelpBlock.text('Please select one of the choices');
-//       }
-//     } else {
-//       submitBtn.button('loading');
-//       // no validation errors, send data to the server
-//       postData = {
-//         characterName: characterName.val(),
-//         uiRating: userInterfaceRadios.val(),
-//         message: message
-//       };
-
-//       $.post('/api/feedback', postData ,function(data) {
-//         submitBtn.button('reset');
-//         localStorage.feedbackSent = true;
-//         localStorage.feedbackNotice = '<div class="alert alert-success"><strong>Success!</strong> Thank you for the feedback.</div>';
-//         $('#content').html(localStorage.feedbackNotice);
-//       });
-//     }
-//   },
-
-//   render: function() {
-//     this.$el.html(this.template());
-//     return this;
-//   },
-
-//   selectMenuItem: function(menuItem) {
-//     $('.navbar .nav li').removeClass('active');
-//     if (menuItem) {
-//       $('.' + menuItem).addClass('active');
-//     }
-//   }
-
-// });
-
-
 // Footer leaderboard view on home page
 App.Views.Leaderboard = Backbone.View.extend({
 
@@ -208,33 +130,6 @@ App.Views.Leaderboard = Backbone.View.extend({
   className: 'inline',
 
   render: function() {
-
-    // this.collection.comparator = function(characterA, characterB) {
-    //   winLossCharacterA = characterA.get('wins') / (characterA.get('wins') + characterA.get('losses')); 
-    //   winLossCharacterB = characterB.get('wins') / (characterB.get('wins') + characterB.get('losses')); 
-    //   console.log('win-loss-a', winLossCharacterA);
-    //   console.log('win-loss-b', winLossCharacterB);
-    //   if (winLossCharacterA > winLossCharacterB) return -1;
-    //   if (winLossCharacterB > winLossCharacterA) return 1;
-    //   return 0;
-    // },
-    // this.collection.comparator = function(character) {
-    //   return -character.get('wins');
-    // };
-
-    // this.collection.sort();
-
-    //console.log(this.collection.toJSON())
-
-    // this.collection = this.collection.sortBy(function(model) {
-    //   // var winningPercentage = model.get('wins') / (model.get('wins') + model.get('losses'));
-    //   // return winningPercentage;
-    //   return -model.get('wins');
-    // });
-
-    // var top14 = new Backbone.Collection(this.collection);
-    
-    // delete this.collection.comparator;
 
     this.collection.each(function(character) {
       var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
@@ -353,25 +248,6 @@ App.Views.Characters = Backbone.View.extend({
   },
 
   render: function() {
-
-    // this.collection.comparator = function(characterA, characterB) {
-    //   if (characterA.get('rating') > characterB.get('rating')) return -1;
-    //   if (characterB.get('rating') > characterA.get('rating')) return 1;
-    //   return 0;
-    // },
-
-    // // this.collection.sort({ silent: true });
-
-    // this.collection = this.collection.sortBy(function(model) {
-    //   // var winningPercentage = model.get('wins') / (model.get('wins') + model.get('losses'));
-    //   // return -winningPercentage;
-    //   return -model.get('wins');
-    // });
-
-    // var top100 = new Backbone.Collection(this.collection);
-    
-    //delete this.collection.comparator;
-    //console.log('not caching top100');
     $('#content').html(this.template());
     this.collection.each(this.addOne, this);
     return this;
