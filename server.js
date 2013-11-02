@@ -24,8 +24,8 @@ var PORT = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
 app = express();
 parser = new xml2js.Parser();
 
-mongoose.connect('localhost');
-//mongoose.connect(config.mongoose);
+//mongoose.connect('localhost');
+mongoose.connect(config.mongoose);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -332,18 +332,20 @@ app.post('/api/characters', function(req, res) {
   ]);
 });
 
-app.post('/gender', function(req, res) {
+/**
+ * POST /api/gender
+ * Update character's gender.
+ */
+app.post('/api/gender', function(req, res) {
   var id = req.body.characterId;
   var gender = req.body.gender;
-
   Character.findOne({ characterId: id}, function(err, character) {
     if (character) {
-      console.log(character);
       character.gender = gender;
       character.wrongGender = false;
       character.save(function(err) {
         if (err) throw err;
-        res.send('updated okay!');
+        res.send(200);
       })
     }
   });

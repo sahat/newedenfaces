@@ -195,7 +195,7 @@ App.Views.CharacterGenderCharacter = Backbone.View.extend({
   female: function() {
     var self = this;
     self.$el.remove();
-    $.post('/gender', { characterId: this.model.get('characterId'), gender: 'female' }, function(data) {
+    $.post('/api/gender', { characterId: this.model.get('characterId'), gender: 'female' }, function(data) {
       
       return false;
     });
@@ -205,7 +205,7 @@ App.Views.CharacterGenderCharacter = Backbone.View.extend({
   male: function() {
     var self = this;
     self.$el.remove();
-    $.post('/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
+    $.post('/api/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
       console.log(data);
       return false;
     });
