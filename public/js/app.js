@@ -48,7 +48,7 @@ App.Views.Home = Backbone.View.extend({
     losingModel.set('losses', losingModel.get('losses') + 1);
     var self = this;
     $.ajax({
-      url: '/api/vote',
+      url: '/api/characters',
       type: 'PUT',
       data: { 
         winner: winningModel.get('characterId'),
@@ -698,15 +698,12 @@ App.Router = Backbone.Router.extend({
         console.log(err, 'error');
       },
       success: function(data) {
-        //var averageRating = data.get('userRating') / data.get('userRatingVotes');
-        //if (isNaN(averageRating)) averageRating = 0;
 
         var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses')) * 100).toFixed(1);
         if (isNaN(winLossRatio)) winLossRatio = 0;
 
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
-    
 
         characterSummaryView.selectMenuItem();
       }

@@ -157,7 +157,7 @@ app.del('/api/characters/:id', function(req, res) {
  * Update winning and losing count for characters.
  */
 // TODO: change to PUT /api/characters
-app.put('/api/vote', function(req, res) {
+app.put('/api/characters', function(req, res) {
   var winner = req.body.winner;
   var loser = req.body.loser;
   if (!winner || !loser) return res.send(404);
