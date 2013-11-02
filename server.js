@@ -76,7 +76,7 @@ app.get('/api/characters', function(req, res) {
       	if (err) throw err;
         if (characters.length < 2) {
           Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
-            console.log('Updated');
+            console.log('Less than 2: Reset voted flags');
           });
           res.send({ characters: [] });
         } else {
@@ -165,24 +165,27 @@ app.put('/api/characters', function(req, res) {
   Character.findOne({ characterId: winner }, function(err, winner) {
     Character.findOne({ characterId: loser }, function(err, loser) {
       if (winner.voted || loser.voted) return res.send(200);
-      winner.wins++;
-      winner.voted = true;
-      winner.save();
-      loser.losses++;
-      loser.voted = true;
-      loser.save();
-      res.send(200);
+      async.parallel([
+        function(callback) {
+          winner.wins++;
+          winner.voted = true;
+          winner.save(function(err) {
+            callback(null);
+          });
+        },
+        function(callback) {
+          loser.losses++;
+          loser.voted = true;
+          loser.save(function(err) {
+            callback(null);
+          });
+        }
+      ], function(err) {
+        res.send(200);
+      });
     });
   });
 });
-
-// Character.update({ characterId: loser }, { $inc: { losses: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
-//         if (err) throw err;
-//         Character.update({ characterId: winner }, { $inc: { wins: 1 }, $set: { voted: true, random: [Math.random(), 0] } }, function(err) {
-//           if (err) throw err;
-//           res.send(200);
-//         });
-//       });
 
 /**
  * GET /api/characters/shame
