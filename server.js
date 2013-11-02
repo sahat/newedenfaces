@@ -73,15 +73,10 @@ app.get('/api/characters', function(req, res) {
       .exec(function(err, characters) {
       	if (err) throw err;
         if (characters.length < 2) {
-          Character.find(function(err, characters) {
-            characters.forEach(function(character, index, array) {
-              character.voted = false;
-              character.save(function(err) {
-                console.log('Updating...');
-              });
-              res.send(200);
-            });
+          Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
+            console.log('Updated');
           });
+          res.send({ characters: [] });
         } else {
           res.send({ characters: characters });
         }

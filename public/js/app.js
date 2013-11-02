@@ -62,7 +62,6 @@ App.Views.Home = Backbone.View.extend({
         self.collection.fetch({
           url: '/api/characters',
           success: function(data) {
-            console.log(data);
             if (data.length < 2) {
               self.$el.html('<div class="alert alert-info">Nothing to display</div>');
             } else {
