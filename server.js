@@ -243,7 +243,7 @@ app.get('/api/leaderboard', function(req, res) {
  * Returns a list of all characters (name only)
  */
 app.get('/api/characters/all', function(req, res) {
-  Character.find(null, 'name', function (err, characters) {
+  Character.find(null, 'characterId name', function (err, characters) {
     if (err) throw err;
     res.send({ characters: characters });
   });
