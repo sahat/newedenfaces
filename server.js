@@ -45,7 +45,7 @@ var Character = mongoose.model('Character', {
 });
 
 // Express configuration
-app.use(express.logger('dev'));
+//app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);

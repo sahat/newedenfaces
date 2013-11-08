@@ -1,4 +1,7 @@
-(function() {
+/* globals Backbone */
+/* globals $ */
+/* globals _ */
+/* globals App */
 
 window.App = {
   Models: {},
@@ -6,53 +9,56 @@ window.App = {
   Collections: {}
 };
 
-// Template helper function
-window.template = function(id) {
-  return _.template($('#' + id).html());
-};
-
-// Character Model
+/**
+ * Character Model
+ * @description Stores JSON data about an individual character
+ */
 App.Models.Character = Backbone.Model.extend({
-
-  urlRoot:"/api/characters",
-
+  urlRoot: '/api/characters',
   idAttribute: 'characterId'
-
 });
 
-// Characters Collection
+/**
+ * Characters Collection
+ * @description An array of characters
+ */
 App.Collections.Characters = Backbone.Collection.extend({
   model: App.Models.Character,
   url: '/api/characters',
+  // TODO: possibly no longer used
   parse: function(response) {
     return response.characters;
   }
 });
 
-
-// Home View (Main view)
+/**
+ * Home View
+ * @description The main page
+ */
 App.Views.Home = Backbone.View.extend({
-
   tagName: 'ul',
-
   className: 'thumbnails',
-
-  template: template('home-template'),
-
+  template: _.template($('#home-template')),
   initialize: function() {
-    this.collection.on('change:wins', this.updateCount, this);
+    _.bindAll(this, 'vote');
+    this.collection.on('change:wins', this.vote, this);
   },
-
-  updateCount: function(winningModel) {
-    var losingModel = this.collection.at(Math.abs(1 - this.collection.indexOf(winningModel)));
-    losingModel.set('losses', losingModel.get('losses') + 1);
+  render: function() {
+    this.$el.html(this.template());
+    this.collection.each(this.addOne, this);
+    return this;
+  },
+  vote: function(winner) {
+    var loser = this.collection.at(Math.abs(1 - this.collection.indexOf(winner)));
+    loser.set('losses', loser.get('losses') + 1);
+    // TODO: remove self, test if it still works
     var self = this;
     $.ajax({
       url: '/api/characters',
       type: 'PUT',
-      data: { 
-        winner: winningModel.get('characterId'),
-        loser: losingModel.get('characterId')
+      data: {
+        winner: winner.get('characterId'),
+        loser: loser.get('characterId')
       },
       success: function() {
         self.collection.fetch({
@@ -68,22 +74,14 @@ App.Views.Home = Backbone.View.extend({
       }
     });
   },
-
-  render: function() {
-    this.$el.html(this.template());
-    this.collection.each(this.addOne, this);
-    return this;
-  },
-
   addOne: function(character, index) {
     var characterThumbnailView = new App.Views.CharacterThumbnail({ model: character });
     // add bootstrap offset3 to the first thumbnail
-    if (index == 0) {
+    if (index === 0) {
       characterThumbnailView.$el.addClass('offset1');
     }
     this.$el.append(characterThumbnailView.render().el);
   },
-
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
     if (menuItem) {
@@ -93,32 +91,24 @@ App.Views.Home = Backbone.View.extend({
 
 });
 
-
 // Character Thumbnail on the Home Page View
 App.Views.CharacterThumbnail = Backbone.View.extend({
-
   tagName: 'li',
-
   className: 'span5',
-
-  template: template('character-thumbnail-template'),
-
+  template: _.template($('#character-thumbnail-template')),
   events: {
-    'click img': 'winner'
+    'click img': 'updateWinner'
   },
-
-  winner: function() {
-    this.model.set('wins', this.model.get('wins') + 1);
-  },
-
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
     this.$el.find('img').on('dragstart', function(e) {
       e.preventDefault();
     });
     return this;
+  },
+  updateWinner: function() {
+    this.model.set('wins', this.model.get('wins') + 1);
   }
-
 });
 
 
@@ -745,7 +735,6 @@ App.Router = Backbone.Router.extend({
 var router = new App.Router();
 Backbone.history.start({ pushState: true });
 
-})();
 
 $(document).on("ready", function () {
   $(document).on('click', 'a:not([data-bypass])', function(e){
