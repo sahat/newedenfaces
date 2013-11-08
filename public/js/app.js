@@ -1,7 +1,7 @@
 /* globals Backbone */
-/* globals $ */
 /* globals _ */
 /* globals App */
+/* globals toastr */
 
 window.App = {
   Models: {},
@@ -136,7 +136,7 @@ App.Views.LeaderboardItem = Backbone.View.extend({
 
   tagName: 'li',
 
-  template: template('leaderboard-item-template'),
+  template: _.template($('#leaderboard-item-template')),
 
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
@@ -153,13 +153,13 @@ App.Views.Character = Backbone.View.extend({
 
   className: 'media',
 
-  template: template('character-template'),
+  template: _.template($('#character-template')),
 
   render: function () {
     var data = {
       model: this.model.toJSON(),
       position: this.options.position
-    }
+    };
 
     this.$el.html(this.template(data));
     return this;
@@ -174,7 +174,7 @@ App.Views.CharacterGender = Backbone.View.extend({
 
   className: 'media',
 
-  template: template('gender-template'),
+  template: _.template($('#gender-template')),
 
   events: {
     'click #female': 'female',
@@ -185,7 +185,7 @@ App.Views.CharacterGender = Backbone.View.extend({
     var data = {
       model: this.model.toJSON(),
       position: this.options.position
-    }
+    };
 
     this.$el.html(this.template(data));
     return this;
@@ -206,7 +206,7 @@ App.Views.CharacterGender = Backbone.View.extend({
     $.post('/api/gender', { characterId: this.model.get('characterId'), gender: 'male' }, function(data) {
       return false;
     });
-  },
+  }
 
 });
 
@@ -218,7 +218,7 @@ App.Views.WrongGender = Backbone.View.extend({
 
   className: 'media',
 
-  template: template('menu-leaderboard-template'),
+  template: _.template($('#menu-leaderboard-template')),
 
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
@@ -250,7 +250,7 @@ App.Views.Characters = Backbone.View.extend({
 
   className: 'media-list',
 
-  template: template('menu-leaderboard-template'),
+  template: _.template($('#menu-leaderboard-template')),
 
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
@@ -282,7 +282,7 @@ App.Views.CharactersGender = Backbone.View.extend({
 
   className: 'media-list',
 
-  template: template('menu-leaderboard-template'),
+  template: _.template($('#menu-leaderboard-template')),
 
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
@@ -309,7 +309,7 @@ App.Views.CharactersGender = Backbone.View.extend({
 // Character Summary View
 App.Views.CharacterSummary = Backbone.View.extend({
 
-  template: template('character-summary-template'),
+  template: _.template($('#character-summary-template')),
 
   events: {
     'click #report': 'reportPlayer',
@@ -361,7 +361,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
     this.$el.html(this.template(data));
 
-    if (localStorage['reported-'+this.model.get('characterId')] == 'True') {
+    if (localStorage['reported-'+this.model.get('characterId')] === 'True') {
       this.$el.find('#report').attr('disabled', true);
     }
 
@@ -425,7 +425,7 @@ App.Views.Search = Backbone.View.extend({
 // Add Character View
 App.Views.AddCharacter = Backbone.View.extend({
 
-  template: template('add-character-template'),
+  template: _.template($('#add-character-template')),
 
   events: {
     "submit form":"submit"
@@ -466,7 +466,7 @@ App.Views.AddCharacter = Backbone.View.extend({
         submitBtn.button('reset');
         inputField.focus();
 
-        if (response.status == 409) {
+        if (response.status === 409) {
             helpBlock.html('<a href="/characters/' + response.responseJSON.characterId + '">' + model.get('name') + '</a> is already in our system.');
         } else {
             helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
@@ -719,7 +719,9 @@ App.Router = Backbone.Router.extend({
       success: function(data) {
 
         var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses')) * 100).toFixed(1);
-        if (isNaN(winLossRatio)) winLossRatio = 0;
+        if (isNaN(winLossRatio)) {
+          winLossRatio = 0;
+        }
 
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
@@ -738,9 +740,9 @@ Backbone.history.start({ pushState: true });
 
 $(document).on("ready", function () {
   $(document).on('click', 'a:not([data-bypass])', function(e){
-    href = $(this).prop('href')
-    root = location.protocol+'//'+location.host+'/'
-    if (root===href.slice(0,root.length)){
+    var href = $(this).prop('href');
+    var root = location.protocol + '//' + location.host + '/';
+    if (root === href.slice(0,root.length)){
       e.preventDefault();
       Backbone.history.navigate(href.slice(root.length), true);
     }
