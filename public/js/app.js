@@ -24,11 +24,7 @@ App.Models.Character = Backbone.Model.extend({
  */
 App.Collections.Characters = Backbone.Collection.extend({
   model: App.Models.Character,
-  url: '/api/characters',
-  // TODO: possibly no longer used
-  parse: function(response) {
-    return response.characters;
-  }
+  url: '/api/characters'
 });
 
 /**
@@ -38,7 +34,7 @@ App.Collections.Characters = Backbone.Collection.extend({
 App.Views.Home = Backbone.View.extend({
   tagName: 'ul',
   className: 'thumbnails',
-  template: _.template($('#home-template')),
+  template: _.template($('#home-template').html()),
   initialize: function() {
     _.bindAll(this, 'vote');
     this.collection.on('change:wins', this.vote, this);
@@ -95,7 +91,7 @@ App.Views.Home = Backbone.View.extend({
 App.Views.CharacterThumbnail = Backbone.View.extend({
   tagName: 'li',
   className: 'span5',
-  template: _.template($('#character-thumbnail-template')),
+  template: _.template($('#character-thumbnail-template').html()),
   events: {
     'click img': 'updateWinner'
   },
@@ -136,7 +132,7 @@ App.Views.LeaderboardItem = Backbone.View.extend({
 
   tagName: 'li',
 
-  template: _.template($('#leaderboard-item-template')),
+  template: _.template($('#leaderboard-item-template').html()),
 
   render: function () {
     this.$el.html(this.template(this.model.toJSON()));
@@ -153,7 +149,7 @@ App.Views.Character = Backbone.View.extend({
 
   className: 'media',
 
-  template: _.template($('#character-template')),
+  template: _.template($('#character-template').html()),
 
   render: function () {
     var data = {
@@ -174,7 +170,7 @@ App.Views.CharacterGender = Backbone.View.extend({
 
   className: 'media',
 
-  template: _.template($('#gender-template')),
+  template: _.template($('#gender-template').html()),
 
   events: {
     'click #female': 'female',
@@ -218,7 +214,7 @@ App.Views.WrongGender = Backbone.View.extend({
 
   className: 'media',
 
-  template: _.template($('#menu-leaderboard-template')),
+  template: _.template($('#menu-leaderboard-template').html()),
 
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
@@ -250,7 +246,7 @@ App.Views.Characters = Backbone.View.extend({
 
   className: 'media-list',
 
-  template: _.template($('#menu-leaderboard-template')),
+  template: _.template($('#menu-leaderboard-template').html()),
 
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
@@ -282,7 +278,7 @@ App.Views.CharactersGender = Backbone.View.extend({
 
   className: 'media-list',
 
-  template: _.template($('#menu-leaderboard-template')),
+  template: _.template($('#menu-leaderboard-template').html()),
 
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
@@ -309,7 +305,7 @@ App.Views.CharactersGender = Backbone.View.extend({
 // Character Summary View
 App.Views.CharacterSummary = Backbone.View.extend({
 
-  template: _.template($('#character-summary-template')),
+  template: _.template($('#character-summary-template').html()),
 
   events: {
     'click #report': 'reportPlayer',
@@ -425,7 +421,7 @@ App.Views.Search = Backbone.View.extend({
 // Add Character View
 App.Views.AddCharacter = Backbone.View.extend({
 
-  template: _.template($('#add-character-template')),
+  template: _.template($('#add-character-template').html()),
 
   events: {
     "submit form":"submit"

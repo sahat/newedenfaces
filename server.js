@@ -26,8 +26,8 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
 app = express();
 parser = new xml2js.Parser();
 
-mongoose.connect('localhost');
-//mongoose.connect(config.mongoose);
+//mongoose.connect('localhost');
+mongoose.connect(config.mongoose);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -73,18 +73,19 @@ app.get('/api/characters', function(req, res) {
       .where('gender', oppositeRandomGender)
       .limit(2)
       .exec(function(err, characters) {
-      	if (err) throw err;
+        if (err) { throw err; }
         if (characters.length < 2) {
           Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
+            if (err) { throw err; }
             console.log('Less than 2: Reset voted flags');
           });
-          res.send({ characters: [] });
+          res.send([]);
         } else {
-          res.send({ characters: characters });
+          res.send(characters);
         }
       });
     } else {
-      res.send({ characters: characters });
+      res.send(characters);
     }
   });
 });
