@@ -8,7 +8,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "supervisor server.js"
+    "start": "forever start server.js"
   },
   "dependencies": {
     "express": "*",
@@ -22,6 +22,6 @@
     "newrelic": "*",
     "cron": "*",
     "async": "*",
-    "nodetime": "*"
+    "forever": "*"
   }
 }
