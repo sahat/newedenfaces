@@ -28,7 +28,7 @@ var options = {
     auto_reconnect: true
   }
 };
-var db = mongoose.connect('localhost', options).connection;
+var db = mongoose.connect(config.mongoose, options).connection;
 
 db.on('error', function(err) {
   console.error('Error in MongoDb connection: ' + err);
