@@ -32,10 +32,6 @@ var options = {
 };
 var db = mongoose.connect('localhost', options).connection;
 
-db.on('connecting', function() {
-  console.log('connecting to MongoDB...');
-});
-
 db.on('error', function(error) {
   console.error('Error in MongoDb connection: ' + error);
 });
@@ -44,15 +40,6 @@ db.on('connected', function() {
 });
 db.on('close', function () {
   console.log('Connection to database closed');
-});
-db.once('open', function() {
-  console.log('MongoDB connection opened!');
-});
-db.on('reconnected', function () {
-  console.log('MongoDB reconnected!');
-});
-db.on('disconnected', function() {
-  console.log('MongoDB disconnected!');
 });
 
 // Mongoose schema
