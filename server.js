@@ -26,8 +26,41 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
 app = express();
 parser = new xml2js.Parser();
 
-//mongoose.connect('localhost');
-mongoose.connect(config.mongoose);
+var options = {
+  db: {
+    native_parser: false,
+    retryMiliSeconds: 5000,
+    numberOfRetries: 360000
+  },
+  server: {
+    socketOptions: { keepAlive: 1, connectTimeoutMS: 5000 },
+    auto_reconnect: true
+  }
+};
+var db = mongoose.connect(config.mongoose, options).connection;
+
+db.on('connecting', function() {
+  console.log('connecting to MongoDB...');
+});
+
+db.on('error', function(error) {
+  console.error('Error in MongoDb connection: ' + error);
+});
+db.on('connected', function() {
+  console.log('MongoDB connected!');
+});
+db.on('close', function () {
+  console.log('Connection to database closed');
+});
+db.once('open', function() {
+  console.log('MongoDB connection opened!');
+});
+db.on('reconnected', function () {
+  console.log('MongoDB reconnected!');
+});
+db.on('disconnected', function() {
+  console.log('MongoDB disconnected!');
+});
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -46,15 +79,16 @@ var Character = mongoose.model('Character', {
 
 // Express configuration
 //app.use(express.logger('dev'));
-app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
- * GET /api/characters
- * Retrieves 2 characters per user and increments global counter.
- */
+* GET /api/characters
+* Retrieves 2 characters per user and increments global counter.
+*/
 app.get('/api/characters', function(req, res) {
   var choices = { 0: 'female', 1: 'male' };
   var randomGender = choices[Math.round(Math.random())]
@@ -91,10 +125,10 @@ app.get('/api/characters', function(req, res) {
 });
 
 /**
- * POST /report
- * Increment character's report count. After (3) successive strikes,
- * that character gets deleted from the database.
- */
+* POST /report
+* Increment character's report count. After (3) successive strikes,
+* that character gets deleted from the database.
+*/
 app.post('/api/report', function(req, res) {
   var characterId = req.body.characterId;
   Character.findOne({ characterId: characterId }, function(err, character) {
@@ -119,10 +153,10 @@ app.post('/api/report', function(req, res) {
 });
 
 /**
- * POST /report/gender
- * Marks a character as being an invalid gender,
- * e.g. Actual "male" avatar has been added as "female"
- */
+* POST /report/gender
+* Marks a character as being an invalid gender,
+* e.g. Actual "male" avatar has been added as "female"
+*/
 app.post('/api/report/gender', function(req, res) {
   var characterId = req.body.characterId;
   Character.findOne({ characterId: characterId }, function(err, user) {
@@ -140,10 +174,10 @@ app.post('/api/report/gender', function(req, res) {
 });
 
 /**
- * DEL /api/characters/:id
- * Delete a character from the database
- * Requres the secret code as a querystring to prevent abuse
- */
+* DEL /api/characters/:id
+* Delete a character from the database
+* Requres the secret code as a querystring to prevent abuse
+*/
 app.del('/api/characters/:id', function(req, res) {
   var characterId = req.params.id;
   if (req.query.secretCode !== config.secretCode) {
@@ -156,9 +190,9 @@ app.del('/api/characters/:id', function(req, res) {
 });
 
 /**
- * PUT /api/vote
- * Update winning and losing count for characters.
- */
+* PUT /api/vote
+* Update winning and losing count for characters.
+*/
 app.put('/api/characters', function(req, res) {
   var winner = req.body.winner;
   var loser = req.body.loser;
@@ -189,9 +223,9 @@ app.put('/api/characters', function(req, res) {
 });
 
 /**
- * GET /api/characters/shame
- * Return top (25) lowest ranked characters for the hall of shame
- */
+* GET /api/characters/shame
+* Return top (25) lowest ranked characters for the hall of shame
+*/
 app.get('/api/characters/shame', function(req, res) {
   Character
   .find()
@@ -204,10 +238,10 @@ app.get('/api/characters/shame', function(req, res) {
 });
 
 /**
- * GET /api/characters/top
- * Return top (100) highest ranked characters.
- * Filter gender, race, bloodline by a querystring.
- */
+* GET /api/characters/top
+* Return top (100) highest ranked characters.
+* Filter gender, race, bloodline by a querystring.
+*/
 app.get('/api/characters/top', function(req, res) {
   var conditions = {};
   for (var key in req.query) {
@@ -227,9 +261,9 @@ app.get('/api/characters/top', function(req, res) {
 });
 
 /**
- * GET /api/leaderboard
- * Returns Top 14 characters, sorted by the winning percentage.
- */
+* GET /api/leaderboard
+* Returns Top 14 characters, sorted by the winning percentage.
+*/
 app.get('/api/leaderboard', function(req, res) {
   Character
   .find()
@@ -248,9 +282,9 @@ app.get('/api/leaderboard', function(req, res) {
 });
 
 /**
- * GET /api/characters/all
- * Returns a list of all characters (name only)
- */
+* GET /api/characters/all
+* Returns a list of all characters (name only)
+*/
 app.get('/api/characters/all', function(req, res) {
   Character.find(null, 'characterId name', function (err, characters) {
     if (err) throw err;
@@ -266,9 +300,9 @@ app.get('/api/characters/wrong-gender', function(req, res) {
 });
 
 /**
- * GET /api/characters/:id
- * Returns one specified character.
- */
+* GET /api/characters/:id
+* Returns one specified character.
+*/
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
     if (err) throw err;
@@ -281,9 +315,9 @@ app.get('/api/characters/:id', function(req, res) {
 });
 
 /**
- * POST /api/characters
- * Adds a character to the database.
- */
+* POST /api/characters
+* Adds a character to the database.
+*/
 app.post('/api/characters', function(req, res) {
   var gender = req.body.gender;
   var charName = decodeURIComponent(req.body.name || '');
@@ -342,9 +376,9 @@ app.post('/api/characters', function(req, res) {
 });
 
 /**
- * POST /api/gender
- * Update character's gender.
- */
+* POST /api/gender
+* Update character's gender.
+*/
 app.post('/api/gender', function(req, res) {
   var id = req.body.characterId;
   var gender = req.body.gender;
@@ -361,8 +395,8 @@ app.post('/api/gender', function(req, res) {
 });
 
 /**
- * Backbone pushstate redirects
- */
+* Backbone pushstate redirects
+*/
 app.get('/add', function(req, res) {
   res.redirect('/#add');
 });
