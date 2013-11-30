@@ -10,11 +10,6 @@ var express = require('express'),
   mongoose = require('mongoose'),
   _ = require('underscore');
 
-require('nodetime').profile({
-  accountKey: 'd8cfc901fdad39ee66c23d74a7b4b43e9541ba16',
-  appName: 'newedenfaces'
-});
-
 var config = require('./config.js');
 
 // OpenShift Configuration
@@ -27,17 +22,15 @@ app = express();
 parser = new xml2js.Parser();
 
 var options = {
-  db: {
-    native_parser: false,
-    retryMiliSeconds: 5000,
-    numberOfRetries: 360000
-  },
   server: {
-    socketOptions: { keepAlive: 1, connectTimeoutMS: 5000 },
+    socketOptions: {
+      keepAlive: 1,
+      connectTimeoutMS: 5000
+    },
     auto_reconnect: true
   }
 };
-var db = mongoose.connect(config.mongoose, options).connection;
+var db = mongoose.connect('localhost', options).connection;
 
 db.on('connecting', function() {
   console.log('connecting to MongoDB...');
