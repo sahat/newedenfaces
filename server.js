@@ -75,7 +75,7 @@ app.get('/api/characters', function(req, res) {
   .where('gender', randomGender)
   .limit(2)
   .exec(function(err, characters) {
-  	if (err) throw err;
+    if (err) throw err;
     if (characters.length < 2) {
       var oppositeRandomGender = randomGender === 'female' ? 'male' : 'female';
       Character
@@ -309,16 +309,19 @@ app.post('/api/characters', function(req, res) {
           if (err) throw err;
           try {
             var characterId = parsedXml.eveapi.result[0].rowset[0].row[0].$.characterID;
+
+            Character.findOne({ characterId: characterId }, function(err, character) {
+              if (character) {
+                res.send(409, { characterId: character.characterId });
+              } else {
+                callback(null, characterId);
+              }
+            });
+
           } catch(e) {
             return res.send(404, 'Character ID Not Found');
           }
-          Character.findOne({ characterId: characterId }, function(err, character) {
-            if (character) {
-              res.send(409, { characterId: character.characterId });
-            } else {
-              callback(null, characterId);
-            }
-          });
+
         });
       });
     },
@@ -332,22 +335,27 @@ app.post('/api/characters', function(req, res) {
             var name = parsedXml.eveapi.result[0].characterName[0];
             var race = parsedXml.eveapi.result[0].race[0];
             var bloodline = parsedXml.eveapi.result[0].bloodline[0];
+
+            var character = new Character({
+              characterId: characterId,
+              name: name,
+              race: race,
+              bloodline: bloodline,
+              gender: gender,
+              random: [Math.random(), 0]
+            });
+
+            character.save(function(err) {
+              if (err) throw err;
+              res.send(character);
+            });
+
+            callback(null);
+
           } catch(e) {
             return res.send(404, 'Character Info Not Found');
           }
-          var character = new Character({
-            characterId: characterId,
-            name: name,
-            race: race,
-            bloodline: bloodline,
-            gender: gender,
-            random: [Math.random(), 0]
-          });
-          character.save(function(err) {
-            if (err) throw err;
-            res.send(character);
-          });
-          callback(null);
+
         });
       });
     }
@@ -368,7 +376,7 @@ app.post('/api/gender', function(req, res) {
       character.save(function(err) {
         if (err) throw err;
         res.send(200);
-      })
+      });
     }
   });
 });
