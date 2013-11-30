@@ -1,14 +1,13 @@
 // TODO: add hotness meter
 
-var express = require('express'),
-  async = require('async'),
-  http = require('http'),
-  fs = require('fs'),
-  path = require('path'),
-  request = require('request'),
-  xml2js = require('xml2js'),
-  mongoose = require('mongoose'),
-  _ = require('underscore');
+var express = require('express');
+var async = require('async');
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
+var request = require('request');
+var xml2js = require('xml2js');
+var mongoose = require('mongoose');
 
 var config = require('./config.js');
 
@@ -18,8 +17,7 @@ var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
 var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
   process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 
-app = express();
-parser = new xml2js.Parser();
+var app = express();
 
 var options = {
   server: {
@@ -32,8 +30,8 @@ var options = {
 };
 var db = mongoose.connect('localhost', options).connection;
 
-db.on('error', function(error) {
-  console.error('Error in MongoDb connection: ' + error);
+db.on('error', function(err) {
+  console.error('Error in MongoDb connection: ' + err);
 });
 db.on('connected', function() {
   console.log('MongoDB connected!');
@@ -58,7 +56,6 @@ var Character = mongoose.model('Character', {
 });
 
 // Express configuration
-//app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
@@ -71,7 +68,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 */
 app.get('/api/characters', function(req, res) {
   var choices = { 0: 'female', 1: 'male' };
-  var randomGender = choices[Math.round(Math.random())]
+  var randomGender = choices[Math.round(Math.random())];
   Character
   .find({ random: { $near: [Math.random(), 0] } })
   .where('voted', false)
@@ -299,6 +296,8 @@ app.get('/api/characters/:id', function(req, res) {
 * Adds a character to the database.
 */
 app.post('/api/characters', function(req, res) {
+  var parser = new xml2js.Parser();
+
   var gender = req.body.gender;
   var charName = decodeURIComponent(req.body.name || '');
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charName;
