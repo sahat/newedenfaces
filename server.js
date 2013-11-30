@@ -233,7 +233,7 @@ app.get('/api/characters/shame', function(req, res) {
   .limit(25)
   .exec(function(err, characters) {
     if (err) throw err;
-    res.send({ characters: characters });
+    res.send(characters);
   });
 });
 
@@ -256,7 +256,7 @@ app.get('/api/characters/top', function(req, res) {
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
       return 0;
     });
-    res.send({ characters: characters.slice(0, 100) });
+    res.send(characters.slice(0, 100));
   });
 });
 
@@ -277,7 +277,7 @@ app.get('/api/leaderboard', function(req, res) {
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
       return 0;
     });
-    res.send({ characters: characters });
+    res.send(characters);
   });
 });
 
@@ -288,14 +288,14 @@ app.get('/api/leaderboard', function(req, res) {
 app.get('/api/characters/all', function(req, res) {
   Character.find(null, 'characterId name', function (err, characters) {
     if (err) throw err;
-    res.send({ characters: characters });
+    res.send(characters);
   });
 });
 
 app.get('/api/characters/wrong-gender', function(req, res) {
   Character.where('wrongGender', true).exec(function (err, characters) {
     if (err) throw err;
-    res.send({ characters: characters });
+    res.send(characters);
   });
 });
 
