@@ -439,3 +439,7 @@ app.get('/wrong-gender', function(req, res) {
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
 });
+
+process.on('uncaughtException', function (err) {
+  console.log(err);
+});
