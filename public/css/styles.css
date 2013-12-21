@@ -1,5 +1,3 @@
-@import 'bootstrap.min.css';
-@import 'todc-bootstrap.css';
 @import url(http://fonts.googleapis.com/css?family=Pacifico);
 
 
@@ -81,7 +79,7 @@ kbd {
 
 .character-thumbnail {
   margin-bottom: 10px;
-  cursor: hand; 
+  cursor: hand;
   cursor: pointer;
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
@@ -90,25 +88,14 @@ kbd {
 
 
 .character-thumbnail:hover {
-  -webkit-box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
-  -moz-box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
   box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
 
 .brand {
-  transition: 0.3s ease-in-out;
   color: #333 !important;
   font-family: 'Pacifico', cursive;
-}
-
-.brand:hover {
   transition: 0.3s ease-in-out;
-  color: #fff !important;
-  text-shadow: 0px 0px 2px #4b8cf7 !important;
 }
 
 .footer {
@@ -123,7 +110,7 @@ kbd {
 }
 
 .footer a:hover,
-.footer a:focus, 
+.footer a:focus,
 .footer a:active {
   transition: 0.3s ease-in-out;
   color: #666;
@@ -253,7 +240,7 @@ kbd {
 }
 
 #leaderboard ul.inline {
- 
+
 }
 
 ul.inline>li {
@@ -314,10 +301,10 @@ ul.inline>li {
 .my-mfp-zoom-in {
   opacity: 0;
 
-  -webkit-transition: all 0.2s ease-in-out; 
-  -moz-transition: all 0.2s ease-in-out; 
-  -o-transition: all 0.2s ease-in-out; 
-  transition: all 0.2s ease-in-out; 
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 /* animate in */
@@ -333,9 +320,9 @@ ul.inline>li {
 /* Dark overlay, start state */
 .my-mfp-zoom-in.mfp-bg {
   opacity: 0;
-  -webkit-transition: opacity 0.3s ease-out; 
-  -moz-transition: opacity 0.3s ease-out; 
-  -o-transition: opacity 0.3s ease-out; 
+  -webkit-transition: opacity 0.3s ease-out;
+  -moz-transition: opacity 0.3s ease-out;
+  -o-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
 }
 /* animate in */
@@ -407,7 +394,7 @@ ul.inline>li {
 }
 
 /* Spinning circle mask */
-.loading .mask {  
+.loading .mask {
   width: 12px;
   height: 12px;
   overflow: hidden;
