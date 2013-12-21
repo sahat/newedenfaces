@@ -613,7 +613,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        App.Views.charactersView.selectMenuItem('top-male');
       }
     });
   },
@@ -627,7 +627,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        App.Views.charactersView.selectMenuItem('top-female');
       }
     });
   },
@@ -642,7 +642,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        App.Views.charactersView.selectMenuItem('top-male');
       }
     });
   },
@@ -656,7 +656,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        App.Views.charactersView.selectMenuItem('top-female');
       }
     });
   },
@@ -670,7 +670,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        App.Views.charactersView.selectMenuItem('top-male');
       }
     });
   },
@@ -684,7 +684,7 @@ App.Router = Backbone.Router.extend({
           collection: characters
         });
         $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        App.Views.charactersView.selectMenuItem('top-female');
       }
     });
   },
@@ -724,6 +724,7 @@ Backbone.history.start({ pushState: true });
 
 
 $(document).on("ready", function () {
+
   $(document).on('click', 'a:not([data-bypass])', function(e){
     var href = $(this).prop('href');
     var root = location.protocol + '//' + location.host + '/';
@@ -732,6 +733,7 @@ $(document).on("ready", function () {
       Backbone.history.navigate(href.slice(root.length), true);
     }
   });
+
 });
 
 $(document).ajaxStart(function() {
