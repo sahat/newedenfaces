@@ -406,30 +406,31 @@
         </div>
       </div>
       <ul class="nav nav-tabs m-b-none no-radius">
-        <li class="active"><a href="#all" data-toggle="tab">All</a></li>
-        <li class=""><a href="#events" data-toggle="tab">Events</a></li>
-        <li class=""><a href="#feed" data-toggle="tab">Feed</a></li>
+        <li class="active"><a href="#history" data-toggle="tab">History</a></li>
+        <li class=""><a href="#comments" data-toggle="tab">Comments</a></li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="all">
+        <div class="tab-pane active" id="history">
           <ul class="list-group list-normal">
             <li class="list-group-item"> <a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg" class="img-circle"></a> <div> <small class="pull-right text-muted">3 minuts ago</small> <a href="#"><strong>Foxe Ohil</strong></a> commented <a href="#">Vestibulum ullamcorper sodales nisi nec...</a> <div class="text-small"> <a href="#">Like</a> <a href="#">Comment</a> </div> </div> </li>
             <li class="list-group-item"> <a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg" class="img-circle"></a> <div> <small class="pull-right text-muted">3 minuts ago</small> <a href="#"><strong>Foxe Ohil</strong></a> commented <a href="#">Vestibulum ullamcorper sodales nisi nec...</a> <div class="text-small"> <a href="#">Like</a> <a href="#">Comment</a> </div> </div> </li>
           </ul>
         </div>
-        <div class="tab-pane" id="feed">
-          <ul class="list-group list-normal">
-            <li class="list-group-item"><a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg"
-                                                                                                 class="img-circle"></a>
-
-              <div>
-                <small class="pull-right text-muted">1 hour ago</small>
-                <a href="#"><strong>Mogen Osker</strong></a> posted a video <a href="#">Aamcorper sodales nisi nec</a>
-
-                <div class="text-small"><a href="#">Like</a> <a href="#">Comment</a></div>
-              </div>
-            </li>
-          </ul>
+        <div class="tab-pane" id="comments">
+          <div class="padder padder-v">
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+              var disqus_shortname = 'newedenfaces'; // required: replace example with your forum shortname
+              (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+              })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          </div>
         </div>
       </div>
     </section>
@@ -438,22 +439,7 @@
 
   <br><br>
 
-  <div id="disqus_thread"></div>
-  <script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'newedenfaces'; // required: replace example with your forum shortname
 
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function () {
-      var dsq = document.createElement('script');
-      dsq.type = 'text/javascript';
-      dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-</noscript>
 </script>
 
 <script >
