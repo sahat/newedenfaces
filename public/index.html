@@ -18,6 +18,7 @@
 </head>
 <body>
 <div id="wrap">
+  <div id="wallpaper"></div>
   <div class="navbar navbar-masthead">
     <a class="brand" href="/">New Eden Faces</a>
 
@@ -292,7 +293,7 @@
 
     <div class="pull-left thumb-large">
       <a href="/characters/<%= model.characterId %>">
-        <img class="media-object" src="http://image.eveonline.com/Character/<%= model.characterId %>_128.jpg">
+        <img class="img-rounded media-object" src="http://image.eveonline.com/Character/<%= model.characterId %>_128.jpg">
       </a>
     </div>
     <div class="media-body">
@@ -361,33 +362,78 @@
 </script>
 
 <script id="character-summary-template" type="text/template">
-  <div class="jumbotron"><img src="/img/<%= model.race %>.png"><%= model.name %>
-    <a class="btn btn-small" href="https://gate.eveonline.com/Profile/<%= model.name %>">EVE Profile</a>
-    <button id="report" class="btn btn-warning btn-small">Report</button>
-    <button id="wrong-gender" class="btn btn-danger btn-small">Wrong Gender</button>
-  </div>
-  <ul class="inline">
-    <li><strong>Race:</strong> <%= model.race %></li>
-    <li><strong>Bloodline:</strong> <%= model.bloodline %></li>
-    <li><strong>Gender:</strong>
-      <% if (model.gender) { %>
-      <%= model.gender.charAt(0).toUpperCase() + model.gender.slice(1) %>
-      <% } else { %>
-      Undetermined
-      <% } %>
-    </li>
-  </ul>
 
-  <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg"><img
-    class="img-polaroid" src="http://image.eveonline.com/Character/<%= model.characterId %>_256.jpg"></a>
-  <div class="popover right">
-    <div class="arrow"></div>
-    <h3 class="popover-title pagination-centered">Winning Percentage</h3>
+  <div class="content-sidebar bg-white">
+    <aside class="sidebar bg-lighter sidebar">
+      <div class="text-center clearfix bg-white">
+        <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg">
+          <img src="http://image.eveonline.com/Character/<%= model.characterId %>_256.jpg">
+        </a>
+      </div>
+      <div class="padder padder-v"><span class="h4"><img src="/img/<%= model.race %>.png"> <%= model.name %></span>
+        <small class="block m-t-mini">Race: <strong><%= model.race %></strong></small>
+        <small class="block m-t-mini">Bloodline: <strong><%= model.bloodline %></strong></small>
+        <small class="block m-t-mini">Gender: <strong>
+          <% if (model.gender) { %>
+          <%= model.gender.charAt(0).toUpperCase() + model.gender.slice(1) %>
+          <% } else { %>
+          Undetermined
+          <% } %>
+        </strong>
+        </small>
+        <div class="btn-group">
+          <button id="report" class="btn btn-mini btn-default"><i class="icon-warning-sign"></i> Report</button>
+          <button id="wrong-gender" class="btn btn-mini btn-default"><i class="icon-male"></i> Wrong Gender</button>
+        </div>
+      </div>
+      </aside>
 
-    <div class="popover-content pagination-centered">
-      <h1><%= winLossRatio %>%</h1>
-      Wins: <strong><%= model.wins %></strong> Losses: <strong><%= model.losses %></strong>
-    </div>
+    <section class="main">
+      <div class="padder">
+        <div class="row">
+          <div class="span4 bg-primary padder-v">
+            <div class="h2"><%= winLossRatio %>%</div>
+            Winning Percentage
+          </div>
+          <div class="span4 bg-info padder-v">
+            <div class="h2"><%= model.wins %></div>
+            Wins
+          </div>
+          <div class="span4 bg-inverse padder-v">
+            <div class="h2"><%= model.losses %></div>
+            Losses
+          </div>
+        </div>
+      </div>
+      <ul class="nav nav-tabs m-b-none no-radius">
+        <li class="active"><a href="#all" data-toggle="tab">All</a></li>
+        <li class=""><a href="#events" data-toggle="tab">Events</a></li>
+        <li class=""><a href="#feed" data-toggle="tab">Feed</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="all">
+          <ul class="list-group list-normal">
+            <li class="list-group-item"> <a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg" class="img-circle"></a> <div> <small class="pull-right text-muted">3 minuts ago</small> <a href="#"><strong>Foxe Ohil</strong></a> commented <a href="#">Vestibulum ullamcorper sodales nisi nec...</a> <div class="text-small"> <a href="#">Like</a> <a href="#">Comment</a> </div> </div> </li>
+            <li class="list-group-item"> <a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg" class="img-circle"></a> <div> <small class="pull-right text-muted">3 minuts ago</small> <a href="#"><strong>Foxe Ohil</strong></a> commented <a href="#">Vestibulum ullamcorper sodales nisi nec...</a> <div class="text-small"> <a href="#">Like</a> <a href="#">Comment</a> </div> </div> </li>
+          </ul>
+        </div>
+        <div class="tab-pane" id="feed">
+          <ul class="list-group list-normal">
+            <li class="list-group-item"><a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg"
+                                                                                                 class="img-circle"></a>
+
+              <div>
+                <small class="pull-right text-muted">1 hour ago</small>
+                <a href="#"><strong>Mogen Osker</strong></a> posted a video <a href="#">Aamcorper sodales nisi nec</a>
+
+                <div class="text-small"><a href="#">Like</a> <a href="#">Comment</a></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <br><br>
@@ -410,8 +456,7 @@
 </noscript>
 </script>
 
-<
-script >
+<script >
 (function (i, s, o, g, r, a, m) {
   i['GoogleAnalyticsObject'] = r;
   i[r] = i[r] || function () {
