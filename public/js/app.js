@@ -310,17 +310,6 @@ App.Views.CharacterSummary = Backbone.View.extend({
   events: {
     'click #report': 'reportPlayer',
     'click #wrong-gender': 'wrongGender',
-    'click #update': 'updateAvatar'
-  },
-
-  updateAvatar: function() {
-    $.ajax({
-      type: 'PUT',
-      url: '/api/grid/' + this.model.get('characterId'),
-      success: function() {
-        toastr.success('Updated successfully');
-      }
-    });
   },
 
   wrongGender: function() {
