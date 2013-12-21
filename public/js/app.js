@@ -147,7 +147,7 @@ App.Views.Character = Backbone.View.extend({
 
   tagName: 'li',
 
-  className: 'media',
+  className: 'list-group-item',
 
   template: _.template($('#character-template').html()),
 
@@ -241,35 +241,26 @@ App.Views.WrongGender = Backbone.View.extend({
 
 // Characters Collection View
 App.Views.Characters = Backbone.View.extend({
-
   tagName: 'ul',
-
-  className: 'media-list',
-
+  className: 'list-group list-group-flush',
   template: _.template($('#menu-leaderboard-template').html()),
-
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
     if (menuItem) {
       $('.' + menuItem).addClass('active');
     }
   },
-
   addOne: function(character, index) {
     // create new character view
     var characterView = new App.Views.Character({ model: character, position: index + 1 });
     // apend to <tbody>
     this.$el.append(characterView.render().el);
   },
-
   render: function() {
-    $('#content').html(this.template());
     this.collection.each(this.addOne, this);
     return this;
   }
-
 });
-
 
 // CharactersGender Collection View
 App.Views.CharactersGender = Backbone.View.extend({
@@ -542,7 +533,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-menu');
       }
     });
@@ -556,7 +548,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-menu');
       }
     });
@@ -570,7 +563,8 @@ App.Router = Backbone.Router.extend({
         App.Views.wrongGenderView = new App.Views.WrongGender({
           collection: characters
         });
-        $('#content').html(App.Views.wrongGenderView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.wrongGenderView.selectMenuItem('top-menu');
       }
     });
@@ -584,7 +578,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('hall-of-shame-menu');
       }
     });
@@ -598,8 +593,9 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
+       App.Views.charactersView.selectMenuItem('top-menu');
       }
     });
   },
@@ -612,7 +608,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-male');
       }
     });
@@ -626,7 +623,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-female');
       }
     });
@@ -641,7 +639,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-male');
       }
     });
@@ -655,7 +654,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-female');
       }
     });
@@ -669,7 +669,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-male');
       }
     });
@@ -683,7 +684,8 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html(App.Views.charactersView.render().el);
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
         App.Views.charactersView.selectMenuItem('top-female');
       }
     });
