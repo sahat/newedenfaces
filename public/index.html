@@ -296,12 +296,14 @@
       </a>
     </div>
     <div class="media-body">
-      <h4 class="media-heading"><a href="/characters/<%= model.characterId %>"><%= model.name %></a></h4>
-      <strong>Race:</strong> <%= model.race %>
-      <br>
-      <strong>Bloodline:</strong> <%= model.bloodline %>
-      <br>
-      <strong>Gender:</strong> <%= model.gender %>
+      <h5 class="media-heading"><a href="/characters/<%= model.characterId %>"><%= model.name %></a></h5>
+      <small>
+        Race: <strong><%= model.race %></strong>
+        <br>
+        Bloodline: <strong><%= model.bloodline %></strong>
+        <br>
+        Wins: <strong><%= model.wins %></strong> Losses: <strong><%= model.losses %></strong>
+      </small>
     </div>
   </div>
 </script>

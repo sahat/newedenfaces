@@ -242,7 +242,7 @@ App.Views.WrongGender = Backbone.View.extend({
 // Characters Collection View
 App.Views.Characters = Backbone.View.extend({
   tagName: 'ul',
-  className: 'list-group list-group-flush',
+  className: 'list-group list-group-flush m-t-n',
   template: _.template($('#menu-leaderboard-template').html()),
   selectMenuItem: function(menuItem) {
     $('.navbar .nav li').removeClass('active');
