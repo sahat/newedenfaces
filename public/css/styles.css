@@ -3,7 +3,10 @@
 
 html, body {
   height: 100%;
-  min-width: 960px;
+}
+
+.navbar-form input[type="text"] {
+  font-size: 13px;
 }
 
 kbd {
@@ -120,13 +123,6 @@ kbd {
   color: #fff;
 }
 
-.signin-box h2 {
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 17px;
-  height: 16px;
-  margin: 0 0 19px;
-}
 
 .control-group > label {
   color: #222;
