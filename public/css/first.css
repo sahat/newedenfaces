@@ -246,55 +246,55 @@ a:hover, a:focus {
 }
 
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
-  width: 940px;
+  width: 724px;
 }
 
 .span12 {
-  width: 940px;
+  width: 724px;
 }
 
 .span11 {
-  width: 860px;
+  width: 662px;
 }
 
 .span10 {
-  width: 780px;
+  width: 600px;
 }
 
 .span9 {
-  width: 700px;
+  width: 538px;
 }
 
 .span8 {
-  width: 620px;
+  width: 476px;
 }
 
 .span7 {
-  width: 540px;
+  width: 414px;
 }
 
 .span6 {
-  width: 460px;
+  width: 352px;
 }
 
 .span5 {
-  width: 380px;
+  width: 290px;
 }
 
 .span4 {
-  width: 300px;
+  width: 228px;
 }
 
 .span3 {
-  width: 220px;
+  width: 166px;
 }
 
 .span2 {
-  width: 140px;
+  width: 104px;
 }
 
 .span1 {
-  width: 60px;
+  width: 42px;
 }
 
 .offset12 {
@@ -6417,14 +6417,6 @@ a.label:hover, a.label:focus, a.badge:hover, a.badge:focus {
     margin-left: 0;
   }
 
-  [class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
-    float: none;
-    width: 100%;
-    margin-left: 0;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
 
   .span12, .row-fluid .span12 {
     width: 100%;

@@ -246,7 +246,7 @@ app.get('/api/leaderboard', function(req, res) {
   Character
   .find()
   .sort('-wins')
-  .limit(10)
+  .limit(12)
   .lean()
   .exec(function(err, characters) {
     if (err) throw err;

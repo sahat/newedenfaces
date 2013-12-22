@@ -380,7 +380,8 @@ kbd {
 
 ul.inline>li {
   padding-left: 0;
-  padding-bottom: 5px;
+  padding-right: 3px;
+  padding-bottom: 3px;
 }
 
 .progress .bar {
