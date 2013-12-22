@@ -73,9 +73,7 @@ App.Views.Home = Backbone.View.extend({
   addOne: function(character, index) {
     var characterThumbnailView = new App.Views.CharacterThumbnail({ model: character });
     // add bootstrap offset3 to the first thumbnail
-    if (index === 0) {
-      characterThumbnailView.$el.addClass('offset1');
-    }
+
     this.$el.append(characterThumbnailView.render().el);
   },
   selectMenuItem: function(menuItem) {
@@ -90,7 +88,7 @@ App.Views.Home = Backbone.View.extend({
 // Character Thumbnail on the Home Page View
 App.Views.CharacterThumbnail = Backbone.View.extend({
   tagName: 'li',
-  className: 'span5',
+  className: 'span6',
   template: _.template($('#character-thumbnail-template').html()),
   events: {
     'click img': 'updateWinner'

@@ -24,6 +24,9 @@ body {
   font-size: 13px;
 }
 
+.thumbnails > li {
+  padding: 15px;
+}
 
 kbd {
   padding: 0.1em 0.6em;
