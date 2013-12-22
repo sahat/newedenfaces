@@ -335,28 +335,25 @@
   <div class="panel">
     <h4>Add Character</h4>
 
-    <form>
-      <fieldset>
+    <form class="form-inline">
         <div class="control-group">
           <label for="addcharacter">Character Name</label>
-
           <div class="controls">
-            <div class="input-append">
-              <input type="text" name="addcharacter" autofocus>
-              <button type="submit" class="btn btn-small btn-primary">Submit</button>
-            </div>
-            <label class="radio">
-              <input type="radio" name="genderRadios" value="female">
-              Female
-            </label>
-            <label class="radio">
-              <input type="radio" name="genderRadios" value="male">
-              Male
-            </label>
+            <input type="text" name="addcharacter" autofocus>
+            <button type="submit" class="btn btn-small btn-primary">Submit</button>
+            <p>
+              <label class="radio">
+                <input type="radio" name="genderRadios" value="female">
+                Female
+              </label>
+              <label class="radio">
+                <input type="radio" name="genderRadios" value="male">
+                Male
+              </label>
+            </p>
             <span class="help-block"></span>
           </div>
         </div>
-      </fieldset>
     </form>
   </div>
 </script>
