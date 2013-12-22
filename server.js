@@ -1,5 +1,6 @@
 // TODO: add hotness meter
-
+// TODO: Add like button
+var domain = require('domain');
 var express = require('express');
 var async = require('async');
 var http = require('http');
@@ -19,26 +20,20 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
 
 var app = express();
 
-var options = {
-  server: {
-    socketOptions: {
-      keepAlive: 1,
-      connectTimeoutMS: 5000
-    },
-    auto_reconnect: true
-  }
-};
-var db = mongoose.connect(config.mongoose, options).connection;
 
-db.on('error', function(err) {
-  console.error('Error in MongoDb connection: ' + err);
-  mongoose.connect(config.mongoose, options);
+// MongoDB in its own domain
+var dbDomain = domain.create();
+
+dbDomain.run(function() {
+  mongoose.connect(config.mongoose);
 });
-db.on('connected', function() {
-  console.log('MongoDB connected!');
-});
-db.on('close', function () {
-  console.log('Connection to database closed');
+
+// Graceful error handling for MongoDB
+dbDomain.on('error', function(err) {
+  console.error(err.message);
+  setTimeout(function() {
+    mongoose.connect(config.mongoose);
+  }, 2000);
 });
 
 // Mongoose schema
@@ -439,8 +434,4 @@ app.get('/wrong-gender', function(req, res) {
 
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
-});
-
-process.on('uncaughtException', function (err) {
-  console.log(err);
 });
