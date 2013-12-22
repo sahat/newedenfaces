@@ -460,14 +460,6 @@ App.Views.AddCharacter = Backbone.View.extend({
 
 App.Router = Backbone.Router.extend({
   initialize: function() {
-    $('#content').html(
-      '<div class="loading">' +
-        '<div class="track"></div>' +
-        '<div class="spinner">' +
-          '<div class="mask">' +
-            '<div class="maskedCircle"></div>' +
-          '</div>' +
-      '</div>');
     var characters = new App.Collections.Characters();
     characters.fetch({
       url: '/api/characters/all',
@@ -749,6 +741,7 @@ $(document).ajaxStart(function() {
 });
 
 $(document).ajaxComplete(function() {
+  $('.spinner').css('z-index', -1);
     //End loading animation
     $("#progress").width("101%").delay(200).fadeOut(400, function() {
         $(this).remove();

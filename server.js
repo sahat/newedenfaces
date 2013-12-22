@@ -1,5 +1,26 @@
 // TODO: add hotness meter
-// TODO: Add like button
+// TODO: Add avatar vs avatar fights (8hr rounds)
+// TODO: Display count of each gender on gender page
+// TODO: Stats page, with useful DB stats
+// TODO: Display current round vote history on stats page
+// TODO: Reduce image res, 2 more blurs
+// TODO: Remote fat footer, and add static links like on SpinKit
+// TODO: FOCUS ON PERFORMANCE
+// TODO: Instead of a blue top loading indicator, load the page instantly,
+        // then display the loading indicator (vertical bars) until content is loaded
+// TODO: move to requirejs
+// TODO: port to BBB
+// TODO: mongoose error handling middleware
+// TODO: scheduler to remove lowest ranked every day
+// TODO: make a new collections for storing Previous Votes for each character
+// TODO: add characteristic to profile page that user can select from dropdown:
+         // http://ideonomy.mit.edu/essays/traits.html
+
+// TODO: jquery wait until image loaded on profile page
+// TODO: set minimum width/height on homepage thumbnails to prevent sliding of DOM
+// TODO: reset every 200 rounds
+// TODO: 
+
 var domain = require('domain');
 var express = require('express');
 var async = require('async');
@@ -82,6 +103,7 @@ app.get('/api/characters', function(req, res) {
       .exec(function(err, characters) {
         if (err) { throw err; }
         if (characters.length < 2) {
+          // TODO: Update math.random as well
           Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
             if (err) { throw err; }
             console.log('Less than 2: Reset voted flags');
@@ -177,6 +199,7 @@ app.put('/api/characters', function(req, res) {
         function(callback) {
           winner.wins++;
           winner.voted = true;
+          winner.random = [Math.random(), 0];
           winner.save(function(err) {
             callback(null);
           });
@@ -184,6 +207,7 @@ app.put('/api/characters', function(req, res) {
         function(callback) {
           loser.losses++;
           loser.voted = true;
+          loser.random = [Math.random(), 0];
           loser.save(function(err) {
             callback(null);
           });
