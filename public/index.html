@@ -362,84 +362,39 @@
 </script>
 
 <script id="character-summary-template" type="text/template">
-
-  <div class="content-sidebar bg-white">
-    <aside class="sidebar bg-lighter sidebar">
-      <div class="text-center clearfix bg-white">
-        <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg">
-          <img src="http://image.eveonline.com/Character/<%= model.characterId %>_256.jpg">
-        </a>
-      </div>
-      <div class="padder padder-v"><span class="h4"><img src="/img/<%= model.race %>.png"> <%= model.name %></span>
-        <small class="block m-t-mini">Race: <strong><%= model.race %></strong></small>
-        <small class="block m-t-mini">Bloodline: <strong><%= model.bloodline %></strong></small>
-        <small class="block m-t-mini">Gender: <strong>
-          <% if (model.gender) { %>
-          <%= model.gender.charAt(0).toUpperCase() + model.gender.slice(1) %>
-          <% } else { %>
-          Undetermined
-          <% } %>
-        </strong>
-        </small>
-        <div class="btn-group">
-          <button id="report" class="btn btn-mini btn-default"><i class="icon-warning-sign"></i> Report</button>
-          <button id="wrong-gender" class="btn btn-mini btn-default"><i class="icon-male"></i> Wrong Gender</button>
-        </div>
-      </div>
-      </aside>
-
-    <section class="main">
-      <div class="padder">
-        <div class="row">
-          <div class="span4 bg-primary padder-v">
-            <div class="h2"><%= winLossRatio %>%</div>
-            Winning Percentage
-          </div>
-          <div class="span4 bg-info padder-v">
-            <div class="h2"><%= model.wins %></div>
-            Wins
-          </div>
-          <div class="span4 bg-inverse padder-v">
-            <div class="h2"><%= model.losses %></div>
-            Losses
-          </div>
-        </div>
-      </div>
-      <ul class="nav nav-tabs m-b-none no-radius">
-        <li class="active"><a href="#history" data-toggle="tab">History</a></li>
-        <li class=""><a href="#comments" data-toggle="tab">Comments</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="history">
-          <ul class="list-group list-normal">
-            <li class="list-group-item"> <a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg" class="img-circle"></a> <div> <small class="pull-right text-muted">3 minuts ago</small> <a href="#"><strong>Foxe Ohil</strong></a> commented <a href="#">Vestibulum ullamcorper sodales nisi nec...</a> <div class="text-small"> <a href="#">Like</a> <a href="#">Comment</a> </div> </div> </li>
-            <li class="list-group-item"> <a href="#" class="thumb-small pull-left m-r-small"><img src="images/avatar.jpg" class="img-circle"></a> <div> <small class="pull-right text-muted">3 minuts ago</small> <a href="#"><strong>Foxe Ohil</strong></a> commented <a href="#">Vestibulum ullamcorper sodales nisi nec...</a> <div class="text-small"> <a href="#">Like</a> <a href="#">Comment</a> </div> </div> </li>
-          </ul>
-        </div>
-        <div class="tab-pane" id="comments">
-          <div class="padder padder-v">
-            <div id="disqus_thread"></div>
-            <script type="text/javascript">
-              var disqus_shortname = 'newedenfaces'; // required: replace example with your forum shortname
-              (function () {
-                var dsq = document.createElement('script');
-                dsq.type = 'text/javascript';
-                dsq.async = true;
-                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-              })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-          </div>
-        </div>
-      </div>
-    </section>
-
+  <div class="row-fluid">
+    <div class="profile-img">
+      <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg">
+        <img src="http://image.eveonline.com/Character/<%= model.characterId %>_256.jpg">
+      </a>
+    </div>
+    <div class="profile-info">
+      <h2><%= model.name %></h2>
+      <h4>Race: <strong><%= model.race %></strong></h4>
+      <h4 class="block m-t-mini">Bloodline: <strong><%= model.bloodline %></strong></small>
+      <h4 class="block m-t-mini">Gender: <strong>
+        <% if (model.gender) { %>
+        <%= model.gender.charAt(0).toUpperCase() + model.gender.slice(1) %>
+        <% } else { %>
+        Undetermined
+        <% } %>
+      </strong>
+      </h4>
+      <br/>
+      <button id="report" class="btn btn-clear">Report</button>
+      <button id="wrong-gender" class="btn btn-clear">Wrong Gender</button>
+    </div>
   </div>
-
-  <br><br>
-
-
+  <div class="row-fluid">
+    <div class="profile-stats">
+      <ul>
+        <li><span><%= winLossRatio %></span> Winning Percentage</li>
+        <li><span><%= model.wins %></span> Wins</a></li>
+        <li><span><%= model.losses %></span> Losses</a></li>
+      </ul>
+      <div class="clear"></div>
+    </div>
+  </div>
 </script>
 
 <script >

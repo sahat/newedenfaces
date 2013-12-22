@@ -38,16 +38,146 @@ kbd {
 }
 
 #wrap {
+  background-size: cover;
 }
+
 #wrap:before {
   content: "";
   position: absolute;
-  height: 100%;
-  width: 100%;
-  background: url(http://bowdowntous.com/images/uploads/screenshots/eveonline2.jpg);
+  background-image: url(http://web.ccpgamescdn.com/newssystem/media/65017/1/Cal2560X1440.jpg);
   background-size: cover;
-  z-index: -1;
-  -webkit-filter: blur(7px);
+  z-index: -1; /* Keep the background behind the content */
+  height: 100%; width: 100%; /* Using Glen Maddern's trick /via @mente */
+
+  /* don't forget to use the prefixes you need */
+  transform: scale(5);
+  transform-origin: top left;
+  -webkit-filter: blur(10px);
+}
+
+.profile-img {
+  position: relative;
+  margin-bottom: 20px;
+  float: left;
+  width: 256px;
+  height: 256px;
+}
+
+.profile-info {
+  margin: 0 0 20px 286px;
+  max-width: 405px;
+  color: #fff;
+}
+
+.btn-clear {
+  border: 1px solid white;
+  border-radius: 3px;
+  padding: 10px 20px;
+  color: #fff;
+  font-weight: 300;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: transparent;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-transition: background-color 0.3s;
+  -moz-transition: background-color 0.3s;
+  -o-transition: background-color 0.3s;
+  -ms-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+.btn-clear:hover {
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.profile-stats {
+  margin: 30px 0 0 0;
+  padding: 20px 0;
+  border-top: 1px solid #2098ca;
+  border-bottom: 1px solid #2098ca;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15)
+}
+
+@media (max-width: 510px) {
+  .profile-stats {
+    font-size: 12px
+  }
+}
+
+@media (max-width: 360px) {
+  .profile-stats {
+    padding: 10px 0
+  }
+}
+
+.profile-stats {
+  display: block;
+  color: #fff
+}
+
+.profile-stats ul {
+  list-style-type: none
+}
+
+.profile-stats li {
+  position: relative;
+  float: left;
+  width: 33.3%;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  overflow: hidden
+}
+
+@media (max-width: 360px) {
+  .profile-stats li {
+    font-size: 10px
+  }
+}
+
+.profile-stats li span {
+  display: block;
+  margin-bottom: 15px;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 40px
+}
+
+@media (max-width: 360px) {
+  .profile-stats li span {
+    margin-bottom: 5px;
+    font-size: 34px
+  }
+}
+
+.profile-stats li:first-child:after {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 50%;
+  right: 0;
+  margin-top: -27px;
+  width: 1px;
+  height: 55px;
+  background: rgba(255, 255, 255, 0.15)
+}
+
+.profile-stats li:last-child:before {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 0;
+  margin-top: -27px;
+  width: 1px;
+  height: 55px;
+  background: rgba(255, 255, 255, 0.15)
+}
+
+.profile-stats li.last-child:before {
+  background: #fff
 }
 
 #push {
@@ -292,9 +422,11 @@ ul.inline>li {
 /**
  * Fade-zoom animation for first dialog
  */
-
-
-
+.magnific-popup img {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+  cursor: zoom-in;
+}
 /* start state */
 .my-mfp-zoom-in {
   opacity: 0;
@@ -427,7 +559,6 @@ ul.inline>li {
 
 .content-sidebar .sidebar {
   border: 0 solid #d1d4d7;
-  border-left-width: 1px;
   border-right-width: 1px;
 }
 
@@ -689,3 +820,4 @@ a.list-group-item:hover, a.list-group-item:focus {
   border-width: 1px 0;
   background: transparent;
 }
+
