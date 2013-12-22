@@ -23,15 +23,16 @@ var app = express();
 
 // MongoDB in its own domain
 var dbDomain = domain.create();
+
 dbDomain.run(function() {
-  mongoose.connect('localhost');
+  mongoose.connect(config.mongoose);
 });
 
 // Graceful error handling for MongoDB
 dbDomain.on('error', function(err) {
   console.error(err.message);
   setTimeout(function() {
-    mongoose.connect('localhost');
+    mongoose.connect(config.mongoose);
   }, 2000);
 });
 
