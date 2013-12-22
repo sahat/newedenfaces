@@ -32,7 +32,7 @@ var app = express();
 var dbDomain = domain.create();
 
 dbDomain.run(function() {
-  mongoose.connect('localhost');
+  mongoose.connect(config.mongoose);
 });
 
 // Graceful error handling for MongoDB

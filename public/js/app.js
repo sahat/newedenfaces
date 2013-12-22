@@ -460,14 +460,6 @@ App.Views.AddCharacter = Backbone.View.extend({
 
 App.Router = Backbone.Router.extend({
   initialize: function() {
-    $('#content').html(
-      '<div class="loading">' +
-        '<div class="track"></div>' +
-        '<div class="spinner">' +
-          '<div class="mask">' +
-            '<div class="maskedCircle"></div>' +
-          '</div>' +
-      '</div>');
     var characters = new App.Collections.Characters();
     characters.fetch({
       url: '/api/characters/all',
@@ -545,9 +537,12 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        $('#content').html('<div class="panel"></div>');
-        $('.panel').html(App.Views.charactersView.render().el);
-        App.Views.charactersView.selectMenuItem('top-menu');
+        setTimeout(function() {
+          $('#content').html('<div class="panel"></div>');
+          $('.panel').html(App.Views.charactersView.render().el);
+          App.Views.charactersView.selectMenuItem('top-menu');
+        }, 3000)
+
       }
     });
   },
