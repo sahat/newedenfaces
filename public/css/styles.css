@@ -1,13 +1,15 @@
 @import url(http://fonts.googleapis.com/css?family=Pacifico);
-@import url("//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700");
 
 html, body {
+  min-width: 768px;
+
   height: 100%;
 }
 body {
   font-size: 13px;
 }
-
+.navbar {
+}
 
 .navbar-form input[type="text"] {
   font-size: 13px;
