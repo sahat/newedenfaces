@@ -298,7 +298,7 @@ App.Views.CharacterSummary = Backbone.View.extend({
 
   events: {
     'click #report': 'reportPlayer',
-    'click #wrong-gender': 'wrongGender',
+    'click #wrong-gender': 'wrongGender'
   },
 
   wrongGender: function() {
@@ -560,8 +560,7 @@ App.Router = Backbone.Router.extend({
         App.Views.wrongGenderView = new App.Views.WrongGender({
           collection: characters
         });
-        $('#content').html('<div class="panel"></div>');
-        $('.panel').html(App.Views.charactersView.render().el);
+        $('#content').html(App.Views.wrongGenderView.render().el);
         App.Views.wrongGenderView.selectMenuItem('top-menu');
       }
     });
