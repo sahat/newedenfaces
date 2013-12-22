@@ -293,12 +293,29 @@ kbd {
 }
 
 #information {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
-.footer .page-header {
-  margin: 20px 0 0;
-  border-bottom: 0;
+.footer.transparent {
+  color: #fff;
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.footer.transparent a {
+  color: #a5b6c7;
+}
+
+.footer.transparent a:hover,
+.footer.transparent a:focus,
+.footer.transparent a:active {
+  transition: 0.3s ease-in-out;
+  color: #fff;
+}
+
+.footer.transparent #information {
+  padding-right: 15px;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .nav-pills > li > a:hover, .nav-pills > li > a:focus {

@@ -707,6 +707,7 @@ App.Router = Backbone.Router.extend({
         $('#content').html(characterSummaryView.render().el);
         $('#wrap').css('background-image', 'url(../img/' + data.get('race') + '-bg.jpg)');
         $('.navbar').addClass('bg').addClass('bg-black');
+        $('.footer').addClass('transparent');
         $('.dropdown-menu').addClass('bg-inverse');
         characterSummaryView.selectMenuItem();
       }
@@ -720,6 +721,7 @@ var router = new App.Router();
 router.bind("all",function(route, router) {
   $('#wrap').css('background-image', 'none');
   $('.navbar').removeClass('bg').removeClass('bg-black');
+  $('.footer').removeClass('transparent');
   $('.dropdown-menu').removeClass('bg-inverse');
 });
 
