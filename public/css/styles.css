@@ -8,9 +8,10 @@ body {
   font-size: 13px;
 }
 .navbar .brand {
-  font-family: 'Six Caps';
+  color: #333;
+  font-family: 'Six Caps', Arial, sans-serif;
   font-size: 33px;
-  padding: 0px 20px 0px;
+  padding: 0 20px 0;
   margin-left: -10px;
   text-shadow: none;
 }
