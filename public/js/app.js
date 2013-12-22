@@ -537,12 +537,9 @@ App.Router = Backbone.Router.extend({
         App.Views.charactersView = new App.Views.Characters({
           collection: characters
         });
-        setTimeout(function() {
-          $('#content').html('<div class="panel"></div>');
-          $('.panel').html(App.Views.charactersView.render().el);
-          App.Views.charactersView.selectMenuItem('top-menu');
-        }, 3000)
-
+        $('#content').html('<div class="panel"></div>');
+        $('.panel').html(App.Views.charactersView.render().el);
+        App.Views.charactersView.selectMenuItem('top-menu');
       }
     });
   },
@@ -744,6 +741,7 @@ $(document).ajaxStart(function() {
 });
 
 $(document).ajaxComplete(function() {
+  $('.spinner').css('z-index', -1);
     //End loading animation
     $("#progress").width("101%").delay(200).fadeOut(400, function() {
         $(this).remove();
