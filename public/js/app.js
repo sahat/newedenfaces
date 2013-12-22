@@ -706,14 +706,10 @@ App.Router = Backbone.Router.extend({
       success: function(data) {
 
         var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses')) * 100).toFixed(1);
-        if (isNaN(winLossRatio)) {
-          winLossRatio = 0;
-        }
-
+        if (isNaN(winLossRatio)) winLossRatio = 0;
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
-    
-
+        $('#wrap').css('background-image', 'url(../img/caldari-bg.jpg)');
         characterSummaryView.selectMenuItem();
       }
     });
