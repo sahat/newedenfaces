@@ -240,13 +240,13 @@ app.get('/api/characters/top', function(req, res) {
 
 /**
 * GET /api/leaderboard
-* Returns Top 14 characters, sorted by the winning percentage.
+* Returns Top 10 characters, sorted by the winning percentage.
 */
 app.get('/api/leaderboard', function(req, res) {
   Character
   .find()
   .sort('-wins')
-  .limit(14)
+  .limit(10)
   .lean()
   .exec(function(err, characters) {
     if (err) throw err;
