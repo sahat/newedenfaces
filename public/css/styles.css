@@ -35,24 +35,7 @@ kbd {
 #wrap {
   min-height: 100%;
   margin: 0 auto -240px;
-}
-
-#wrap {
   background-size: cover;
-}
-
-#wrap:before {
-  content: "";
-  position: absolute;
-  background-image: url(http://web.ccpgamescdn.com/newssystem/media/65017/1/Cal2560X1440.jpg);
-  background-size: cover;
-  z-index: -1; /* Keep the background behind the content */
-  height: 100%; width: 100%; /* Using Glen Maddern's trick /via @mente */
-
-  /* don't forget to use the prefixes you need */
-  transform: scale(5);
-  transform-origin: top left;
-  -webkit-filter: blur(10px);
 }
 
 .profile-img {

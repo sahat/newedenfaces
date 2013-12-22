@@ -461,7 +461,6 @@ App.Views.AddCharacter = Backbone.View.extend({
 });
 
 App.Router = Backbone.Router.extend({
-
   initialize: function() {
     $('#content').html(
       '<div class="loading">' +
@@ -704,12 +703,11 @@ App.Router = Backbone.Router.extend({
         console.log(err, 'error');
       },
       success: function(data) {
-
         var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses')) * 100).toFixed(1);
         if (isNaN(winLossRatio)) winLossRatio = 0;
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
-        $('#wrap').css('background-image', 'url(../img/caldari-bg.jpg)');
+        $('#wrap').css('background-image', 'url(../img/' + data.get('race') + '-bg.jpg)');
         characterSummaryView.selectMenuItem();
       }
     });
@@ -718,6 +716,11 @@ App.Router = Backbone.Router.extend({
 });
 
 var router = new App.Router();
+
+router.bind("all",function(route, router) {
+  $('#wrap').css('background-image', 'none');
+});
+
 Backbone.history.start({ pushState: true });
 
 
