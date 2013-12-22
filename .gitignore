@@ -13,4 +13,7 @@ logs
 results
 .idea
 npm-debug.log
+.DS_Store
+*.iml
+*.Thumbs
 
