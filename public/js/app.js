@@ -708,6 +708,7 @@ App.Router = Backbone.Router.extend({
         var characterSummaryView = new App.Views.CharacterSummary({ model: data, winLossRatio: winLossRatio });
         $('#content').html(characterSummaryView.render().el);
         $('#wrap').css('background-image', 'url(../img/' + data.get('race') + '-bg.jpg)');
+        $('.navbar').addClass('bg').addClass('bg-black');
         characterSummaryView.selectMenuItem();
       }
     });
@@ -719,6 +720,7 @@ var router = new App.Router();
 
 router.bind("all",function(route, router) {
   $('#wrap').css('background-image', 'none');
+  $('.navbar').removeClass('bg').removeClass('bg-black');
 });
 
 Backbone.history.start({ pushState: true });
