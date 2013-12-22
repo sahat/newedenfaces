@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Pacifico);
+@import url(http://fonts.googleapis.com/css?family=Engagement|Six+Caps);
 
 html, body {
   min-width: 768px;
@@ -8,12 +8,22 @@ html, body {
 body {
   font-size: 13px;
 }
-.navbar {
+.navbar .brand {
+  font-family: 'Six Caps';
+  font-size: 33px;
+  padding: 0px 20px 0px;
+  margin-left: -10px;
+  text-shadow: none;
+}
+
+.bg-black .brand {
+  color: #a5b6c7 !important;
 }
 
 .navbar-form input[type="text"] {
   font-size: 13px;
 }
+
 
 kbd {
   padding: 0.1em 0.6em;
@@ -229,12 +239,6 @@ kbd {
 .character-thumbnail:hover {
   box-shadow: 0 2px 8px rgba(0, 127, 255, 0.27), 0 0 40px rgba(0, 127, 255, 0.27) inset;
   transition: all 0.3s ease-in-out;
-}
-
-.brand {
-  color: #333 !important;
-  font-family: 'Pacifico', cursive;
-  transition: 0.3s ease-in-out;
 }
 
 .footer {
