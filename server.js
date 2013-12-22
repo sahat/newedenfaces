@@ -1,5 +1,12 @@
 // TODO: add hotness meter
 // TODO: Add like button
+// TODO: Display count of each gender on gender page
+// TODO: Stats page, with useful DB stats
+
+// TODO: Instead of a blue top loading indicator, load the page instantly,
+// then display the loading indicator (vertical bars) until content is loaded
+
+
 var domain = require('domain');
 var express = require('express');
 var async = require('async');
@@ -25,7 +32,7 @@ var app = express();
 var dbDomain = domain.create();
 
 dbDomain.run(function() {
-  mongoose.connect(config.mongoose);
+  mongoose.connect('localhost');
 });
 
 // Graceful error handling for MongoDB
@@ -82,6 +89,7 @@ app.get('/api/characters', function(req, res) {
       .exec(function(err, characters) {
         if (err) { throw err; }
         if (characters.length < 2) {
+          // TODO: Update math.random as well
           Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
             if (err) { throw err; }
             console.log('Less than 2: Reset voted flags');
@@ -177,6 +185,7 @@ app.put('/api/characters', function(req, res) {
         function(callback) {
           winner.wins++;
           winner.voted = true;
+          winner.random = [Math.random(), 0];
           winner.save(function(err) {
             callback(null);
           });
@@ -184,6 +193,7 @@ app.put('/api/characters', function(req, res) {
         function(callback) {
           loser.losses++;
           loser.voted = true;
+          loser.random = [Math.random(), 0];
           loser.save(function(err) {
             callback(null);
           });
