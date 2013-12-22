@@ -383,7 +383,7 @@ App.Views.Search = Backbone.View.extend({
     });
 
     if (!queryMatch.length) {
-      return toastr.warning('Search input cannot be empty');
+      return;
     }
     var characterId = queryMatch[0].get('characterId');
 
