@@ -92,7 +92,7 @@ kbd {
 }
 
 .profile-stats {
-  margin: 30px 0 0 0;
+  margin: 30px 0 30px 0;
   padding: 20px 0;
   border-top: 1px solid #2098ca;
   border-bottom: 1px solid #2098ca;
@@ -178,6 +178,10 @@ kbd {
 
 .profile-stats li.last-child:before {
   background: #fff
+}
+
+.clear {
+  clear: both
 }
 
 #push {
