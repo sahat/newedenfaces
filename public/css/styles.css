@@ -401,11 +401,9 @@ ul.inline>li {
 }
 
 .position {
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 200;
-  line-height: 1.25;
   margin-top: 38px;
-  width: 66px;
   text-align: center;
 }
 
