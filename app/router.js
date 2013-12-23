@@ -2,6 +2,26 @@ define(function(require, exports, module) {
   var Backbone = require("backbone");
 
   module.exports = Backbone.Router.extend({
+    initialize: function() {
+      var characters = new App.Collections.Characters();
+      characters.fetch({
+        url: '/api/characters/all',
+        success: function(data) {
+          var searchView = new App.Views.Search({
+            collection: characters
+          });
+        }
+      });
+      characters.fetch({
+        url: '/api/leaderboard',
+        success: function(data) {
+          App.Views.leaderboardView = new App.Views.Leaderboard({
+            collection: data
+          });
+          $('.footer #leaderboard').html(App.Views.leaderboardView.render().el);
+        }
+      });
+    },
     routes: {
       '': 'home',
       'add': 'addCharacter',
