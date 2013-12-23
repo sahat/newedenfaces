@@ -1,16 +1,17 @@
-define([
-  'underscore',
-  'jquery',
-  'backbone',
-  'modules/CharacterCollection',
-  'text!templates/home'
-], function(_, $, Backbone, CharacterCollection, HomeTemplate) {
+define(function(require, exports, module) {
+  var _ = require('underscore');
+  var $ = require('jquery');
+  var Backbone = require('backbone');
+  var CharacterCollection = require('modules/CharacterCollection');
+  var CharacterThumbnailView = require('modules/CharacterThumbnailView');
+  var HomeTpl = require('text!templates/home');
+
   var HomeView = Backbone.View.extend({
     tagName: 'ul',
 
     className: 'thumbnails',
 
-    template: _.template(HomeTemplate),
+    template: _.template(HomeTpl),
 
     initialize: function() {
       _.bindAll(this, 'vote');
@@ -52,7 +53,7 @@ define([
     },
 
     addOne: function(character, index) {
-      var characterThumbnailView = new App.Views.CharacterThumbnail({ model: character });
+      var characterThumbnailView = new CharacterThumbnailView({ model: character });
       this.$el.append(characterThumbnailView.render().el);
     },
 

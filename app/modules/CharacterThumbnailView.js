@@ -2,14 +2,14 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterThumbnailTemplate = require('text!templates/character-thumbnail');
+  var CharacterThumbnailTpl = require('text!templates/character-thumbnail');
 
   var CharacterThumbnailView = Backbone.View.extend({
     tagName: 'li',
 
     className: 'span6',
 
-    template: _.template(CharacterThumbnailTemplate),
+    template: _.template(CharacterThumbnailTpl),
 
     events: {
       'click img': 'updateWinner'
