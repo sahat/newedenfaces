@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   var $ = require('jquery');
   var Backbone = require('backbone');
   var CharacterSummaryTpl = require('text!templates/character-summary.html');
+  var magnificPopup = require('magnific-popup');
 
   var CharacterSummaryView = Backbone.View.extend({
     template: _.template(CharacterSummaryTpl),
