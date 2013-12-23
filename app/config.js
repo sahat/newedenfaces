@@ -8,7 +8,8 @@ require.config({
     'text': 'vendor/requirejs-text/text',
     'toastr': 'vendor/toastr',
     'typeahead': 'vendor/typeahead.js/dist/typeahead',
-    'magnific-popup': 'vendor/magnific-popup/dist/jquery.magnific-popup'
+    'magnific-popup': 'vendor/magnific-popup/dist/jquery.magnific-popup',
+    'bootstrap-dropdown': 'vendor/bootstrap/js/bootstrap-dropdown'
   },
 
   shim: {
@@ -20,6 +21,9 @@ require.config({
       deps: ['jquery']
     },
     'typeahead': {
+      deps: ['jquery']
+    },
+    'bootstrap-dropdown': {
       deps: ['jquery']
     }
   }
