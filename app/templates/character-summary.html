@@ -1,0 +1,33 @@
+<div class="row-fluid">
+  <div class="profile-img">
+    <a class="magnific-popup" href="https://image.eveonline.com/Character/<%= model.characterId %>_1024.jpg">
+      <img src="http://image.eveonline.com/Character/<%= model.characterId %>_256.jpg">
+    </a>
+  </div>
+  <div class="profile-info">
+    <h2><%= model.name %></h2>
+    <h4 class="lead block m-t-mini">Race: <strong><%= model.race %></strong></h4>
+    <h4 class="lead block m-t-mini">Bloodline: <strong><%= model.bloodline %></strong></h4>
+    <h4 class="lead block m-t-mini">Gender: <strong>
+      <% if (model.gender) { %>
+      <%= model.gender.charAt(0).toUpperCase() + model.gender.slice(1) %>
+      <% } else { %>
+      Undetermined
+      <% } %>
+    </strong>
+    </h4>
+    <br/>
+    <button id="report" class="btn btn-clear">Report</button>
+    <button id="wrong-gender" class="btn btn-clear">Wrong Gender</button>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="profile-stats">
+    <ul>
+      <li><span><%= winLossRatio %></span> Winning Percentage</li>
+      <li><span><%= model.wins %></span> Wins</a></li>
+      <li><span><%= model.losses %></span> Losses</a></li>
+    </ul>
+    <div class="clear"></div>
+  </div>
+</div>
