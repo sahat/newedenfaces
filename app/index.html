@@ -21,171 +21,162 @@
   <![endif]-->
 </head>
 <body>
-<div id="wrap">
+  <div id="wrap">
+    <div class="navbar">
+      <a class="brand" href="/">New Eden Faces</a>
+      <form class="navbar-form pull-left">
+        <input type="text" id="search" class="span3" data-provide="typeahead" placeholder="Search">
+        <button class="btn btn-small btn-primary" type="submit">
+          <i class="icon-search"></i>
+        </button>
+      </form>
+      <ul class="nav">
+        <li class="home-menu"><a href="/">Home</a></li>
+        <li class="top-menu dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            Top 100
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a tabindex="-1" href="/top">Top Overall</a></li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/top/caldari">Caldari</a>
+              <ul class="dropdown-menu">
+                <li><a href="/top/caldari/achura">Achura</a></li>
+                <li><a href="/top/caldari/civire">Civire</a></li>
+                <li><a href="/top/caldari/deteis">Deteis</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/top/gallente">Gallente</a>
+              <ul class="dropdown-menu">
+                <li><a href="/top/gallente/gallente">Gallente</a></li>
+                <li><a href="/top/gallente/intaki">Intaki</a></li>
+                <li><a href="/top/gallente/jin-mei">Jin-Mei</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/top/minmatar">Minmatar</a>
+              <ul class="dropdown-menu">
+                <li><a href="/top/minmatar/brutor">Brutor</a></li>
+                <li><a href="/top/minmatar/sebiestor">Sebiestor</a></li>
+                <li><a href="/top/minmatar/vherokior">Vherokior</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/top/amarr">Amarr</a>
+              <ul class="dropdown-menu">
+                <li><a href="/top/amarr/amarr">Amarr</a></li>
+                <li><a href="/top/amarr/ni-kunni">Ni-Kunni</a></li>
+                <li><a href="/top/amarr/khanid">Khanid</a></li>
+              </ul>
+            </li>
+            <li class="hall-of-shame-menu"><a href="/hall-of-shame">Hall of Shame</a></li>
+          </ul>
+        </li>
+        <li class="top-female dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            Female
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a tabindex="-1" href="/female">All</a></li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/female/caldari">Caldari</a>
+              <ul class="dropdown-menu">
+                <li><a href="/female/caldari/achura">Achura</a></li>
+                <li><a href="/female/caldari/civire">Civire</a></li>
+                <li><a href="/female/caldari/deteis">Deteis</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/female/gallente">Gallente</a>
+              <ul class="dropdown-menu">
+                <li><a href="/female/gallente/gallente">Gallente</a></li>
+                <li><a href="/female/gallente/intaki">Intaki</a></li>
+                <li><a href="/female/gallente/jin-mei">Jin-Mei</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/female/minmatar">Minmatar</a>
+              <ul class="dropdown-menu">
+                <li><a href="/female/minmatar/brutor">Brutor</a></li>
+                <li><a href="/female/minmatar/sebiestor">Sebiestor</a></li>
+                <li><a href="/female/minmatar/vherokior">Vherokior</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/female/amarr">Amarr</a>
+              <ul class="dropdown-menu">
+                <li><a href="/female/amarr/amarr">Amarr</a></li>
+                <li><a href="/female/amarr/ni-kunni">Ni-Kunni</a></li>
+                <li><a href="/female/amarr/khanid">Khanid</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li class="top-male dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            Male
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a tabindex="-1" href="/male">All</a></li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/male/caldari">Caldari</a>
+              <ul class="dropdown-menu">
+                <li><a href="/male/caldari/achura">Achura</a></li>
+                <li><a href="/male/caldari/civire">Civire</a></li>
+                <li><a href="/male/caldari/deteis">Deteis</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/male/gallente">Gallente</a>
+              <ul class="dropdown-menu">
+                <li><a href="/male/gallente/gallente">Gallente</a></li>
+                <li><a href="/male/gallente/intaki">Intaki</a></li>
+                <li><a href="/male/gallente/jin-mei">Jin-Mei</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/male/minmatar">Minmatar</a>
+              <ul class="dropdown-menu">
+                <li><a href="/male/minmatar/brutor">Brutor</a></li>
+                <li><a href="/male/minmatar/sebiestor">Sebiestor</a></li>
+                <li><a href="/male/minmatar/vherokior">Vherokior</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="/male/amarr">Amarr</a>
+              <ul class="dropdown-menu">
+                <li><a href="/male/amarr/amarr">Amarr</a></li>
+                <li><a href="/male/amarr/ni-kunni">Ni-Kunni</a></li>
+                <li><a href="/male/amarr/khanid">Khanid</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li class="add-menu"><a href="/add">Add</a></li>
+      </ul>
+    </div>
 
-  <div class="navbar">
-    <a class="brand" href="/">New Eden Faces</a>
-
-    <form class="navbar-form pull-left">
-      <input type="text" id="search" class="span3" data-provide="typeahead" placeholder="Search">
-      <button class="btn btn-small btn-primary" type="submit">
-        <i class="icon-search"></i>
-      </button>
-    </form>
-    <ul class="nav">
-      <li class="home-menu"><a href="/">Home</a></li>
-      <li class="top-menu dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-          Top 100
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-          <li><a tabindex="-1" href="/top">Top Overall</a></li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/top/caldari">Caldari</a>
-            <ul class="dropdown-menu">
-              <li><a href="/top/caldari/achura">Achura</a></li>
-              <li><a href="/top/caldari/civire">Civire</a></li>
-              <li><a href="/top/caldari/deteis">Deteis</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/top/gallente">Gallente</a>
-            <ul class="dropdown-menu">
-              <li><a href="/top/gallente/gallente">Gallente</a></li>
-              <li><a href="/top/gallente/intaki">Intaki</a></li>
-              <li><a href="/top/gallente/jin-mei">Jin-Mei</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/top/minmatar">Minmatar</a>
-            <ul class="dropdown-menu">
-              <li><a href="/top/minmatar/brutor">Brutor</a></li>
-              <li><a href="/top/minmatar/sebiestor">Sebiestor</a></li>
-              <li><a href="/top/minmatar/vherokior">Vherokior</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/top/amarr">Amarr</a>
-            <ul class="dropdown-menu">
-              <li><a href="/top/amarr/amarr">Amarr</a></li>
-              <li><a href="/top/amarr/ni-kunni">Ni-Kunni</a></li>
-              <li><a href="/top/amarr/khanid">Khanid</a></li>
-            </ul>
-          </li>
-          <li class="hall-of-shame-menu"><a href="/hall-of-shame">Hall of Shame</a></li>
-
-        </ul>
-      </li>
-
-      <li class="top-female dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-          Female
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-          <li><a tabindex="-1" href="/female">All</a></li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/female/caldari">Caldari</a>
-            <ul class="dropdown-menu">
-              <li><a href="/female/caldari/achura">Achura</a></li>
-              <li><a href="/female/caldari/civire">Civire</a></li>
-              <li><a href="/female/caldari/deteis">Deteis</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/female/gallente">Gallente</a>
-            <ul class="dropdown-menu">
-              <li><a href="/female/gallente/gallente">Gallente</a></li>
-              <li><a href="/female/gallente/intaki">Intaki</a></li>
-              <li><a href="/female/gallente/jin-mei">Jin-Mei</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/female/minmatar">Minmatar</a>
-            <ul class="dropdown-menu">
-              <li><a href="/female/minmatar/brutor">Brutor</a></li>
-              <li><a href="/female/minmatar/sebiestor">Sebiestor</a></li>
-              <li><a href="/female/minmatar/vherokior">Vherokior</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/female/amarr">Amarr</a>
-            <ul class="dropdown-menu">
-              <li><a href="/female/amarr/amarr">Amarr</a></li>
-              <li><a href="/female/amarr/ni-kunni">Ni-Kunni</a></li>
-              <li><a href="/female/amarr/khanid">Khanid</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-
-
-      <li class="top-male dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-          Male
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-          <li><a tabindex="-1" href="/male">All</a></li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/male/caldari">Caldari</a>
-            <ul class="dropdown-menu">
-              <li><a href="/male/caldari/achura">Achura</a></li>
-              <li><a href="/male/caldari/civire">Civire</a></li>
-              <li><a href="/male/caldari/deteis">Deteis</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/male/gallente">Gallente</a>
-            <ul class="dropdown-menu">
-              <li><a href="/male/gallente/gallente">Gallente</a></li>
-              <li><a href="/male/gallente/intaki">Intaki</a></li>
-              <li><a href="/male/gallente/jin-mei">Jin-Mei</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/male/minmatar">Minmatar</a>
-            <ul class="dropdown-menu">
-              <li><a href="/male/minmatar/brutor">Brutor</a></li>
-              <li><a href="/male/minmatar/sebiestor">Sebiestor</a></li>
-              <li><a href="/male/minmatar/vherokior">Vherokior</a></li>
-            </ul>
-          </li>
-          <li class="dropdown-submenu">
-            <a tabindex="-1" href="/male/amarr">Amarr</a>
-            <ul class="dropdown-menu">
-              <li><a href="/male/amarr/amarr">Amarr</a></li>
-              <li><a href="/male/amarr/ni-kunni">Ni-Kunni</a></li>
-              <li><a href="/male/amarr/khanid">Khanid</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li class="add-menu"><a href="/add">Add</a></li>
-    </ul>
-  </div>
-
-
-
-  <div class="container">
-    <br/>
-
-    <div class="row-fluid">
-      <div class="span12" id="content">
-        <div class="spinner">
-          <div class="rect1"></div>
-          <div class="rect2"></div>
-          <div class="rect3"></div>
-          <div class="rect4"></div>
-          <div class="rect5"></div>
+    <div class="container">
+      <br/>
+      <div class="row-fluid">
+        <div class="span12" id="content">
+          <div class="spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="push"></div>
-</div>
+    <div id="push"></div>
+  </div>
 
   <div class="footer">
     <div id="information" class="span5">
@@ -196,16 +187,9 @@
       <br>
       Inspired by the <a href="http://oldforums.eveonline.com/?a=topic&threadID=1455979">Babes of New Eden</a> project.
       <br><br>
-      The project is licensed under <a href="#license-notice" data-toggle="modal">The MIT License</a>.
-      <br>
-
       <p>You may view the <a href="http://github.com/sahat">Source Code</a> behind this project on GitHub.
       </p>
-
-
       <p>© 2013 Sahat Yalkabov</p>
-
-      </ul>
     </div>
     <div class="span7">
         <h3>Leaderboard
@@ -214,39 +198,6 @@
       <div id="leaderboard"></div>
     </div>
   </div>
-
-  <div id="license-notice" class="modal hide fade" tabindex="-1" role="dialog">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-      <h3>LICENSE</h3>
-    </div>
-    <div class="modal-body">
-      <p>The MIT License (MIT)</p>
-      <p>Copyright (c) 2013 Sahat Yalkabov</p>
-
-      <p>Permission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        copies of the Software, and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:</p>
-
-      <p>The above copyright notice and this permission notice shall be included in
-        all copies or substantial portions of the Software.</p>
-
-      <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-        THE SOFTWARE</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
-    </div>
-  </div>
-
 
   <script >
     (function (i, s, o, g, r, a, m) {
