@@ -11,6 +11,10 @@ define(function(require, exports, module) {
 
     template: _.template(CharacterTpl),
 
+    initialize: function(options) {
+      this.options = options || {};
+    },
+
     render: function () {
       this.$el.html(this.template({
         model: this.model.toJSON(),
