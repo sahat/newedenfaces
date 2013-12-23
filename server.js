@@ -34,6 +34,7 @@ var mongoose = require('mongoose');
 var config = require('./config.js');
 
 // OpenShift Configuration
+// TODO: simplify
 var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
   process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
 var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
@@ -77,7 +78,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'app')));
 
 /**
 * GET /api/characters
