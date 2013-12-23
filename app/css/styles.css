@@ -933,3 +933,7 @@ a.list-group-item:hover, a.list-group-item:focus {
 .tt-suggestion p {
   margin: 0;
 }
+
+#search {
+  vertical-align: middle !important;
+}
