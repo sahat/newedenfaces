@@ -12,6 +12,10 @@ define(function(require, exports, module) {
       'click #wrong-gender': 'wrongGender'
     },
 
+    initialize: function(options) {
+      this.options = options || {};
+    },
+
     wrongGender: function() {
       var characterId = this.model.get('characterId');
       $.post('/api/report/gender', { characterId: characterId }, function(data) {
