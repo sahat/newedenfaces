@@ -2,13 +2,15 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
+  var typeahead = require('typeahead');
 
   var SearchView = Backbone.View.extend({
     el: $('.navbar'),
 
     initialize: function() {
       $('#search').typeahead({
-        source: this.collection.pluck('name')
+        name: 'name',
+        local: this.collection.pluck('name')
       });
       $('#search').attr('placeholder', this.collection.length + ' capsuleers');
     },
