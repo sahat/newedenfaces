@@ -2,6 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
+  var CharacterView = require('modules/CharacterView');
   var MenuLeaderboardTpl = require('text!templates/menu-leaderboard');
 
   var CharacterCollectionGenderView = Backbone.View.extend({
@@ -19,7 +20,7 @@ define(function(require, exports, module) {
     },
 
     addOne: function(character, index) {
-      var characterView = new App.Views.Character({ model: character, position: index + 1 });
+      var characterView = new CharacterView({ model: character, position: index + 1 });
       this.$el.append(characterView.render().el);
     },
 
