@@ -11,7 +11,7 @@ define(function(require, exports, module) {
 
     render: function() {
       this.collection.each(function(character) {
-        var leaderboardItemView = new App.Views.LeaderboardItem({ model: character });
+        var leaderboardItemView = new LeaderboardItemView({ model: character });
         this.$el.append(leaderboardItemView.render().el);
       }, this);
       return this;
