@@ -1,0 +1,17 @@
+<span class="position pull-left"><%= position %></span>
+<a class="pull-left" href="/characters/<%= model.characterId %>">
+  <img class="media-object" src="http://image.eveonline.com/Character/<%= model.characterId %>_128.jpg">
+</a>
+<div class="media-body">
+  <h4 class="media-heading"><a href="/characters/<%= model.characterId %>"><%= model.name %></a></h4>
+
+  <p>
+    <strong>Race:</strong> <%= model.race %>
+    <br>
+    <strong>Bloodline:</strong> <%= model.bloodline %>
+    <br>
+    <strong>Gender:</strong> <%= model.gender %>
+  </p>
+  <button id="female" class="btn btn-danger">Female</button>
+  <button id="male" class="btn btn-primary">Male</button>
+</div>
