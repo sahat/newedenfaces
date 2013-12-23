@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   var $ = require('jquery');
   var Backbone = require('backbone');
   var CharacterModel = require('modules/CharacterModel');
-  var AddCharacterTpl = require('text!templates/add-character');
+  var AddCharacterTpl = require('text!templates/add-character.html');
 
   var AddCharacterView = Backbone.View.extend({
     template: _.template(AddCharacterTpl),

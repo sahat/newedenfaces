@@ -2,7 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var GenderTpl = require('text!templates/gender');
+  var GenderTpl = require('text!templates/gender.html');
 
   var CharacterGenderView = Backbone.View.extend({
     tagName: 'li',

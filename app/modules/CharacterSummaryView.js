@@ -2,7 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterSummaryTpl = require('text!templates/character-summary');
+  var CharacterSummaryTpl = require('text!templates/character-summary.html');
 
   var CharacterSummaryView = Backbone.View.extend({
     template: _.template(CharacterSummaryTpl),

@@ -4,7 +4,7 @@ define(function(require, exports, module) {
   var Backbone = require('backbone');
   var CharacterCollection = require('modules/CharacterCollection');
   var CharacterThumbnailView = require('modules/CharacterThumbnailView');
-  var HomeTpl = require('text!templates/home');
+  var HomeTpl = require('text!templates/home.html');
 
   var HomeView = Backbone.View.extend({
     tagName: 'ul',

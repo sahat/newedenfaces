@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   var $ = require('jquery');
   var Backbone = require('backbone');
   var CharacterGenderView = require('modules/CharacterGenderView');
-  var MenuLeaderboardTpl = require('text!templates/menu-leaderboard');
+  var MenuLeaderboardTpl = require('text!templates/menu-leaderboard.html');
 
   var WrongGenderView = Backbone.View.extend({
     tagName: 'li',

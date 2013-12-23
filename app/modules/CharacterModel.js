@@ -1,4 +1,6 @@
-define(['underscore', 'backbone'], function(_, Backbone) {
+define(function(require, exports, module) {
+  var _ = require('underscore');
+  var Backbone = require('backbone');
 
   var CharacterModel = Backbone.Model.extend({
     urlRoot: '/api/characters',

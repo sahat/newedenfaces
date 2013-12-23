@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   var $ = require('jquery');
   var Backbone = require('backbone');
   var CharacterView = require('modules/CharacterView');
-  var MenuLeaderboardTpl = require('text!templates/menu-leaderboard');
+  var MenuLeaderboardTpl = require('text!templates/menu-leaderboard.html');
 
   var CharacterCollectionView = Backbone.View.extend({
     tagName: 'ul',
