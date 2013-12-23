@@ -12,11 +12,10 @@ define(function(require, exports, module) {
     template: _.template(CharacterTpl),
 
     render: function () {
-      var data = {
+      this.$el.html(this.template({
         model: this.model.toJSON(),
         position: this.options.position
-      };
-      this.$el.html(this.template(data));
+      }));
       return this;
     }
   });
