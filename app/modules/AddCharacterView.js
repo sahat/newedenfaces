@@ -1,10 +1,10 @@
 define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
+  var toastr = require('toastr');
   var Backbone = require('backbone');
   var CharacterModel = require('modules/CharacterModel');
   var AddCharacterTpl = require('text!templates/add-character.html');
-
   var AddCharacterView = Backbone.View.extend({
     template: _.template(AddCharacterTpl),
 
@@ -37,7 +37,7 @@ define(function(require, exports, module) {
 
       newCharacter.save(null, {
         success: function() {
-          Backbone.history.navigate('#', { trigger: true });
+          //Backbone.history.navigate('#', { trigger: true });
           toastr.success('Character has been added successfully');
         },
         error: function(model, response) {

@@ -6,7 +6,7 @@ require.config({
     'jquery': 'vendor/jquery/jquery',
     'backbone': 'vendor/backbone/backbone',
     'text': 'vendor/requirejs-text/text',
-    'toastr': 'vendor/toastr',
+    'toastr': 'vendor/toastr/toastr',
     'typeahead': 'vendor/typeahead.js/dist/typeahead',
     'magnific-popup': 'vendor/magnific-popup/dist/jquery.magnific-popup',
     'bootstrap-dropdown': 'vendor/bootstrap/js/bootstrap-dropdown'
@@ -25,6 +25,10 @@ require.config({
     },
     'bootstrap-dropdown': {
       deps: ['jquery']
+    },
+    'toastr': {
+      deps: ['jquery'],
+      exports: 'toastr'
     }
   }
 });
