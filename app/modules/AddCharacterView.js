@@ -37,7 +37,7 @@ define(function(require, exports, module) {
 
       newCharacter.save(null, {
         success: function() {
-          //Backbone.history.navigate('#', { trigger: true });
+          Backbone.history.navigate('#', { trigger: true });
           toastr.success('Character has been added successfully');
         },
         error: function(model, response) {
