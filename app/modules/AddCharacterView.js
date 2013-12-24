@@ -43,7 +43,6 @@ define(function(require, exports, module) {
         error: function(model, response) {
           controlGroup.addClass('error');
           submitBtn.removeClass('btn-primary').addClass('btn-danger');
-          submitBtn.button('reset');
           inputField.focus();
 
           if (response.status === 409) {
