@@ -1,15 +1,15 @@
 require.config({
   paths: {
     'vendor': './vendor',
-    'almond': 'vendor/bower/almond/almond',
-    'underscore': 'vendor/lodash/dist/lodash.underscore',
-    'jquery': 'vendor/jquery/jquery',
-    'backbone': 'vendor/backbone/backbone',
-    'text': 'vendor/requirejs-text/text',
-    'toastr': 'vendor/toastr/toastr',
-    'typeahead': 'vendor/typeahead.js/dist/typeahead',
-    'magnific-popup': 'vendor/magnific-popup/dist/jquery.magnific-popup',
-    'bootstrap-dropdown': 'vendor/bootstrap/js/bootstrap-dropdown'
+    'almond': 'vendor/almond',
+    'underscore': 'vendor/lodash.underscore.min',
+    'jquery': 'vendor/jquery.min',
+    'backbone': 'vendor/backbone',
+    'text': 'vendor/requirejs-text',
+    'toastr': 'vendor/toastr.min',
+    'typeahead': 'vendor/typeahead.min',
+    'magnific-popup': 'vendor/jquery.magnific-popup.min',
+    'bootstrap-dropdown': 'vendor/bootstrap-dropdown'
   },
 
   shim: {
