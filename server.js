@@ -3,7 +3,7 @@
 // TODO: Display count of each gender on gender page
 // TODO: Stats page, with useful DB stats (+ total votes)
 // TODO: Display current round vote history on stats page
-// TODO: Reduce image res, 2 more blurs
+// TODO: Image2 more blurs
 // TODO: Remote fat footer, and add static links like on SpinKit
 // TODO: FOCUS ON PERFORMANCE
 // TODO: Instead of a blue top loading indicator, load the page instantly,
@@ -49,7 +49,7 @@ var options = {
     numberOfRetries: 10,
     retryMiliSeconds: 1000
   }
-}
+};
 mongoose.connect(config.mongoose, options);
 
 // Mongoose schema
