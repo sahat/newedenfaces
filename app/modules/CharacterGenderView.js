@@ -16,6 +16,10 @@ define(function(require, exports, module) {
       'click #male': 'male'
     },
 
+    initialize: function(options) {
+      this.options = options || {};
+    },
+
     render: function () {
       var data = {
         model: this.model.toJSON(),
