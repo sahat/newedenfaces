@@ -232,6 +232,21 @@ app.get('/api/characters/shame', function(req, res) {
 });
 
 /**
+ * GET /api/characters/new
+ * Return top (100) newest characters
+ */
+app.get('/api/characters/new', function(req, res) {
+  Character
+    .find()
+    .sort({ wins: 1, losses: 1})
+    .limit(100)
+    .exec(function(err, characters) {
+      if (err) throw err;
+      res.send(characters);
+    });
+});
+
+/**
 * GET /api/characters/top
 * Return top (100) highest ranked characters.
 * Filter gender, race, bloodline by a querystring.
@@ -243,7 +258,7 @@ app.get('/api/characters/top', function(req, res) {
       conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  Character.find(conditions).where('reports').gte(1).limit(100).exec(function(err, characters) {
+  Character.find(conditions).sort('-wins').limit(100).exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
