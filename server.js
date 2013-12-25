@@ -18,7 +18,7 @@
 // TODO: set minimum width/height on homepage thumbnails to prevent sliding of DOM
 // TODO: reset every 200 rounds
 // TODO: socket.io real time number of characters
-
+// TODO: Trending top 100 for new people
 
 // TODO: Fix report button
 
@@ -35,16 +35,12 @@ var mongoose = require('mongoose');
 var config = require('./config.js');
 
 // OpenShift Configuration
-// TODO: simplify
-var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP ||
-  process.env.OPENSHIFT_INTERNAL_IP || '127.0.0.1';
-var PORT = process.env.OPENSHIFT_NODEJS_PORT ||
-  process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 var app = express();
 
 
-// MongoDB in its own domain
 mongoose.connect(config.mongoose);
 
 // Mongoose schema
@@ -122,7 +118,7 @@ app.get('/api/characters', function(req, res) {
 
 /**
 * POST /report
-* Increment character's report count. After (3) successive strikes,
+* Increment character's report count. After (5) successive strikes,
 * that character gets deleted from the database.
 */
 app.post('/api/report', function(req, res) {
@@ -131,7 +127,7 @@ app.post('/api/report', function(req, res) {
     if (err) throw err;
     if (character) {
       character.reports++;
-      if (character.reports >= 3) {
+      if (character.reports >= 5) {
         var url = req.protocol + '://' + req.host + ':' + PORT +
           '/api/characters/' + characterId + '?secretCode=' + config.secretCode;
         request.del(url);
@@ -247,7 +243,7 @@ app.get('/api/characters/top', function(req, res) {
       conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  Character.find(conditions).sort('-wins').limit(100).exec(function(err, characters) {
+  Character.find(conditions).where('reports').gte(1).limit(100).exec(function(err, characters) {
     if (err) throw err;
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
@@ -257,6 +253,21 @@ app.get('/api/characters/top', function(req, res) {
     res.send(characters.slice(0, 100));
   });
 });
+
+app.get('/male/:id', function(req, res) {
+  var id = req.params.id;
+  Character.findOne({ characterId: id}, function(err, character) {
+    if (character) {
+      character.gender = 'male';
+      character.wrongGender = false;
+      character.save(function(err) {
+        if (err) throw err;
+        res.send(200);
+      });
+    }
+  });
+});
+
 
 /**
 * GET /api/leaderboard
@@ -459,9 +470,4 @@ app.get('/wrong-gender', function(req, res) {
 
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
-});
-
-process.on('uncaughtException', function (err) {
-  console.error(err.stack);
-  console.log("Node NOT Exiting...");
 });

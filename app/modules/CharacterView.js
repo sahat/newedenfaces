@@ -15,6 +15,19 @@ define(function(require, exports, module) {
       this.options = options || {};
     },
 
+    events: {
+      'click #male': 'male'
+    },
+
+
+    male: function() {
+      $.get('/male/' + this.model.get('characterId'), function(){
+        console.log('Set to male');
+      });
+    },
+
+
+
     render: function () {
       this.$el.html(this.template({
         model: this.model.toJSON(),
