@@ -45,19 +45,7 @@ var app = express();
 
 
 // MongoDB in its own domain
-var dbDomain = domain.create();
-
-dbDomain.run(function() {
-  mongoose.connect(config.mongoose);
-});
-
-// Graceful error handling for MongoDB
-dbDomain.on('error', function(err) {
-  console.error(err.message);
-  setTimeout(function() {
-    mongoose.connect(config.mongoose);
-  }, 2000);
-});
+mongoose.connect(config.mongoose);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -80,6 +68,17 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
+
+
+//app.get('/newchars', function(req, res) {
+//  var $ = require('cheerio');
+//  var _ = require('underscore');
+//  var request = require('request');
+//
+//  request.get('https://forums.eveonline.com/default.aspx?g=posts&t=6470', function(e,r,b) {
+//    $('.box', b).each(function() { request.post('http://localhost:8080/api/characters', { form: { gender: 'female', name: $(this).text() } }); });
+//  });
+//});
 
 /**
 * GET /api/characters
@@ -368,7 +367,7 @@ app.post('/api/characters', function(req, res) {
             });
 
             character.save(function(err) {
-              if (err) throw err;
+              if (err) console.log(err);
               res.send(character);
             });
 
@@ -460,4 +459,9 @@ app.get('/wrong-gender', function(req, res) {
 
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
+});
+
+process.on('uncaughtException', function (err) {
+  console.error(err.stack);
+  console.log("Node NOT Exiting...");
 });
