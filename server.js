@@ -238,7 +238,7 @@ app.get('/api/characters/shame', function(req, res) {
 app.get('/api/characters/new', function(req, res) {
   Character
     .find()
-    .sort({ wins: 1, losses: 1})
+    .sort({ _id: -1})
     .limit(100)
     .exec(function(err, characters) {
       if (err) throw err;
@@ -433,6 +433,10 @@ app.post('/api/gender', function(req, res) {
 */
 app.get('/add', function(req, res) {
   res.redirect('/#add');
+});
+
+app.get('/new', function(req, res) {
+  res.redirect('/#new');
 });
 
 app.get('/top', function(req, res) {

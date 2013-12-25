@@ -36,6 +36,7 @@ define(function(require, exports, module) {
     routes: {
       '': 'home',
       'add': 'addCharacter',
+      'new': 'newCharacters',
       'top': 'topCharacters',
       'male': 'maleCharacters',
       'female': 'femaleCharacters',
@@ -61,6 +62,22 @@ define(function(require, exports, module) {
 
           $('#content').html(homeView.render().el);
           homeView.selectMenuItem('home-menu');
+        }
+      });
+    },
+
+    newCharacters: function() {
+      var characters = new CharacterCollection();
+      characters.fetch({
+        url: '/api/characters/new',
+        error: function() { console.log('Error Not Implemented'); },
+        success: function(data) {
+          var characterCollectionView = new CharacterCollectionView({
+            collection: characters
+          });
+          $('#content').html('<div class="panel"></div>');
+          $('.panel').html(characterCollectionView.render().el);
+          characterCollectionView.selectMenuItem('top-menu');
         }
       });
     },
