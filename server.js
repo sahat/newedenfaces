@@ -99,12 +99,11 @@ app.get('/api/characters', function(req, res) {
       .exec(function(err, characters) {
         if (err) return res.send(err);
         if (characters.length < 2) {
-          // TODO: Update math.random as well
           Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
             if (err) return res.send(err);
-            console.log('Less than 2: Reset voted flags');
+            console.log('Finished all characters. Going to next round.');
+            res.send([]);
           });
-          res.send([]);
         } else {
           res.send(characters);
         }
