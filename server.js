@@ -218,13 +218,13 @@ app.put('/api/characters', function(req, res) {
 
 /**
 * GET /api/characters/shame
-* Return top (25) lowest ranked characters for the hall of shame
+* Return top (100) lowest ranked characters for the hall of shame
 */
 app.get('/api/characters/shame', function(req, res) {
   Character
   .find()
   .sort('-losses')
-  .limit(25)
+  .limit(100)
   .exec(function(err, characters) {
     if (err) throw err;
     res.send(characters);
