@@ -88,7 +88,7 @@ app.get('/api/characters', function(req, res) {
   .where('gender', randomGender)
   .limit(2)
   .exec(function(err, characters) {
-    if (err) throw err;
+    if (err) return res.send(err);
     if (characters.length < 2) {
       var oppositeRandomGender = randomGender === 'female' ? 'male' : 'female';
       Character
@@ -97,11 +97,11 @@ app.get('/api/characters', function(req, res) {
       .where('gender', oppositeRandomGender)
       .limit(2)
       .exec(function(err, characters) {
-        if (err) { throw err; }
+        if (err) return res.send(err);
         if (characters.length < 2) {
           // TODO: Update math.random as well
           Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
-            if (err) { throw err; }
+            if (err) return res.send(err);
             console.log('Less than 2: Reset voted flags');
           });
           res.send([]);
@@ -123,7 +123,7 @@ app.get('/api/characters', function(req, res) {
 app.post('/api/report', function(req, res) {
   var characterId = req.body.characterId;
   Character.findOne({ characterId: characterId }, function(err, character) {
-    if (err) throw err;
+    if (err) return res.send(err);
     if (character) {
       character.reports++;
       if (character.reports >= 5) {
@@ -133,7 +133,7 @@ app.post('/api/report', function(req, res) {
         res.send(200);
       } else {
         character.save(function(err) {
-          if (err) throw err;
+          if (err) return res.send(err);
           res.send(200, character.name + ' has been reported');
         });
       }
@@ -151,11 +151,11 @@ app.post('/api/report', function(req, res) {
 app.post('/api/report/gender', function(req, res) {
   var characterId = req.body.characterId;
   Character.findOne({ characterId: characterId }, function(err, user) {
-    if (err) throw err;
+    if (err) return res.send(err);
     if (user) {
       user.wrongGender = true;
       user.save(function(err) {
-        if (err) throw err;
+        if (err) return res.send(err);
         res.send(200);
       });
     } else {
@@ -175,7 +175,7 @@ app.del('/api/characters/:id', function(req, res) {
     return res.send(500);
   }
   Character.remove({ characterId: characterId }, function(err) {
-    if (err) throw err;
+    if (err) return res.send(err);
     res.send(200);
   });
 });
@@ -225,7 +225,7 @@ app.get('/api/characters/shame', function(req, res) {
   .sort('-losses')
   .limit(100)
   .exec(function(err, characters) {
-    if (err) throw err;
+    if (err) return res.send(err);
     res.send(characters);
   });
 });
@@ -251,7 +251,7 @@ app.get('/api/characters/new', function(req, res) {
     .sort({ _id: -1})
     .limit(100)
     .exec(function(err, characters) {
-      if (err) throw err;
+      if (err) return res.send(err);
       res.send(characters);
     });
 });
@@ -269,7 +269,7 @@ app.get('/api/characters/top', function(req, res) {
     }
   }
   Character.find(conditions).sort('-wins').limit(100).exec(function(err, characters) {
-    if (err) throw err;
+    if (err) return res.send(err);
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
@@ -286,7 +286,7 @@ app.get('/male/:id', function(req, res) {
       character.gender = 'male';
       character.wrongGender = false;
       character.save(function(err) {
-        if (err) throw err;
+        if (err) return res.send(err);
         res.send(200);
       });
     }
@@ -305,7 +305,7 @@ app.get('/api/leaderboard', function(req, res) {
   .limit(12)
   .lean()
   .exec(function(err, characters) {
-    if (err) throw err;
+    if (err) return res.send(err);
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
@@ -321,14 +321,14 @@ app.get('/api/leaderboard', function(req, res) {
 */
 app.get('/api/characters/all', function(req, res) {
   Character.find(null, 'characterId name', function (err, characters) {
-    if (err) throw err;
+    if (err) return res.send(err);
     res.send(characters);
   });
 });
 
 app.get('/api/characters/wrong-gender', function(req, res) {
   Character.where('wrongGender', true).exec(function (err, characters) {
-    if (err) throw err;
+    if (err) return res.send(err);
     res.send(characters);
   });
 });
@@ -339,7 +339,7 @@ app.get('/api/characters/wrong-gender', function(req, res) {
 */
 app.get('/api/characters/:id', function(req, res) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
-    if (err) throw err;
+    if (err) return res.send(err);
     if (character) {
       res.send(character);
     } else {
@@ -363,7 +363,7 @@ app.post('/api/characters', function(req, res) {
       request.get(characterIdUrl, function(e, r, xml) {
         if (e) throw e;
         parser.parseString(xml, function(err, parsedXml) {
-          if (err) throw err;
+          if (err) return res.send(err);
           try {
             var characterId = parsedXml.eveapi.result[0].rowset[0].row[0].$.characterID;
 
@@ -387,7 +387,7 @@ app.post('/api/characters', function(req, res) {
       request.get({ url: characterInfoUrl }, function(e, r, xml) {
         if (e) throw e;
         parser.parseString(xml, function(err, parsedXml) {
-          if (err) throw err;
+          if (err) return res.send(err);
           try {
             var name = parsedXml.eveapi.result[0].characterName[0];
             var race = parsedXml.eveapi.result[0].race[0];
@@ -431,7 +431,7 @@ app.post('/api/gender', function(req, res) {
       character.gender = gender;
       character.wrongGender = false;
       character.save(function(err) {
-        if (err) throw err;
+        if (err) return res.send(err);
         res.send(200);
       });
     }
