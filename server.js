@@ -22,11 +22,8 @@
 // TODO: Facebook like button
 // TODO: DUP characterId error handling exception
 
-var domain = require('domain');
 var express = require('express');
 var async = require('async');
-var http = require('http');
-var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var xml2js = require('xml2js');
@@ -40,8 +37,20 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 var app = express();
 
-
-mongoose.connect(config.mongoose);
+var options = {
+  server:{
+    auto_reconnect: true,
+    poolSize: 10,
+    socketOptions:{
+      keepAlive: 1
+    }
+  },
+  db: {
+    numberOfRetries: 10,
+    retryMiliSeconds: 1000
+  }
+}
+mongoose.connect(config.mongoose, options);
 
 // Mongoose schema
 var Character = mongoose.model('Character', {
@@ -65,16 +74,6 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
 
-
-//app.get('/newchars', function(req, res) {
-//  var $ = require('cheerio');
-//  var _ = require('underscore');
-//  var request = require('request');
-//
-//  request.get('https://forums.eveonline.com/default.aspx?g=posts&t=6470', function(e,r,b) {
-//    $('.box', b).each(function() { request.post('http://localhost:8080/api/characters', { form: { gender: 'female', name: $(this).text() } }); });
-//  });
-//});
 
 /**
 * GET /api/characters
