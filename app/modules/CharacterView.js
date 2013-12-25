@@ -16,17 +16,14 @@ define(function(require, exports, module) {
     },
 
     events: {
-      'click #male': 'male'
+      'click #male': 'male',
+      'click #delete': 'delete'
     },
 
-
-    male: function() {
-      $.get('/male/' + this.model.get('characterId'), function(){
-        console.log('Set to male');
-      });
-    },
-
-
+//    delete: function() {
+//      $.get('/delete/' + this.model.get('characterId'));
+//      this.$el.remove();
+//    },
 
     render: function () {
       this.$el.html(this.template({

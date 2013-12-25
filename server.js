@@ -18,9 +18,9 @@
 // TODO: set minimum width/height on homepage thumbnails to prevent sliding of DOM
 // TODO: reset every 200 rounds
 // TODO: socket.io real time number of characters
-// TODO: Trending top 100 for new people
-
-// TODO: Fix report button
+// TODO: unset all documents image128, image64, etc...and pastMatches
+// TODO: Facebook like button
+// TODO: DUP characterId error handling exception
 
 var domain = require('domain');
 var express = require('express');
@@ -230,6 +230,17 @@ app.get('/api/characters/shame', function(req, res) {
     res.send(characters);
   });
 });
+
+/**
+ * GET /delete/:id
+ * Delete a character
+ */
+//app.get('/delete/:id', function(req, res) {
+//  var id = req.params.id;
+//  Character.remove({ characterId: id}, function(err, status) {
+//    console.log(err, status);
+//  });
+//});
 
 /**
  * GET /api/characters/new
