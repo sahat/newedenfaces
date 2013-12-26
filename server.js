@@ -316,17 +316,17 @@ app.get('/api/leaderboard', function(req, res) {
 
 /**
 * GET /api/characters/all
-* Returns a list of all characters (name only)
+* Returns a total count of characters in the DB
 */
 app.get('/api/characters/all', function(req, res) {
-  Character.find(null, 'characterId name', function (err, characters) {
+  Character.count({}, function(err, count) {
     if (err) return res.send(err);
-    res.send(characters);
+    res.send({ count: count });
   });
 });
 
 app.get('/api/characters/wrong-gender', function(req, res) {
-  Character.where('wrongGender', true).exec(function (err, characters) {
+  Character.where('wrongGender', true).exec(function(err, characters) {
     if (err) return res.send(err);
     res.send(characters);
   });
