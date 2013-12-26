@@ -20,20 +20,14 @@ define(function(require, exports, module) {
       e.preventDefault();
       var input = this.$el.find('input').val();
 
-      var queryMatch = this.collection.filter(function(model) {
-        return model.get('name').toLowerCase() === input.toLowerCase();
+      if (!input) return;
+
+      $.post('/api/characters/search', { name: input }, function(character) {
+        if (character) {
+          Backbone.history.navigate('/characters/' + character.characterId, { trigger: true });
+        }
       });
 
-      if (!queryMatch.length) {
-        return;
-      }
-      var characterId = queryMatch[0].get('characterId');
-
-      if (characterId) {
-        Backbone.history.navigate('/characters/' + characterId, { trigger: true });
-      } else {
-        toastr.warning('No query match');
-      }
     }
   });
 

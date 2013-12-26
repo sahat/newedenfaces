@@ -325,6 +325,19 @@ app.get('/api/characters/all', function(req, res) {
   });
 });
 
+app.post('/api/characters/search', function(req, res) {
+  var characterName = new RegExp(req.body.name, 'i');
+  Character.findOne({ name: characterName }, function(err, character) {
+    if (err) return res.send(err);
+    console.log(character);
+    if (character) {
+      res.send(character);
+    } else {
+      res.send({});
+    }
+  });
+});
+
 app.get('/api/characters/wrong-gender', function(req, res) {
   Character.where('wrongGender', true).exec(function(err, characters) {
     if (err) return res.send(err);
