@@ -4,10 +4,9 @@ require.config({
     'almond': 'vendor/almond',
     'underscore': 'vendor/lodash.underscore.min',
     'jquery': 'vendor/jquery.min',
-    'backbone': 'vendor/backbone',
+    'backbone': 'vendor/backbone-min',
     'text': 'vendor/requirejs-text',
     'toastr': 'vendor/toastr.min',
-    'typeahead': 'vendor/typeahead.min',
     'magnific-popup': 'vendor/jquery.magnific-popup.min',
     'bootstrap-dropdown': 'vendor/bootstrap-dropdown'
   },
