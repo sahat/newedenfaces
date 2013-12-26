@@ -256,8 +256,8 @@ define(function(require, exports, module) {
     characterDetails: function (id) {
       var character = new CharacterModel({ characterId: id });
       character.fetch({
-        error: function(err) {
-          console.log(err, 'error');
+        error: function(data) {
+          $('#content').html('<h2 class="lead">404: Not Found</h1>')
         },
         success: function(data) {
           var winLossRatio = (data.get('wins') / (data.get('wins') + data.get('losses')) * 100).toFixed(1);
