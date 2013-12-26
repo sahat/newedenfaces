@@ -7,12 +7,9 @@ define(function(require, exports, module) {
   var SearchView = Backbone.View.extend({
     el: $('.navbar'),
 
-    initialize: function() {
-      $('#search').typeahead({
-        name: 'name',
-        local: this.collection.pluck('name')
-      });
-      $('#search').attr('placeholder', this.collection.length + ' capsuleers');
+    initialize: function(options) {
+      this.options = options || {};
+      $('#search').attr('placeholder', this.options.count + ' capsuleers');
     },
 
     events: {

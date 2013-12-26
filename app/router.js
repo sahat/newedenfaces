@@ -14,15 +14,15 @@ define(function(require, exports, module) {
 
   module.exports = Backbone.Router.extend({
     initialize: function() {
-      var characters = new CharacterCollection();
-      characters.fetch({
-        url: '/api/characters/all',
-        success: function(data) {
-          var searchView = new SearchView({
-            collection: characters
-          });
-        }
+
+      $.get('/api/characters/all', function(data) {
+        var searchView = new SearchView({
+          count: data.count
+        });
       });
+
+      var characters = new CharacterCollection();
+
       characters.fetch({
         url: '/api/leaderboard',
         success: function(data) {
