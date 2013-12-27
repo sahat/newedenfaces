@@ -16,6 +16,7 @@ define(function(require, exports, module) {
 
     initialize: function(options) {
       this.options = options || {};
+      document.title = this.model.get('name') + ' - ' + document.title;
     },
 
     wrongGender: function() {
