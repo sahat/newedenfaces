@@ -77,7 +77,7 @@ define(function(require, exports, module) {
           });
           $('#content').html('<div class="panel"></div>');
           $('.panel').html(characterCollectionView.render().el);
-          characterCollectionView.selectMenuItem('top-menu');
+          characterCollectionView.selectMenuItem('new-menu');
         }
       });
     },

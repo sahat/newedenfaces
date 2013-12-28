@@ -18,8 +18,6 @@
 // TODO: reset every 200 rounds
 // TODO: socket.io real time number of characters
 // TODO: unset all documents image128, image64, etc...and pastMatches
-// TODO: Facebook like button
-// TODO:
 
 var express = require('express');
 var async = require('async');
