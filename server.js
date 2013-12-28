@@ -25,7 +25,7 @@ var path = require('path');
 var request = require('request');
 var xml2js = require('xml2js');
 var mongoose = require('mongoose');
-
+var _ = require('underscore');
 var config = require('./config.js');
 
 // OpenShift Configuration
@@ -430,6 +430,103 @@ app.post('/api/characters', function(req, res) {
     }
   ]);
 });
+
+/**
+ * GET /api/stats
+ * Display DB statistics
+ */
+app.get('/api/stats', function(req, res) {
+  async.parallel([
+    function(callback) {
+      Character.count({}, function(err, count) {
+        callback(err, count);
+      });
+    },
+    function(callback) {
+      Character.count({ race: 'Amarr'}, function(err, amarrCount) {
+        callback(err, amarrCount);
+      });
+    },
+    function(callback) {
+      Character.count({ race: 'Caldari' }, function(err, caldariCount) {
+        callback(err, caldariCount);
+      });
+    },
+    function(callback) {
+      Character.count({ race: 'Gallente' }, function(err, gallenteCount) {
+        callback(err, gallenteCount);
+      });
+    },
+    function(callback) {
+      Character.count({ race: 'Minmatar' }, function(err, minmatarCount) {
+        callback(err, minmatarCount);
+      });
+    },
+    function(callback) {
+      // Total males
+      Character.count({ gender: 'male' }, function(err, maleCount) {
+        callback(err, maleCount);
+      });
+    },
+    function(callback) {
+      // Total females
+      Character.count({ gender: 'female' }, function(err, femaleCount) {
+        callback(err, femaleCount);
+      });
+    },
+    function(callback) {
+      // Total votes cast
+      Character
+        .aggregate([{ $group: { _id: null, total: { $sum: "$wins" } } }])
+        .exec(function(err, winCount) {
+          callback(err, winCount);
+        });
+    },
+    function(callback) {
+      // Race count in Top 100
+      Character
+        .find()
+        .sort('-wins')
+        .limit(100)
+        .select('race')
+        .exec(function(err, characters) {
+
+          var raceCount = _.countBy(characters, function(character) {
+            return character.race
+          });
+
+          callback(err, raceCount);
+      });
+    }
+  ],
+  function(err, results) {
+    if (err) return res.send(500);
+
+    var totalCount = results[0];
+    var amarrCount = results[1];
+    var caldariCount = results[2];
+    var gallenteCount = results[3];
+    var minmatarCount = results[4];
+    var maleCount = results[5];
+    var femaleCount = results[6];
+    var totalVotes = results[7];
+    var raceCountTop100 = results[8];
+
+    res.send({
+      totalCount: totalCount,
+      amarrCount: amarrCount,
+      caldariCount: caldariCount,
+      gallenteCount: gallenteCount,
+      minmatarCount: minmatarCount,
+      maleCount: maleCount,
+      femaleCount: femaleCount,
+      totalVotes: totalVotes,
+      raceCountTop100: raceCountTop100
+    });
+  });
+});
+
+
 
 /**
 * POST /api/gender
