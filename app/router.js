@@ -40,6 +40,7 @@ define(function(require, exports, module) {
       'top': 'topCharacters',
       'male': 'maleCharacters',
       'female': 'femaleCharacters',
+      'stats': 'stats',
       'wrong-gender': 'wrongGender',
       'hall-of-shame': 'hallOfShame',
       'top/:race': 'topRace',
@@ -49,6 +50,10 @@ define(function(require, exports, module) {
       'top/:race/:bloodline': 'topBloodline',
       'male/:race/:bloodline': 'maleBloodline',
       'female/:race/:bloodline': 'femaleBloodline'
+    },
+
+    stats: function() {
+
     },
 
     home: function() {

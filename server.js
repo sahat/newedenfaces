@@ -509,6 +509,10 @@ app.get('/wrong-gender', function(req, res) {
   res.redirect('/#wrong-gender');
 });
 
+app.get('/stats', function(req, res) {
+  res.redirect('/#stats');
+});
+
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
 });
