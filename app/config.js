@@ -8,7 +8,8 @@ require.config({
     'text': 'vendor/requirejs-text',
     'toastr': 'vendor/toastr.min',
     'magnific-popup': 'vendor/jquery.magnific-popup.min',
-    'bootstrap-dropdown': 'vendor/bootstrap-dropdown'
+    'bootstrap-dropdown': 'vendor/bootstrap-dropdown',
+    'chart': 'vendor/Chart.min'
   },
 
   shim: {
@@ -28,6 +29,9 @@ require.config({
     'toastr': {
       deps: ['jquery'],
       exports: 'toastr'
+    },
+    'chart': {
+      exports: 'Chart'
     }
   }
 });

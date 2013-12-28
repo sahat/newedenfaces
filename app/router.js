@@ -11,6 +11,7 @@ define(function(require, exports, module) {
   var HomeView = require('modules/HomeView');
   var WrongGenderView = require('modules/WrongGenderView');
   var AddCharacterView = require('modules/AddCharacterView');
+  var StatsView = require('modules/StatsView');
 
   module.exports = Backbone.Router.extend({
     initialize: function() {
@@ -53,7 +54,9 @@ define(function(require, exports, module) {
     },
 
     stats: function() {
-
+      var statsView = new StatsView();
+      $('#content').html(statsView.render().el);
+      statsView.selectMenuItem('stats-menu');
     },
 
     home: function() {
