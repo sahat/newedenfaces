@@ -477,9 +477,10 @@ app.get('/api/stats', function(req, res) {
     function(callback) {
       // Total votes cast
       Character
-        .aggregate([{ $group: { _id: null, total: { $sum: "$wins" } } }])
-        .exec(function(err, winCount) {
-          callback(err, winCount);
+        .aggregate()
+        .group({ _id: null, total: { $sum: '$wins' } })
+        .exec(function(err, winsCount) {
+          callback(err, winsCount);
         });
     },
     function(callback) {
@@ -500,7 +501,7 @@ app.get('/api/stats', function(req, res) {
     }
   ],
   function(err, results) {
-    if (err) return res.send(500);
+    if (err) return res.send(500, err);
 
     var totalCount = results[0];
     var amarrCount = results[1];
