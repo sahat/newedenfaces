@@ -19,9 +19,7 @@
 // TODO: socket.io real time number of characters
 // TODO: unset all documents image128, image64, etc...and pastMatches
 // TODO: Facebook like button
-// TODO: DUP characterId error handling exception
-
-// TODO: Test what happens when you vote for a character that has been deleted from DB
+// TODO:
 
 var express = require('express');
 var async = require('async');
@@ -47,7 +45,7 @@ var options = {
     }
   },
   db: {
-    numberOfRetries: 10,
+    numberOfRetries: 1000,
     retryMiliSeconds: 1000
   }
 };
@@ -401,7 +399,7 @@ app.post('/api/characters', function(req, res) {
     function(characterId, callback) {
       var characterInfoUrl = 'https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=' + characterId;
       request.get({ url: characterInfoUrl }, function(e, r, xml) {
-        if (e) throw e;
+        if (e) return res.send(500);
         parser.parseString(xml, function(err, parsedXml) {
           if (err) return res.send(err);
           try {
@@ -419,7 +417,7 @@ app.post('/api/characters', function(req, res) {
             });
 
             character.save(function(err) {
-              if (err) console.log(err);
+              if (err) return res.send(500);
               res.send(character);
             });
 
