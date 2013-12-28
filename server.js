@@ -3,7 +3,6 @@
 // TODO: Display count of each gender on gender page
 // TODO: Stats page, with useful DB stats (+ total votes)
 // TODO: Display current round vote history on stats page
-// TODO: Image2 more blurs
 // TODO: Remote fat footer, and add static links like on SpinKit
 // TODO: FOCUS ON PERFORMANCE
 // TODO: Instead of a blue top loading indicator, load the page instantly,
@@ -21,6 +20,8 @@
 // TODO: unset all documents image128, image64, etc...and pastMatches
 // TODO: Facebook like button
 // TODO: DUP characterId error handling exception
+
+// TODO: Test what happens when you vote for a character that has been deleted from DB
 
 var express = require('express');
 var async = require('async');
@@ -188,7 +189,10 @@ app.put('/api/characters', function(req, res) {
   var loser = req.body.loser;
   if (!winner || !loser) return res.send(404);
   Character.findOne({ characterId: winner }, function(err, winner) {
+    if (err) return res.send(500);
     Character.findOne({ characterId: loser }, function(err, loser) {
+      if (err) return res.send(500);
+      if (!winner || !loser) return res.send(404);
       if (winner.voted || loser.voted) return res.send(200);
       async.parallel([
         function(callback) {
