@@ -1,2 +1,62 @@
-hi
-<canvas id="myChart" width="400" height="400"></canvas>
+<table class="table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th>Stats</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>
+      Leading race in Top 100
+    </td>
+    <td><%= leadingRace.race %> with <%= leadingRace.count %> characters</td>
+  </tr>
+  <tr>
+    <td>Amarr Characters</td>
+    <td><%= amarrCount %></td>
+  </tr>
+  <tr>
+    <td>
+      Caldari Characters
+    </td>
+    <td><%= caldariCount %></td>
+  </tr>
+  <tr>
+    <td>
+      Gallente Characters
+    </td>
+    <td><%= gallenteCount %></td>
+  </tr>
+  <tr>
+    <td>
+      Minmatar Characters
+    </td>
+    <td><%= minmatarCount %></td>
+  </tr>
+  <tr>
+    <td>
+      Total votes cast
+    </td>
+    <td><%= totalVotes %></td>
+  </tr>
+  <tr>
+    <td>
+      Female characters
+    </td>
+    <td><%= femaleCount %></td>
+  </tr>
+  <tr>
+    <td>
+      Male characters
+    </td>
+    <td><%= maleCount %></td>
+  </tr>
+  <tr>
+    <td>
+      Total number of characters
+    </td>
+    <td><%= totalCount %></td>
+  </tr>
+
+  </tbody>
+</table>

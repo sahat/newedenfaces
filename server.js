@@ -494,7 +494,11 @@ app.get('/api/stats', function(req, res) {
           var raceCount = _.countBy(characters, function(character) {
             return character.race
           });
-          callback(err, raceCount);
+          var max = _.max(raceCount, function(race) { return race });
+          var inverted = _.invert(raceCount);
+          var topRace = inverted[max];
+          var topCount = raceCount[topRace];
+          callback(err, { race: topRace, count: topCount });
       });
     }
   ],
@@ -509,7 +513,7 @@ app.get('/api/stats', function(req, res) {
     var maleCount = results[5];
     var femaleCount = results[6];
     var totalVotes = results[7];
-    var raceCountTop100 = results[8];
+    var leadingRace = results[8];
 
     res.send({
       totalCount: totalCount,
@@ -520,7 +524,7 @@ app.get('/api/stats', function(req, res) {
       maleCount: maleCount,
       femaleCount: femaleCount,
       totalVotes: totalVotes,
-      raceCountTop100: raceCountTop100
+      leadingRace: leadingRace
     });
   });
 });

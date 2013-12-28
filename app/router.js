@@ -54,9 +54,13 @@ define(function(require, exports, module) {
     },
 
     stats: function() {
-      var statsView = new StatsView();
-      $('#content').html(statsView.render().el);
-      statsView.selectMenuItem('stats-menu');
+      $.get('/api/stats', function(data) {
+        var statsView = new StatsView({
+          stats: data
+        });
+        $('#content').html(statsView.render().el);
+        statsView.selectMenuItem('stats-menu');
+      });
     },
 
     home: function() {
