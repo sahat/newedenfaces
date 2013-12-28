@@ -480,7 +480,7 @@ app.get('/api/stats', function(req, res) {
         .aggregate()
         .group({ _id: null, total: { $sum: '$wins' } })
         .exec(function(err, winsCount) {
-          callback(err, winsCount);
+          callback(err, winsCount[0].total);
         });
     },
     function(callback) {
@@ -491,11 +491,9 @@ app.get('/api/stats', function(req, res) {
         .limit(100)
         .select('race')
         .exec(function(err, characters) {
-
           var raceCount = _.countBy(characters, function(character) {
             return character.race
           });
-
           callback(err, raceCount);
       });
     }
