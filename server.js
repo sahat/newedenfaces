@@ -476,12 +476,12 @@ app.get('/api/stats', function(req, res) {
     },
     function(callback) {
       // Total votes cast
-      Character
-        .aggregate()
-        .group({ _id: null, total: { $sum: '$wins' } })
-        .exec(function(err, winsCount) {
+      Character.aggregate(
+        { $group: { _id: null, total: { $sum: '$wins' } } },
+        function(err, winsCount) {
           callback(err, winsCount[0].total);
-        });
+        }
+      );
     },
     function(callback) {
       // Race count in Top 100
