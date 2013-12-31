@@ -1,12 +1,9 @@
 // TODO: add hotness meter
 // TODO: Add avatar vs avatar fights (8hr rounds)
-// TODO: Display count of each gender on gender page
 // TODO: Stats page, with useful DB stats (+ total votes)
 // TODO: Display current round vote history on stats page
 // TODO: Remote fat footer, and add static links like on SpinKit
 // TODO: FOCUS ON PERFORMANCE
-// TODO: Instead of a blue top loading indicator, load the page instantly,
-        // then display the loading indicator (vertical bars) until content is loaded
 // TODO: mongoose error handling middleware
 // TODO: scheduler to remove lowest ranked every day
 // TODO: make a new collections for storing Previous Votes for each character
@@ -17,7 +14,6 @@
 // TODO: set minimum width/height on homepage thumbnails to prevent sliding of DOM
 // TODO: reset every 200 rounds
 // TODO: socket.io real time number of characters
-// TODO: unset all documents image128, image64, etc...and pastMatches
 
 var express = require('express');
 var async = require('async');
