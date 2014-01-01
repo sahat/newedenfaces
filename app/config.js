@@ -27,8 +27,7 @@ require.config({
       deps: ['jquery']
     },
     'toastr': {
-      deps: ['jquery'],
-      exports: 'toastr'
+      deps: ['jquery']
     },
     'chart': {
       exports: 'Chart'
