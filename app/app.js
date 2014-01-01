@@ -4,19 +4,6 @@ define(function(require, exports, module) {
   var Backbone = require('backbone');
   var dropdown = require('bootstrap-dropdown');
 
-  $(document).on("ready", function () {
-
-    $(document).on('click', 'a:not([data-bypass])', function(e){
-      var href = $(this).prop('href');
-      var root = location.protocol + '//' + location.host + '/';
-      if (root === href.slice(0,root.length)){
-        e.preventDefault();
-        Backbone.history.navigate(href.slice(root.length), true);
-      }
-    });
-
-  });
-
   $(document).ajaxStart(function() {
     //only add progress bar if added yet.
     if ($("#progress").length === 0) {
