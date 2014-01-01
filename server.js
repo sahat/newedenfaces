@@ -277,7 +277,7 @@ app.get('/api/characters/top', function(req, res) {
 
 /**
 * GET /api/leaderboard
-* Returns Top 10 characters, sorted by the winning percentage.
+* Returns Top 12 characters, sorted by the winning percentage.
 */
 app.get('/api/leaderboard', function(req, res) {
   Character
@@ -307,11 +307,14 @@ app.get('/api/characters/all', function(req, res) {
   });
 });
 
+/**
+ * POST /api/characters/search
+ * Character search
+ */
 app.post('/api/characters/search', function(req, res) {
   var characterName = new RegExp(req.body.name, 'i');
   Character.findOne({ name: characterName }, function(err, character) {
     if (err) return res.send(err);
-    console.log(character);
     if (character) {
       res.send(character);
     } else {
@@ -320,6 +323,9 @@ app.post('/api/characters/search', function(req, res) {
   });
 });
 
+/**
+ * Display characters marked as Wrong Gender
+ */
 app.get('/api/characters/wrong-gender', function(req, res) {
   Character.where('wrongGender', true).exec(function(err, characters) {
     if (err) return res.send(err);
