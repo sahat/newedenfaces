@@ -2,13 +2,13 @@
   <span class="position pull-left"><%= position %></span>
 
   <div class="pull-left thumb-large">
-    <a href="/characters/<%= model.characterId %>">
+    <a href="#characters/<%= model.characterId %>">
       <img class="media-object" src="http://image.eveonline.com/Character/<%= model.characterId %>_128.jpg">
     </a>
   </div>
   <div class="media-body">
     <!--<button id="delete" class="btn btn-danger">delete</button>-->
-    <h5 class="media-heading"><a href="/characters/<%= model.characterId %>"><%= model.name %></a></h5>
+    <h5 class="media-heading"><a href="#characters/<%= model.characterId %>"><%= model.name %></a></h5>
     <small>
       Race: <strong><%= model.race %></strong>
       <br>
