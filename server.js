@@ -517,8 +517,6 @@ app.get('/api/stats', function(req, res) {
   });
 });
 
-
-
 /**
 * POST /api/gender
 * Update character's gender.
@@ -538,68 +536,6 @@ app.post('/api/gender', function(req, res) {
   });
 });
 
-/**
-* Backbone pushstate redirects
-*/
-app.get('/add', function(req, res) {
-  res.redirect('/#add');
-});
-
-app.get('/new', function(req, res) {
-  res.redirect('/#new');
-});
-
-app.get('/top', function(req, res) {
-  res.redirect('/#top');
-});
-
-app.get('/hall-of-shame', function(req, res) {
-  res.redirect('/#hall-of-shame');
-});
-
-app.get('/top/:race', function(req, res) {
-  res.redirect('/#top/' + req.params.race);
-});
-
-app.get('/top/:race/:bloodline', function(req, res) {
-  res.redirect('/#top/' + req.params.race + '/' + req.params.bloodline);
-});
-
-app.get('/characters/:id', function(req, res) {
-  res.redirect('/#characters/' + req.params.id);
-});
-
-app.get('/male', function(req, res) {
-  res.redirect('/#male');
-});
-
-app.get('/female', function(req, res) {
-  res.redirect('/#female');
-});
-
-app.get('/male/:race', function(req, res) {
-  res.redirect('/#male/' + req.params.race);
-});
-
-app.get('/female/:race', function(req, res) {
-  res.redirect('/#female/' + req.params.race);
-});
-
-app.get('/male/:race/:bloodline', function(req, res) {
-  res.redirect('/#male/' + req.params.race + '/' + req.params.bloodline);
-});
-
-app.get('/female/:race/:bloodline', function(req, res) {
-  res.redirect('/#female/' + req.params.race + '/' + req.params.bloodline);
-});
-
-app.get('/wrong-gender', function(req, res) {
-  res.redirect('/#wrong-gender');
-});
-
-app.get('/stats', function(req, res) {
-  res.redirect('/#stats');
-});
 
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
