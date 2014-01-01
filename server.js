@@ -274,20 +274,6 @@ app.get('/api/characters/top', function(req, res) {
   });
 });
 
-app.get('/male/:id', function(req, res) {
-  var id = req.params.id;
-  Character.findOne({ characterId: id}, function(err, character) {
-    if (character) {
-      character.gender = 'male';
-      character.wrongGender = false;
-      character.save(function(err) {
-        if (err) return res.send(err);
-        res.send(200);
-      });
-    }
-  });
-});
-
 
 /**
 * GET /api/leaderboard
