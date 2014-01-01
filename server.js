@@ -263,7 +263,7 @@ app.get('/api/characters/top', function(req, res) {
       conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  Character.find(conditions).sort('-wins').limit(100).exec(function(err, characters) {
+  Character.find(conditions).sort('-wins').limit(150).exec(function(err, characters) {
     if (err) return res.send(err);
     characters.sort(function(a, b) {
       if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
@@ -283,7 +283,7 @@ app.get('/api/leaderboard', function(req, res) {
   Character
   .find()
   .sort('-wins')
-  .limit(12)
+  .limit(18)
   .lean()
   .exec(function(err, characters) {
     if (err) return res.send(err);
@@ -292,7 +292,7 @@ app.get('/api/leaderboard', function(req, res) {
       if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
       return 0;
     });
-    res.send(characters);
+    res.send(characters.slice(0,12));
   });
 });
 
