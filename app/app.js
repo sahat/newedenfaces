@@ -15,7 +15,7 @@ define(function(require, exports, module) {
   $(document).ajaxComplete(function() {
     $('.spinner').css('z-index', -1);
     //End loading animation
-    $("#progress").width("101%").delay(200).fadeOut(400, function() {
+    $("#progress").width("101%").delay(200).fadeOut(800, function() {
       $(this).remove();
     });
   });
