@@ -1,6 +1,5 @@
 // TODO: add hotness meter
 // TODO: Add avatar vs avatar fights (8hr rounds)
-// TODO: Stats page, with useful DB stats (+ total votes)
 // TODO: Display current round vote history on stats page
 // TODO: Remote fat footer, and add static links like on SpinKit
 // TODO: FOCUS ON PERFORMANCE
@@ -15,26 +14,36 @@
 // TODO: reset every 200 rounds
 // TODO: socket.io real time number of characters
 
-var express = require('express');
 var async = require('async');
+var connectDomain = require('connect-domain');
+var express = require('express');
+var mongoose = require('mongoose');
 var path = require('path');
 var request = require('request');
 var xml2js = require('xml2js');
-var mongoose = require('mongoose');
 var _ = require('underscore');
-var config = require('./config.js');
+var config = require('./config.json');
 
-// OpenShift Configuration
+// OpenShift configuration
 var IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 var app = express();
 
-var options = {
-  server:{
+// Express configuration
+app.use(connectDomain());
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'app')));
+
+// MongoDB configuration
+mongoose.connect(config.db, {
+  server: {
     auto_reconnect: true,
     poolSize: 10,
-    socketOptions:{
+    socketOptions: {
       keepAlive: 1
     }
   },
@@ -42,10 +51,9 @@ var options = {
     numberOfRetries: 1000,
     retryMiliSeconds: 1000
   }
-};
-mongoose.connect(config.mongoose, options);
+});
 
-// Mongoose schema
+// Character schema
 var Character = mongoose.model('Character', {
   characterId: { type: String, unique: true, index: true },
   name: String,
@@ -59,14 +67,6 @@ var Character = mongoose.model('Character', {
   random: { type: [Number], index: '2d' },
   voted: { type: Boolean, default: false }
 });
-
-// Express configuration
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'app')));
-
 
 /**
 * GET /api/characters
@@ -525,6 +525,7 @@ app.post('/api/gender', function(req, res) {
   var id = req.body.characterId;
   var gender = req.body.gender;
   Character.findOne({ characterId: id}, function(err, character) {
+    if (err) return res.send(500, { message: err.message });
     if (character) {
       character.gender = gender;
       character.wrongGender = false;
@@ -535,7 +536,6 @@ app.post('/api/gender', function(req, res) {
     }
   });
 });
-
 
 app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
