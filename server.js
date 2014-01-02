@@ -74,39 +74,46 @@ var Character = mongoose.model('Character', {
 * GET /api/characters
 * Retrieves 2 characters per user and increments global counter.
 */
-app.get('/api/characters', function(req, res) {
+app.get('/api/characters', function(req, res, next) {
   var choices = { 0: 'female', 1: 'male' };
   var randomGender = choices[Math.round(Math.random())];
   Character
-  .find({ random: { $near: [Math.random(), 0] } })
-  .where('voted', false)
-  .where('gender', randomGender)
-  .limit(2)
-  .exec(function(err, characters) {
-    if (err) return res.send(err);
-    if (characters.length < 2) {
-      var oppositeRandomGender = randomGender === 'female' ? 'male' : 'female';
-      Character
-      .find({ random: { $near: [Math.random(), 0] } })
-      .where('voted', false)
-      .where('gender', oppositeRandomGender)
-      .limit(2)
-      .exec(function(err, characters) {
-        if (err) return res.send(err);
-        if (characters.length < 2) {
-          Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
-            if (err) return res.send(err);
-            console.log('Finished all characters. Going to next round.');
-            res.send([]);
+    .find({ random: { $near: [Math.random(), 0] } })
+    .where('voted', false)
+    .where('gender', randomGender)
+    .limit(2)
+    .exec(function(err, characters) {
+      if (err) return next(err);
+
+      // When there are no more character pairs given by randomGender,
+      // check if there are character pairs of the opposite gender
+      if (characters.length < 2) {
+        var oppositeRandomGender = randomGender === 'female' ? 'male' : 'female';
+        Character
+          .find({ random: { $near: [Math.random(), 0] } })
+          .where('voted', false)
+          .where('gender', oppositeRandomGender)
+          .limit(2)
+          .exec(function(err, characters) {
+            if (err) return next(err);
+
+            // When there are no character pairs left of either gender,
+            // reset voted flags, and start the next round
+            if (characters.length < 2) {
+              Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
+                if (err) return next(err);
+                return res.send([]);
+              });
+            }
+
+            // Send two characters of oppositeRandomGender
+            return res.send(characters);
           });
-        } else {
-          res.send(characters);
-        }
-      });
-    } else {
+      }
+
+      // Send two characters of randomGender
       res.send(characters);
-    }
-  });
+    });
 });
 
 /**
@@ -352,7 +359,7 @@ app.get('/api/characters/:id', function(req, res, next) {
 
 /**
 * POST /api/characters
-* Adds a character to the database.
+* Add character to the database
 */
 app.post('/api/characters', function(req, res) {
   var parser = new xml2js.Parser();
