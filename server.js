@@ -15,7 +15,6 @@
 // TODO: socket.io real time number of characters
 
 var async = require('async');
-var connectDomain = require('connect-domain');
 var express = require('express');
 var mongoose = require('mongoose');
 var path = require('path');
@@ -31,12 +30,15 @@ var PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var app = express();
 
 // Express configuration
-app.use(connectDomain());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.send(500, { message: err.message });
+});
 
 // MongoDB configuration
 mongoose.connect(config.db, {
@@ -335,11 +337,11 @@ app.get('/api/characters/wrong-gender', function(req, res) {
 
 /**
 * GET /api/characters/:id
-* Returns one specified character.
+* Return detailed character information
 */
-app.get('/api/characters/:id', function(req, res) {
+app.get('/api/characters/:id', function(req, res, next) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
-    if (err) return res.send(err);
+    if (err) return next(err);
     if (character) {
       res.send(character);
     } else {
