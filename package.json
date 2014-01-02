@@ -30,7 +30,8 @@
     "newrelic": "*",
     "cron": "*",
     "async": "*",
-    "forever": "*"
+    "forever": "*",
+    "connect-domain": "*"
   },
 
   "devDependencies": {
