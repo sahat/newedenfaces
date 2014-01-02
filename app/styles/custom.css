@@ -1,14 +1,38 @@
+@import "alertify.core.css";
+@import "alertify.default.css";
 @import url(http://fonts.googleapis.com/css?family=Pacifico);
 
-.animated{-webkit-animation-fill-mode:both;-moz-animation-fill-mode:both;-ms-animation-fill-mode:both;-o-animation-fill-mode:both;animation-fill-mode:both;-webkit-animation-duration:1s;-moz-animation-duration:1s;-ms-animation-duration:1s;-o-animation-duration:1s;animation-duration:1s;}.animated.hinge{-webkit-animation-duration:1s;-moz-animation-duration:1s;-ms-animation-duration:1s;-o-animation-duration:1s;animation-duration:1s;}@-webkit-keyframes fadeInUp {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   0% {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     opacity: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     -webkit-transform: translateY(20px);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   }	100% {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        opacity: 1;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        -webkit-transform: translateY(0);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                 }
+.animated {
+  -webkit-animation-fill-mode: both;
+  -moz-animation-fill-mode: both;
+  -ms-animation-fill-mode: both;
+  -o-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  -ms-animation-duration: 1s;
+  -o-animation-duration: 1s;
+  animation-duration: 1s;
+}
+
+.animated.hinge {
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  -ms-animation-duration: 1s;
+  -o-animation-duration: 1s;
+  animation-duration: 1s;
+}
+
+@-webkit-keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+  }
+}
 
 @-moz-keyframes fadeInUp {
   0% {
