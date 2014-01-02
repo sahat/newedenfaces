@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var Backbone = require('backbone');
   var CharacterSummaryTpl = require('text!templates/character-summary.html');
   var magnificPopup = require('magnific-popup');
+  var alertify = require('alertify');
 
   var CharacterSummaryView = Backbone.View.extend({
     template: _.template(CharacterSummaryTpl),
@@ -29,19 +30,27 @@ define(function(require, exports, module) {
     reportPlayer: function(e) {
       var $reportButton = this.$el.find('#report');
       var characterId = this.model.get('characterId');
-      $.post('/api/report', this.model.toJSON(), function(data) {
+      $.ajax({
+        type: 'POST',
+        url: '/api/report',
+        data: this.model.toJSON(),
+        success: function(data) {
+          console.log(data);
+          // JavaScript way of checking if string contains a substring
+          if (data.indexOf('deleted') !== -1) { // contains deleted
+            toastr.error(data);
+            Backbone.history.navigate('/', { trigger: true });
+          } else if (data.indexOf('reported') !== -1) { // contains reported
+            toastr.warning(data);
+          }
 
-        // JavaScript way of checking if string contains a substring
-        if (data.indexOf('deleted') !== -1) { // contains deleted
-          toastr.error(data);
-          Backbone.history.navigate('/', { trigger: true });
-        } else if (data.indexOf('reported') !== -1) { // contains reported
-          toastr.warning(data);
+          // Prevents users from reporting multiple times
+          $reportButton.attr('disabled', true);
+          localStorage['reported-' + characterId] = 'True';
+        },
+        error: function(jqXHR) {
+          alertify.error(jqXHR.responseJSON.message);
         }
-
-        // Prevents users from reporting multiple times
-        $reportButton.attr('disabled', true);
-        localStorage['reported-' + characterId] = 'True';
       });
     },
 

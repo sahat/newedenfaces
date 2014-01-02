@@ -121,10 +121,12 @@ app.get('/api/characters', function(req, res, next) {
 * Increment character's report count. After (5) successive strikes,
 * that character gets deleted from the database.
 */
-app.post('/api/report', function(req, res) {
+app.post('/api/report', function(req, res, next) {
   var characterId = req.body.characterId;
-  Character.findOne({ characterId: characterId }, function(err, character) {
-    if (err) return res.send(err);
+  Character.findOne({ characterId: '123' }, function(err, character) {
+    if (err) return next(err);
+    if (!character) return res.send(404, { message: 'Character Not Found' });
+
     if (character) {
       character.reports++;
       if (character.reports >= 5) {
@@ -138,8 +140,6 @@ app.post('/api/report', function(req, res) {
           res.send(200, character.name + ' has been reported');
         });
       }
-    } else {
-      res.send(404);
     }
   });
 });
@@ -149,7 +149,7 @@ app.post('/api/report', function(req, res) {
 * Marks a character as being an invalid gender,
 * e.g. Actual "male" avatar has been added as "female"
 */
-app.post('/api/report/gender', function(req, res) {
+app.post('/api/report/gender', function(req, res, next) {
   var characterId = req.body.characterId;
   Character.findOne({ characterId: characterId }, function(err, user) {
     if (err) return res.send(err);
