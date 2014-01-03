@@ -117,30 +117,23 @@ app.get('/api/characters', function(req, res, next) {
 });
 
 /**
-* POST /report
-* Increment character's report count. After (5) successive strikes,
-* that character gets deleted from the database.
-*/
+ * POST /report
+ * @param characterId
+ * Increment character "reports" count
+ */
 app.post('/api/report', function(req, res, next) {
-  var characterId = req.body.characterId;
-  Character.findOne({ characterId: '123' }, function(err, character) {
+  Character.findOne({ characterId: req.body.characterId }, function(err, character) {
     if (err) return next(err);
     if (!character) return res.send(404, { message: 'Character Not Found' });
-
-    if (character) {
-      character.reports++;
-      if (character.reports >= 5) {
-        var url = req.protocol + '://' + req.host + ':' + PORT +
-          '/api/characters/' + characterId + '?secretCode=' + config.secretCode;
-        request.del(url);
-        res.send(200);
-      } else {
-        character.save(function(err) {
-          if (err) return res.send(err);
-          res.send(200, character.name + ' has been reported');
-        });
-      }
+    character.reports++;
+    if (character.reports > 4) {
+      character.remove();
+      return res.send({ message: 'Character has been deleted'});
     }
+    character.save(function(err) {
+      if (err) return next(err);
+      res.send(200, { message: character.name + ' has been reported' });
+    });
   });
 });
 
@@ -166,17 +159,14 @@ app.post('/api/report/gender', function(req, res, next) {
 });
 
 /**
-* DEL /api/characters/:id
-* Delete a character from the database
-* Requres the secret code as a querystring to prevent abuse
-*/
-app.del('/api/characters/:id', function(req, res) {
-  var characterId = req.params.id;
-  if (req.query.secretCode !== config.secretCode) {
-    return res.send(500);
-  }
-  Character.remove({ characterId: characterId }, function(err) {
-    if (err) return res.send(err);
+ * DEL /api/characters/:id
+ * @param id
+ * Delete a character from the database
+ */
+app.del('/api/characters/:id', function(req, res, next) {
+  if (req.query.secretCode !== config.secretCode) return next(err);
+  Character.remove({ characterId: req.params.id }, function(err) {
+    if (err) return next(err);
     res.send(200);
   });
 });
