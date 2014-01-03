@@ -417,7 +417,7 @@ app.post('/api/characters', function(req, res, next) {
  * GET /api/stats
  * Display DB statistics
  */
-app.get('/api/stats', function(req, res) {
+app.get('/api/stats', function(req, res, next) {
   async.parallel([
     function(callback) {
       Character.count({}, function(err, count) {
@@ -473,8 +473,9 @@ app.get('/api/stats', function(req, res) {
         .limit(100)
         .select('race')
         .exec(function(err, characters) {
+          if (err) return next(err);
           var raceCount = _.countBy(characters, function(character) {
-            return character.race
+            return character.race;
           });
           var max = _.max(raceCount, function(race) { return race });
           var inverted = _.invert(raceCount);
@@ -485,8 +486,7 @@ app.get('/api/stats', function(req, res) {
     }
   ],
   function(err, results) {
-    if (err) return res.send(500, err);
-
+    if (err) return next(err);
     var totalCount = results[0];
     var amarrCount = results[1];
     var caldariCount = results[2];
@@ -512,22 +512,23 @@ app.get('/api/stats', function(req, res) {
 });
 
 /**
-* POST /api/gender
-* Update character's gender.
-*/
-app.post('/api/gender', function(req, res) {
-  var id = req.body.characterId;
+ * POST /api/gender
+ * @param characterId
+ * @param gender
+ * Update character's gender
+ */
+app.post('/api/gender', function(req, res, next) {
+  var characterId = req.body.characterId;
   var gender = req.body.gender;
-  Character.findOne({ characterId: id}, function(err, character) {
-    if (err) return res.send(500, { message: err.message });
-    if (character) {
-      character.gender = gender;
-      character.wrongGender = false;
-      character.save(function(err) {
-        if (err) return res.send(err);
-        res.send(200);
-      });
-    }
+  Character.findOne({ characterId: characterId}, function(err, character) {
+    if (err) return next(err);
+    if (!character) return res.send(404);
+    character.gender = gender;
+    character.wrongGender = false;
+    character.save(function(err) {
+      if (err) return next(err);
+      res.send(200);
+    });
   });
 });
 
