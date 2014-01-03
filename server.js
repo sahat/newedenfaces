@@ -143,8 +143,7 @@ app.post('/api/report', function(req, res, next) {
  * Marks a character with a wrong gender flag
  */
 app.post('/api/report/gender', function(req, res, next) {
-  var characterId = req.body.characterId;
-  Character.findOne({ characterId: characterId }, function(err, character) {
+  Character.findOne({ characterId: req.body.characterId }, function(err, character) {
     if (err) return next(err);
     if (!character) return res.send(404, { message: 'Character Not Found' });
     character.wrongGender = true;
@@ -172,10 +171,10 @@ app.del('/api/characters/:id', function(req, res, next) {
 * PUT /api/vote
 * Update winning and losing count for characters.
 */
-app.put('/api/characters', function(req, res) {
+app.put('/api/characters', function(req, res, next) {
   var winner = req.body.winner;
   var loser = req.body.loser;
-  if (!winner || !loser) return res.send(404);
+  if (!winner || !loser) return res.send(400, { message: 'Voting requires two characters' });
   Character.findOne({ characterId: winner }, function(err, winner) {
     if (err) return res.send(500);
     Character.findOne({ characterId: loser }, function(err, loser) {
