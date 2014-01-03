@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var CharacterCollection = require('modules/CharacterCollection');
   var CharacterThumbnailView = require('modules/CharacterThumbnailView');
   var HomeTpl = require('text!templates/home.html');
+  var alertify = require('alertify');
 
   var HomeView = Backbone.View.extend({
     tagName: 'ul',
@@ -36,8 +37,7 @@ define(function(require, exports, module) {
           winner: winner.get('characterId'),
           loser: loser.get('characterId')
         },
-        // TODO: Error handler
-        success: function() {
+        success: function(data) {
           self.collection.fetch({
             url: '/api/characters',
             success: function(data) {
@@ -48,6 +48,9 @@ define(function(require, exports, module) {
               }
             }
           });
+        },
+        error: function(jqXHR) {
+          alertify.error(jqXHR.responseJSON.message);
         }
       });
     },
