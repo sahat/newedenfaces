@@ -37,7 +37,7 @@ app.use(function(err, req, res, next) {
 });
 
 // MongoDB configuration
-mongoose.connect('localhost', {
+mongoose.connect(config.db, {
   server: {
     auto_reconnect: true,
     poolSize: 10,
