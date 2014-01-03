@@ -207,9 +207,9 @@ app.put('/api/characters', function(req, res, next) {
 });
 
 /**
-* GET /api/characters/shame
-* Return 100 lowest ranked characters for hall of shame
-*/
+ * GET /api/characters/shame
+ * Return 100 lowest ranked characters for hall of shame
+ */
 app.get('/api/characters/shame', function(req, res, next) {
   Character
     .find()
@@ -248,10 +248,10 @@ app.get('/api/characters/new', function(req, res, next) {
 });
 
 /**
-* GET /characters/top
-* Return 100 highest ranked characters
-* Filter gender, race, bloodline by a querystring.
-*/
+ * GET /characters/top
+ * Return 100 highest ranked characters
+ * Filter gender, race, bloodline by a querystring
+ */
 app.get('/api/characters/top', function(req, res, next) {
   var conditions = {};
   for (var key in req.query) {
@@ -275,45 +275,46 @@ app.get('/api/characters/top', function(req, res, next) {
 });
 
 /**
-* GET /api/leaderboard
-* Returns Top 12 characters, sorted by the winning percentage.
-*/
-app.get('/api/leaderboard', function(req, res) {
+ * GET /leaderboard
+ * Return 12 characters sorted by the winning percentage
+ */
+app.get('/api/leaderboard', function(req, res, next) {
   Character
-  .find()
-  .sort('-wins')
-  .limit(18)
-  .lean()
-  .exec(function(err, characters) {
-    if (err) return res.send(err);
-    characters.sort(function(a, b) {
-      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-      return 0;
+    .find()
+    .sort('-wins')
+    .limit(18)
+    .lean()
+    .exec(function(err, characters) {
+      if (err) return next(err);
+      characters.sort(function(a, b) {
+        if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+        if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+        return 0;
+      });
+      res.send(characters.slice(0,12));
     });
-    res.send(characters.slice(0,12));
-  });
 });
 
 /**
-* GET /api/characters/all
-* Returns a total count of characters in the DB
-*/
-app.get('/api/characters/all', function(req, res) {
+ * GET /characters/all
+ * Returns a total # of characters in the DB
+ */
+app.get('/api/characters/all', function(req, res, next) {
   Character.count({}, function(err, count) {
-    if (err) return res.send(err);
+    if (err) return next(err);
     res.send({ count: count });
   });
 });
 
 /**
- * POST /api/characters/search
+ * POST /characters/search
+ * @param name
  * Character search
  */
-app.post('/api/characters/search', function(req, res) {
+app.post('/api/characters/search', function(req, res, next) {
   var characterName = new RegExp(req.body.name, 'i');
   Character.findOne({ name: characterName }, function(err, character) {
-    if (err) return res.send(err);
+    if (err) return next(err);
     if (character) {
       res.send(character);
     } else {
@@ -323,59 +324,56 @@ app.post('/api/characters/search', function(req, res) {
 });
 
 /**
+ * GET /characters/wrong-gender
  * Display characters marked as Wrong Gender
  */
-app.get('/api/characters/wrong-gender', function(req, res) {
+app.get('/api/characters/wrong-gender', function(req, res, next) {
   Character.where('wrongGender', true).exec(function(err, characters) {
-    if (err) return res.send(err);
+    if (err) return next(err);
     res.send(characters);
   });
 });
 
 /**
-* GET /api/characters/:id
-* Return detailed character information
-*/
+ * GET /characters/:id
+ * @param id
+ * Return detailed character information
+ */
 app.get('/api/characters/:id', function(req, res, next) {
   Character.findOne({ characterId: req.params.id }, function(err, character) {
     if (err) return next(err);
     if (character) {
       res.send(character);
     } else {
-      res.send(404);
+      res.send(404, { message: 'Character Not Found' });
     }
   });
 });
 
 /**
-* POST /api/characters
-* Add character to the database
-*/
-app.post('/api/characters', function(req, res) {
+ * POST /api/characters
+ * @param name
+ * Add new character
+ */
+app.post('/api/characters', function(req, res, next) {
   var parser = new xml2js.Parser();
-
   var gender = req.body.gender;
   var charName = decodeURIComponent(req.body.name || '');
   var characterIdUrl = 'https://api.eveonline.com/eve/CharacterID.xml.aspx?names=' + charName;
   async.waterfall([
     function(callback) {
       request.get(characterIdUrl, function(e, r, xml) {
-        if (e) throw e;
+        if (e) return next(e);
         parser.parseString(xml, function(err, parsedXml) {
-          if (err) return res.send(err);
+          if (err) return next(err);
           try {
             var characterId = parsedXml.eveapi.result[0].rowset[0].row[0].$.characterID;
-
             Character.findOne({ characterId: characterId }, function(err, character) {
-              if (character) {
-                res.send(409, { characterId: character.characterId });
-              } else {
-                callback(null, characterId);
-              }
+              if (character) return res.send(409, { characterId: character.characterId });
+              callback(err, characterId);
             });
-
           } catch(e) {
-            return res.send(404, 'Character ID Not Found');
+            return res.send(404, { message: 'Character Not Found' });
           }
 
         });
@@ -384,7 +382,7 @@ app.post('/api/characters', function(req, res) {
     function(characterId, callback) {
       var characterInfoUrl = 'https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=' + characterId;
       request.get({ url: characterInfoUrl }, function(e, r, xml) {
-        if (e) return res.send(500);
+        if (e) return next(e);
         parser.parseString(xml, function(err, parsedXml) {
           if (err) return res.send(err);
           try {
@@ -400,16 +398,13 @@ app.post('/api/characters', function(req, res) {
               gender: gender,
               random: [Math.random(), 0]
             });
-
             character.save(function(err) {
-              if (err) return res.send(500);
+              if (err) return next(err);
               res.send(character);
             });
-
             callback(null);
-
           } catch(e) {
-            return res.send(404, 'Character Info Not Found');
+            return res.send(404, { message: 'Character Not Found' });
           }
 
         });

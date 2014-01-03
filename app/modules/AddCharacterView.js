@@ -2,6 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var toastr = require('toastr');
+  var alertify = require('alertify');
   var Backbone = require('backbone');
   var CharacterModel = require('modules/CharacterModel');
   var AddCharacterTpl = require('text!templates/add-character.html');
@@ -26,9 +27,7 @@ define(function(require, exports, module) {
       var submitBtn = this.$el.find('button');
       var gender = this.$el.find('input:radio[name=genderRadios]:checked').val();
 
-      if (!gender) {
-        return toastr.error('Please specify character\'s gender');
-      }
+      if (!gender) return alertify.error('Please specify character\'s gender');
 
       var newCharacter = new CharacterModel({
         name: inputField.val(),
@@ -38,17 +37,17 @@ define(function(require, exports, module) {
       newCharacter.save(null, {
         success: function() {
           Backbone.history.navigate('#', { trigger: true });
-          toastr.success('Character has been added successfully');
+          alertify.success('Character has been added successfully');
         },
         error: function(model, response) {
           controlGroup.addClass('error');
           submitBtn.removeClass('btn-primary').addClass('btn-danger');
           inputField.focus();
-
           if (response.status === 409) {
-            helpBlock.html('<a href="/characters/' + response.responseJSON.characterId + '">' + model.get('name') + '</a> is already in our system.');
+            helpBlock.html('<a href="#characters/' + response.responseJSON.characterId + '">' + model.get('name') + '</a> is already in our system.');
           } else {
-            helpBlock.text('Oops, ' + inputField.val() + ' is not a registered citizen of New Eden.');
+            helpBlock.text(inputField.val() + ' is not a registered citizen of New Eden');
+            alertify.error(response.responseJSON.message)
           }
         }
       });
