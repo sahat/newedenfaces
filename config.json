@@ -1,6 +1,0 @@
-{
-  "sendgrid_user": "sahat",
-  "sendgrid_key": "sendgridEVE",
-  "db": "mongodb://sahat:newedenfaces@ds029638.mongolab.com:29638/newedenfaces",
-  "secretCode": "insertcoin"
-}
