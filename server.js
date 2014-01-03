@@ -208,17 +208,17 @@ app.put('/api/characters', function(req, res, next) {
 
 /**
 * GET /api/characters/shame
-* Return top (100) lowest ranked characters for the hall of shame
+* Return 100 lowest ranked characters for hall of shame
 */
-app.get('/api/characters/shame', function(req, res) {
+app.get('/api/characters/shame', function(req, res, next) {
   Character
-  .find()
-  .sort('-losses')
-  .limit(100)
-  .exec(function(err, characters) {
-    if (err) return res.send(err);
-    res.send(characters);
-  });
+    .find()
+    .sort('-losses')
+    .limit(100)
+    .exec(function(err, characters) {
+      if (err) return next(err);
+      res.send(characters);
+    });
 });
 
 /**
@@ -233,43 +233,46 @@ app.get('/api/characters/shame', function(req, res) {
 //});
 
 /**
- * GET /api/characters/new
- * Return top (100) newest characters
+ * GET /characters/new
+ * Return 100 new characters
  */
-app.get('/api/characters/new', function(req, res) {
+app.get('/api/characters/new', function(req, res, next) {
   Character
     .find()
-    .sort({ _id: -1})
+    .sort({ _id: -1 })
     .limit(100)
     .exec(function(err, characters) {
-      if (err) return res.send(err);
+      if (err) return next(err);
       res.send(characters);
     });
 });
 
 /**
-* GET /api/characters/top
-* Return top (100) highest ranked characters.
+* GET /characters/top
+* Return 100 highest ranked characters
 * Filter gender, race, bloodline by a querystring.
 */
-app.get('/api/characters/top', function(req, res) {
+app.get('/api/characters/top', function(req, res, next) {
   var conditions = {};
   for (var key in req.query) {
     if (req.query.hasOwnProperty(key)) {
       conditions[key] = new RegExp('^' + req.query[key] + '$', 'i');
     }
   }
-  Character.find(conditions).sort('-wins').limit(150).exec(function(err, characters) {
-    if (err) return res.send(err);
-    characters.sort(function(a, b) {
-      if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
-      if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
-      return 0;
+  Character
+    .find(conditions)
+    .sort('-wins')
+    .limit(150)
+    .exec(function(err, characters) {
+      if (err) return next(err);
+      characters.sort(function(a, b) {
+        if (a.wins / (a.wins + a.losses) < b.wins / (b.wins + b.losses)) return 1;
+        if (a.wins / (a.wins + a.losses) > b.wins / (b.wins + b.losses)) return -1;
+        return 0;
+      });
+      res.send(characters.slice(0, 100));
     });
-    res.send(characters.slice(0, 100));
-  });
 });
-
 
 /**
 * GET /api/leaderboard
