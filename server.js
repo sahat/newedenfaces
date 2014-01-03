@@ -1,14 +1,11 @@
 // TODO: add hotness meter
 // TODO: Add avatar vs avatar fights (8hr rounds)
-// TODO: Display current round vote history on stats page
 // TODO: Remote fat footer, and add static links like on SpinKit
 // TODO: FOCUS ON PERFORMANCE
-// TODO: mongoose error handling middleware
 // TODO: scheduler to remove lowest ranked every day
 // TODO: make a new collections for storing Previous Votes for each character
 // TODO: add characteristic to profile page that user can select from dropdown:
          // http://ideonomy.mit.edu/essays/traits.html
-
 // TODO: jquery wait until image loaded on profile page
 // TODO: set minimum width/height on homepage thumbnails to prevent sliding of DOM
 // TODO: reset every 200 rounds
@@ -483,6 +480,25 @@ app.get('/api/stats', function(req, res, next) {
           var topCount = raceCount[topRace];
           callback(err, { race: topRace, count: topCount });
       });
+    },
+    function(callback) {
+      // Race count in Top 100
+      Character
+        .find()
+        .sort('-wins')
+        .limit(100)
+        .select('bloodline')
+        .exec(function(err, characters) {
+          if (err) return next(err);
+          var bloodlineCount = _.countBy(characters, function(character) {
+            return character.bloodline;
+          });
+          var max = _.max(bloodlineCount, function(bloodline) { return bloodline });
+          var inverted = _.invert(bloodlineCount);
+          var topBloodline = inverted[max];
+          var topCount = bloodlineCount[topBloodline];
+          callback(err, { bloodline: topBloodline, count: topCount });
+        });
     }
   ],
   function(err, results) {
@@ -496,6 +512,7 @@ app.get('/api/stats', function(req, res, next) {
     var femaleCount = results[6];
     var totalVotes = results[7];
     var leadingRace = results[8];
+    var leadingBloodline = results[9];
 
     res.send({
       totalCount: totalCount,
@@ -506,7 +523,8 @@ app.get('/api/stats', function(req, res, next) {
       maleCount: maleCount,
       femaleCount: femaleCount,
       totalVotes: totalVotes,
-      leadingRace: leadingRace
+      leadingRace: leadingRace,
+      leadingBloodline: leadingBloodline
     });
   });
 });
