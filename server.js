@@ -138,23 +138,20 @@ app.post('/api/report', function(req, res, next) {
 });
 
 /**
-* POST /report/gender
-* Marks a character as being an invalid gender,
-* e.g. Actual "male" avatar has been added as "female"
-*/
+ * POST /report/gender
+ * @param characterId
+ * Marks a character with a wrong gender flag
+ */
 app.post('/api/report/gender', function(req, res, next) {
   var characterId = req.body.characterId;
-  Character.findOne({ characterId: characterId }, function(err, user) {
-    if (err) return res.send(err);
-    if (user) {
-      user.wrongGender = true;
-      user.save(function(err) {
-        if (err) return res.send(err);
-        res.send(200);
-      });
-    } else {
-      res.send(404);
-    }
+  Character.findOne({ characterId: characterId }, function(err, character) {
+    if (err) return next(err);
+    if (!character) return res.send(404, { message: 'Character Not Found' });
+    character.wrongGender = true;
+    character.save(function(err) {
+      if (err) return next(err);
+      res.send(200, { message: character.name + ' has been flagged' });
+    });
   });
 });
 

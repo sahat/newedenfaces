@@ -22,8 +22,16 @@ define(function(require, exports, module) {
 
     wrongGender: function() {
       var characterId = this.model.get('characterId');
-      $.post('/api/report/gender', { characterId: characterId }, function(data) {
-        toastr.info('Your report has been submitted');
+      $.ajax({
+        type: 'POST',
+        url: '/api/report/gender',
+        data: { characterId: characterId },
+        success: function(data) {
+          alertify.success(data.message);
+        },
+        error: function(jqXHR) {
+          alertify.error(jqXHR.responseJSON.message);
+        }
       });
     },
 
