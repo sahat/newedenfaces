@@ -85,8 +85,7 @@ body {
 }
 .navbar .brand {
   color: #333;
-  font-family: 'Pacifico', cursive;
-  font-size: 20px;
+  font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;  font-size: 20px;
   text-shadow: none;
 }
 
