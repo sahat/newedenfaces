@@ -4,7 +4,7 @@ define(function(require, exports, module) {
   var Backbone = require('backbone');
   var dropdown = require('bootstrap-dropdown');
 
-  var socket = io.connect('http://localhost:8000');
+  var socket = io.connect('ws://www.newedenfaces.com:8000');
   socket.on('userCount', function (data) {
     $('#userCount').text(data.userCount);
   });
