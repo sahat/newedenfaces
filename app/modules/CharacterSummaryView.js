@@ -35,16 +35,12 @@ define(function(require, exports, module) {
         url: '/api/report',
         data: this.model.toJSON(),
         success: function(data) {
-          console.log(data);
-          // JavaScript way of checking if string contains a substring
-          if (data.indexOf('deleted') !== -1) { // contains deleted
-            toastr.error(data);
+          if (data.message.indexOf('deleted') !== -1) {
+            alertify.success(data.message);
             Backbone.history.navigate('/', { trigger: true });
-          } else if (data.indexOf('reported') !== -1) { // contains reported
-            toastr.warning(data);
+          } else {
+            alertify.success(data.message);
           }
-
-          // Prevents users from reporting multiple times
           $reportButton.attr('disabled', true);
           localStorage['reported-' + characterId] = 'True';
         },
