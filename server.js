@@ -37,7 +37,7 @@ app.use(function(err, req, res, next) {
 });
 
 // MongoDB configuration
-mongoose.connect(config.db, {
+mongoose.connect('localhost', {
   server: {
     auto_reconnect: true,
     poolSize: 10,
@@ -171,6 +171,7 @@ app.del('/api/characters/:id', function(req, res, next) {
  */
 app.put('/api/characters', function(req, res, next) {
   if (!req.body.winner || !req.body.loser) return res.send(400, { message: 'Voting requires two characters' });
+  if (req.body.winner === req.body.loser) return res.send(400, { message: 'Cannot vote for and against the same character' });
   Character.findOne({ characterId: req.body.winner }, function(err, winner) {
     if (err) return next(err);
     Character.findOne({ characterId: req.body.loser }, function(err, loser) {
