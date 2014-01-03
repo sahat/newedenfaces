@@ -982,11 +982,11 @@ a.list-group-item:hover, a.list-group-item:focus {
   -moz-border-radius: 1px;
   -webkit-border-radius: 1px;
   border-radius: 1px;
-  -moz-transition: width 700ms ease-out;
-  -ms-transition: width 700ms ease-out;
-  -o-transition: width 700ms ease-out;
-  -webkit-transition: width 700ms ease-out;
-  transition: width 700ms ease-out;
+  -moz-transition: width 800ms ease-out;
+  -ms-transition: width 800ms ease-out;
+  -o-transition: width 800ms ease-out;
+  -webkit-transition: width 800ms ease-out;
+  transition: width 800ms ease-out;
 }
 
 
