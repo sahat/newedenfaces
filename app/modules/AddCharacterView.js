@@ -1,7 +1,6 @@
 define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
-  var toastr = require('toastr');
   var alertify = require('alertify');
   var Backbone = require('backbone');
   var CharacterModel = require('modules/CharacterModel');

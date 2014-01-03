@@ -6,7 +6,6 @@ require.config({
     'jquery': 'vendor/jquery.min',
     'backbone': 'vendor/backbone-min',
     'text': 'vendor/requirejs-text',
-    'toastr': 'vendor/toastr.min',
     'alertify': 'vendor/alertify.min',
     'magnific-popup': 'vendor/jquery.magnific-popup.min',
     'bootstrap-dropdown': 'vendor/bootstrap-dropdown',

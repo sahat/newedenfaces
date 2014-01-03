@@ -18,15 +18,12 @@ define(function(require, exports, module) {
     submit: function(e) {
       e.preventDefault();
       var input = this.$el.find('input').val();
-
       if (!input) return;
-
       $.post('/api/characters/search', { name: input }, function(character) {
         if (character) {
           Backbone.history.navigate('/characters/' + character.characterId, { trigger: true });
         }
       });
-
     }
   });
 

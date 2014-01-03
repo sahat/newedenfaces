@@ -9,7 +9,6 @@
 // TODO: jquery wait until image loaded on profile page
 // TODO: set minimum width/height on homepage thumbnails to prevent sliding of DOM
 // TODO: reset every 200 rounds
-// TODO: socket.io real time number of characters
 
 var async = require('async');
 var express = require('express');
