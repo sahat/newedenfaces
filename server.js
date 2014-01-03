@@ -551,11 +551,16 @@ app.post('/api/gender', function(req, res, next) {
   });
 });
 
-var server = app.listen(PORT, IP_ADDRESS, function() {
+app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
 });
 
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(8000);
+
+io.configure(function() {
+  io.set('log level', 1);
+  io.set('transports', ['websocket']);
+});
 
 var userCount = 0;
 
