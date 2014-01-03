@@ -3,14 +3,11 @@ define(function(require, exports, module) {
   var $ = require('jquery');
   var Backbone = require('backbone');
   var dropdown = require('bootstrap-dropdown');
-  var io = require('socketio');
-
 
   var socket = io.connect('http://localhost');
   socket.on('userCount', function (data) {
     $('#userCount').text(data.userCount);
   });
-
 
   $(document).ajaxStart(function() {
     //only add progress bar if added yet.

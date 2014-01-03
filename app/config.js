@@ -10,8 +10,7 @@ require.config({
     'alertify': 'vendor/alertify.min',
     'magnific-popup': 'vendor/jquery.magnific-popup.min',
     'bootstrap-dropdown': 'vendor/bootstrap-dropdown',
-    'chart': 'vendor/Chart.min',
-    socketio: '/socket.io/socket.io'
+    'chart': 'vendor/Chart.min'
   },
 
   shim: {
@@ -33,9 +32,6 @@ require.config({
     },
     'chart': {
       exports: 'Chart'
-    },
-    'socketio': {
-      exports: 'io'
     }
   }
 });
