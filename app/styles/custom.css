@@ -87,6 +87,15 @@ body {
   color: #333;
   font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;  font-size: 20px;
   text-shadow: none;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.sub-brand {
+  color: #666;
+  text-align: center;
+  font-size: 14px;
+  margin-top: -5px;
 }
 
 .bg-black .brand {

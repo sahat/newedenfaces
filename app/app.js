@@ -7,9 +7,8 @@ define(function(require, exports, module) {
 
 
   var socket = io.connect('http://localhost');
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
+  socket.on('userCount', function (data) {
+    $('#userCount').text(data.userCount);
   });
 
 
@@ -24,7 +23,7 @@ define(function(require, exports, module) {
   $(document).ajaxComplete(function() {
     $('.spinner').css('z-index', -1);
     //End loading animation
-    $("#progress").width("101%").delay(200).fadeOut(800, function() {
+    $("#progress").width("101%").delay(200).fadeOut(900, function() {
       $(this).remove();
     });
   });

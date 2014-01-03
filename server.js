@@ -557,9 +557,13 @@ var server = app.listen(PORT, IP_ADDRESS, function() {
 
 var io = require('socket.io').listen(server);
 
+var userCount = 0;
+
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  userCount++;
+  io.sockets.emit('userCount', { userCount: userCount });
+  socket.on('disconnect', function() {
+    userCount--;
+    io.sockets.emit('userCount', { userCount: userCount });
   });
 });
