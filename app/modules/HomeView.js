@@ -37,7 +37,7 @@ define(function(require, exports, module) {
           winner: winner.get('characterId'),
           loser: loser.get('characterId')
         },
-        success: function(data) {
+        success: function() {
           self.collection.fetch({
             url: '/api/characters',
             success: function(data) {
@@ -46,6 +46,9 @@ define(function(require, exports, module) {
               } else {
                 self.render();
               }
+            },
+            error: function(data) {
+              alertify.error(data.message);
             }
           });
         },

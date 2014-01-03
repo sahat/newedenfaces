@@ -168,18 +168,18 @@ app.del('/api/characters/:id', function(req, res, next) {
 });
 
 /**
-* PUT /api/vote
-* Update winning and losing count for characters.
-*/
+ * PUT /api/vote
+ * @param winner
+ * @param loser
+ * Update winning and losing count for characters
+ */
 app.put('/api/characters', function(req, res, next) {
-  var winner = req.body.winner;
-  var loser = req.body.loser;
-  if (!winner || !loser) return res.send(400, { message: 'Voting requires two characters' });
-  Character.findOne({ characterId: winner }, function(err, winner) {
-    if (err) return res.send(500);
-    Character.findOne({ characterId: loser }, function(err, loser) {
-      if (err) return res.send(500);
-      if (!winner || !loser) return res.send(404);
+  if (!req.body.winner || !req.body.loser) return res.send(400, { message: 'Voting requires two characters' });
+  Character.findOne({ characterId: req.body.winner }, function(err, winner) {
+    if (err) return next(err);
+    Character.findOne({ characterId: req.body.loser }, function(err, loser) {
+      if (err) return next(err);
+      if (!winner || !loser) return res.send(404, { message: 'One of the characters no longer exists' });
       if (winner.voted || loser.voted) return res.send(200);
       async.parallel([
         function(callback) {
@@ -187,7 +187,7 @@ app.put('/api/characters', function(req, res, next) {
           winner.voted = true;
           winner.random = [Math.random(), 0];
           winner.save(function(err) {
-            callback(null);
+            callback(err);
           });
         },
         function(callback) {
@@ -195,10 +195,11 @@ app.put('/api/characters', function(req, res, next) {
           loser.voted = true;
           loser.random = [Math.random(), 0];
           loser.save(function(err) {
-            callback(null);
+            callback(err);
           });
         }
       ], function(err) {
+        if (err) return next(err);
         res.send(200);
       });
     });
