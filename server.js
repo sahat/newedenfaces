@@ -33,7 +33,7 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, 'app')));
 app.use(function(err, req, res, next) {
   console.error(err.stack);
-  res.send(500, { message: err.message });
+  return res.send(500, { message: err.message });
 });
 
 // MongoDB configuration
