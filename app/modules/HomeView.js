@@ -42,7 +42,7 @@ define(function(require, exports, module) {
             url: '/api/characters',
             success: function(data) {
               if (data.length < 2) {
-                self.$el.html('<div class="alert alert-info">Nothing to display</div>');
+                self.$el.html('<div class="alert alert-info"><h4>No more characters left this round. Please refresh the page.</h4></div>');
               } else {
                 self.render();
               }
