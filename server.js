@@ -13,6 +13,7 @@
 
 var async = require('async');
 var express = require('express');
+var http = require('http');
 var mongoose = require('mongoose');
 var path = require('path');
 var request = require('request');
@@ -550,6 +551,15 @@ app.post('/api/gender', function(req, res, next) {
   });
 });
 
-app.listen(PORT, IP_ADDRESS, function() {
+var server = app.listen(PORT, IP_ADDRESS, function() {
   console.log('Express started listening on %s:%d', IP_ADDRESS, PORT);
+});
+
+var io = require('socket.io').listen(server);
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
