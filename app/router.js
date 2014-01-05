@@ -50,7 +50,21 @@ define(function(require, exports, module) {
       'characters/:id': 'characterDetails',
       'top/:race/:bloodline': 'topBloodline',
       'male/:race/:bloodline': 'maleBloodline',
-      'female/:race/:bloodline': 'femaleBloodline'
+      'female/:race/:bloodline': 'femaleBloodline',
+
+      'browse': 'browse',
+      'browse/:gender': 'browse',
+      'browse/:gender/:race': 'browse',
+      'browse/:gender/:race/:bloodline': 'browse'
+
+    },
+
+    browse: function() {
+      var gender, race, bloodline;
+
+      for (var i = 0; i < arguments.length; i++) {
+        console.log(arguments[i]);
+      }
     },
 
     stats: function() {
