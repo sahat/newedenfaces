@@ -52,19 +52,12 @@ define(function(require, exports, module) {
       'male/:race/:bloodline': 'maleBloodline',
       'female/:race/:bloodline': 'femaleBloodline',
 
-      'browse': 'browse',
-      'browse/:gender': 'browse',
-      'browse/:gender/:race': 'browse',
-      'browse/:gender/:race/:bloodline': 'browse'
+      'browse(/:gender)(/:race)(/:bloodline)': 'browse'
 
     },
 
-    browse: function() {
-      var gender, race, bloodline;
-
-      for (var i = 0; i < arguments.length; i++) {
-        console.log(arguments[i]);
-      }
+    browse: function(gender, race, bloodline) {
+      console.log(gender, race, bloodline);
     },
 
     stats: function() {
