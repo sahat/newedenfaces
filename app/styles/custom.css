@@ -1,5 +1,6 @@
 @import "alertify.core.css";
 @import "alertify.default.css";
+@import "backgrid.css";
 @import url(http://fonts.googleapis.com/css?family=Pacifico);
 
 .animated {
@@ -1073,4 +1074,13 @@ a.list-group-item:hover, a.list-group-item:focus {
 @-webkit-keyframes spinoff {
   0% { -webkit-transform:rotate(0deg); }
   100% { -webkit-transform:rotate(-360deg); }
+}
+
+.photogrid {
+  float: left;
+  display: block;
+  line-height: 0;
+  box-sizing: border-box;
+  width: 20%;
+  padding: 2px;
 }

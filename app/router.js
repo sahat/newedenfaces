@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   var $ = require('jquery');
   var Backbone = require('backbone');
   var CharacterModel = require('modules/CharacterModel');
+  var BrowseCollection = require('modules/BrowseCollection');
   var CharacterCollection = require('modules/CharacterCollection');
   var CharacterCollectionView = require('modules/CharacterCollectionView');
   var CharacterSummaryView = require('modules/CharacterSummaryView');
@@ -12,6 +13,7 @@ define(function(require, exports, module) {
   var WrongGenderView = require('modules/WrongGenderView');
   var AddCharacterView = require('modules/AddCharacterView');
   var StatsView = require('modules/StatsView');
+  var BrowseView = require('modules/BrowseView');
 
   module.exports = Backbone.Router.extend({
     initialize: function() {
@@ -57,7 +59,17 @@ define(function(require, exports, module) {
     },
 
     browse: function(gender, race, bloodline) {
-      console.log(gender, race, bloodline);
+      var characters = new BrowseCollection();
+
+      var browseView = new BrowseView({
+        collection: characters,
+        gender: gender,
+        race: race,
+        bloodline: bloodline
+      });
+
+      $('#content').html(browseView.render().el);
+      browseView.selectMenuItem('browse-menu');
     },
 
     stats: function() {

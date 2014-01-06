@@ -245,6 +245,22 @@ app.get('/api/characters/new', function(req, res, next) {
 });
 
 /**
+ * GET /browse
+ * @param page
+ */
+app.get('/api/browse', function(req, res, next) {
+  var page = req.query.currentPage;
+  Character
+    .find()
+    .limit(30)
+    .skip(page * 30)
+    .exec(function(err, characters) {
+      if (err) return next(err);
+      res.send(characters);
+    });
+});
+
+/**
  * GET /characters/top
  * Return 100 highest ranked characters
  * Filter gender, race, bloodline by a querystring

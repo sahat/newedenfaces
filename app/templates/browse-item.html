@@ -1,0 +1,7 @@
+<% _.each(characters, function(char) { %>
+<div class="photogrid">
+    <a href="#characters/<%= char.characterId %>">
+        <img src="http://image.eveonline.com/Character/<%= char.characterId %>_256.jpg">
+    </a>
+</div>
+<% }); %>
