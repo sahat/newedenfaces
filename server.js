@@ -92,23 +92,20 @@ app.get('/api/characters', function(req, res, next) {
           .limit(2)
           .exec(function(err, characters) {
             if (err) return next(err);
-
             // When there are no character pairs left of either gender,
             // reset voted flags, and start the next round
             if (characters.length < 2) {
               Character.update({}, { $set: { voted: false } }, { multi: true }, function(err) {
                 if (err) return next(err);
-                return res.send([]);
+                res.send([]);
               });
+            } else {
+              res.send(characters);
             }
-
-            // Send two characters of oppositeRandomGender
-            return res.send(characters);
           });
+      } else {
+        res.send(characters);
       }
-
-      // Send two characters of randomGender
-      res.send(characters);
     });
 });
 
