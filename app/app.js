@@ -1,8 +1,4 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var dropdown = require('bootstrap-dropdown');
+define(['jquery', 'bootstrap-dropdown'], function($) {
 
   var socket = io.connect('ws://www.newedenfaces.com:8000');
   socket.on('userCount', function (data) {
@@ -10,7 +6,6 @@ define(function(require, exports, module) {
   });
 
   $(document).ajaxStart(function() {
-    //only add progress bar if added yet.
     if ($("#progress").length === 0) {
       $("body").append($("<div><dt/><dd/></div>").attr("id", "progress"));
       $("#progress").width((50 + Math.random() * 30) + "%");
@@ -19,14 +14,13 @@ define(function(require, exports, module) {
 
   $(document).ajaxComplete(function() {
     $('.spinner').css('z-index', -1);
-    //End loading animation
     $("#progress").width("101%").delay(200).fadeOut(900, function() {
       $(this).remove();
     });
   });
 
-  // Alias the module for easier identification.
-  var app = module.exports;
-
+  var app = {};
   app.root = '/';
+
+  return app;
 });

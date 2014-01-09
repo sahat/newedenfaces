@@ -12,8 +12,8 @@ define(function(require, exports, module) {
   var HomeView = require('views/Home');
   var WrongGenderView = require('views/WrongGender');
   var AddCharacterView = require('views/AddCharacter');
-  var StatsView = require('views/StatsView');
-  var BrowseView = require('views/BrowseView');
+  var StatsView = require('views/Stats');
+  var BrowseView = require('views/Browse');
 
   module.exports = Backbone.Router.extend({
     initialize: function() {
