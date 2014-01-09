@@ -1,11 +1,13 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var CharacterView = require('views/Character');
-  var MenuLeaderboardTpl = require('text!templates/menu-leaderboard.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'views/Character',
+  'text!templates/menu-leaderboard.html'
+], function(_, $, Backbone, CharacterView, MenuLeaderboardTpl) {
 
   var CharacterCollectionView = Backbone.View.extend({
+
     tagName: 'ul',
 
     className: 'list-group list-group-flush m-t-n',

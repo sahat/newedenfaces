@@ -1,10 +1,12 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var LeaderboardItemTpl = require('text!templates/leaderboard-item.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'text!templates/leaderboard-item.html'
+], function(_, $, Backbone, LeaderboardItemTpl) {
 
   var LeaderboardItemView = Backbone.View.extend({
+
     tagName: 'li',
 
     template: _.template(LeaderboardItemTpl),

@@ -1,13 +1,16 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var CharacterCollection = require('collections/Character');
-  var CharacterThumbnailView = require('views/CharacterThumbnail');
-  var HomeTpl = require('text!templates/home.html');
-  var alertify = require('alertify');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'alertify',
+  'collections/Character',
+  'views/CharacterThumbnail',
+  'text!templates/home.html'
+], function(_, $, Backbone, alertify, CharacterCollection,
+            CharacterThumbnailView, HomeTpl) {
 
   var HomeView = Backbone.View.extend({
+
     tagName: 'ul',
 
     className: 'thumbnails',

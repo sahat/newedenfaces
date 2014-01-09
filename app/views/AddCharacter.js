@@ -1,18 +1,21 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var alertify = require('alertify');
-  var Backbone = require('backbone');
-  var CharacterModel = require('models/Character');
-  var AddCharacterTpl = require('text!templates/add-character.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'alertify',
+  'models/Character',
+  'text!templates/add-character.html'
+], function(_, $, Backbone, alertify, CharacterModel, AddCharacterTpl) {
+
   var AddCharacterView = Backbone.View.extend({
+
     template: _.template(AddCharacterTpl),
 
     events: {
       'submit form': 'submit'
     },
 
-    render:function () {
+    render: function () {
       this.$el.html(this.template());
       return this;
     },

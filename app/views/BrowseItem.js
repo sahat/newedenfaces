@@ -1,10 +1,10 @@
-// TODO: If character in leaderboard, display a big 4-tile avatar
-// TODO: Draggable packery
-// TODO: FadeIn
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'text!templates/browse-item.html'
+], function(_, $, Backbone, BrowseItemTpl) {
 
-
-define(['../.', 'jquery', 'backbone', 'photoset',
-  'text!templates/browse-item.html'], function(_, $, Backbone, photoset, BrowseItemTpl) {
   var BrowseItemView = Backbone.View.extend({
 
     template: _.template(BrowseItemTpl),
@@ -14,9 +14,7 @@ define(['../.', 'jquery', 'backbone', 'photoset',
     },
 
     render: function () {
-      this.$el.html(this.template({
-        characters: this.collection
-      }));
+      this.$el.html(this.template({ characters: this.collection }));
       return this;
     }
   });

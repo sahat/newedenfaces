@@ -1,10 +1,12 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var CharacterThumbnailTpl = require('text!templates/character-thumbnail.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'text!templates/character-thumbnail.html'
+], function(_, $, Backbone, CharacterThumbnailTpl) {
 
   var CharacterThumbnailView = Backbone.View.extend({
+
     tagName: 'li',
 
     className: 'span6',

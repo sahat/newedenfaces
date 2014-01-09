@@ -1,6 +1,14 @@
-define(['../.', 'jquery', 'backbone', 'modules/BrowseItemView',
-  'text!templates/browse.html', 'PageableCollection', 'alertify'], function(_, $, Backbone, BrowseItemView, BrowseTpl, PageableCollection, alertify) {
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'alertify',
+  'views/BrowseItem',
+  'text!templates/browse.html'
+], function(_, $, Backbone, alertify, BrowseItemView, BrowseTpl) {
+
   var BrowseView = Backbone.View.extend({
+
     template: _.template(BrowseTpl),
 
     events: {
@@ -23,10 +31,7 @@ define(['../.', 'jquery', 'backbone', 'modules/BrowseItemView',
       return this;
     },
 
-    // TODO: Remember last page when navigating away
-
     nextPage: function() {
-
       this.collection.getNextPage().done(function(data) {
         var browseItemView = new BrowseItemView({ collection: data });
         if ($('.photogrid').length > 210) {

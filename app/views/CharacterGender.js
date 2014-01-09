@@ -1,10 +1,12 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var GenderTpl = require('text!templates/gender.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'text!templates/gender.html'
+], function(_, $, Backbone, GenderTpl) {
 
   var CharacterGenderView = Backbone.View.extend({
+
     tagName: 'li',
 
     className: 'media',
@@ -37,7 +39,6 @@ define(function(require, exports, module) {
         return false;
       });
     },
-
 
     male: function() {
       var self = this;

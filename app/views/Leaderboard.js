@@ -1,10 +1,12 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var LeaderboardItemView = require('views/LeaderboardItem');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'views/LeaderboardItem'
+], function(_, $, Backbone, LeaderboardItemView) {
 
   var LeaderboardView = Backbone.View.extend({
+
     tagName: 'ul',
 
     className: 'inline',

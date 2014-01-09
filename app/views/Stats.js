@@ -1,11 +1,12 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var Chart = require('chart');
-  var StatsTpl = require('text!templates/stats.html')
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'text!templates/stats.html'
+], function(_, $, Backbone, StatsTpl) {
 
   var StatsView = Backbone.View.extend({
+
     template: _.template(StatsTpl),
 
     initialize: function(options) {

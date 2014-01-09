@@ -1,9 +1,7 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
+define(['jquery', 'backbone'], function($, Backbone) {
 
   var SearchView = Backbone.View.extend({
+
     el: $('.navbar'),
 
     initialize: function(options) {

@@ -1,10 +1,12 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var CharacterTpl = require('text!templates/character.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'text!templates/character.html'
+], function(_, $, Backbone, CharacterTpl) {
 
   var CharacterView = Backbone.View.extend({
+
     tagName: 'li',
 
     className: 'list-group-item',
@@ -19,11 +21,6 @@ define(function(require, exports, module) {
       'click #male': 'male',
       'click #delete': 'delete'
     },
-
-//    delete: function() {
-//      $.get('/delete/' + this.model.get('characterId'));
-//      this.$el.remove();
-//    },
 
     render: function () {
       this.$el.html(this.template({

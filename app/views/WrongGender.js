@@ -1,11 +1,13 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
-  var $ = require('jquery');
-  var Backbone = require('backbone');
-  var CharacterGenderView = require('views/CharacterGender');
-  var MenuLeaderboardTpl = require('text!templates/menu-leaderboard.html');
+define([
+  'underscore',
+  'jquery',
+  'backbone',
+  'views/CharacterGender',
+  'text!templates/menu-leaderboard.html'
+], function(_, $, Backbone, CharacterGenderView, MenuLeaderboardTpl) {
 
   var WrongGenderView = Backbone.View.extend({
+
     tagName: 'li',
 
     className: 'media',
