@@ -1,5 +1,5 @@
-define(['underscore', 'jquery', 'backbone', 'PageableCollection',
-  'models/Character'], function (_, $, Backbone, PageableCollection, CharacterModel) {
+define(['backbone', 'PageableCollection',
+  'models/Character'], function (Backbone, PageableCollection, CharacterModel) {
 
   var BrowseCollection = Backbone.PageableCollection.extend({
     model: CharacterModel,
