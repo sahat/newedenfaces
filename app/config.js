@@ -9,7 +9,9 @@ require.config({
     'alertify': 'vendor/alertify.min',
     'magnific-popup': 'vendor/jquery.magnific-popup.min',
     'bootstrap-dropdown': 'vendor/bootstrap-dropdown',
-    'chart': 'vendor/Chart.min'
+    'chart': 'vendor/Chart.min',
+    'photoset': 'vendor/jquery.photoset-grid.min',
+    'PageableCollection': 'vendor/backbone-pageable'
   },
 
   shim: {
@@ -31,6 +33,13 @@ require.config({
     },
     'chart': {
       exports: 'Chart'
+    },
+    'photoset': {
+      deps: ['jquery']
+    },
+    'PageableCollection': {
+      deps: ['underscore', 'backbone'],
+      exports: 'PageableCollection'
     }
   }
 });

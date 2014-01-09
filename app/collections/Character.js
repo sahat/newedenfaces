@@ -2,7 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterModel = require('modules/CharacterModel');
+  var CharacterModel = require('modules/Character');
 
   var CharacterCollection = Backbone.Collection.extend({
     model: CharacterModel,

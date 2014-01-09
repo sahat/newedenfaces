@@ -2,18 +2,18 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterModel = require('modules/CharacterModel');
-  var BrowseCollection = require('modules/BrowseCollection');
-  var CharacterCollection = require('modules/CharacterCollection');
-  var CharacterCollectionView = require('modules/CharacterCollectionView');
-  var CharacterSummaryView = require('modules/CharacterSummaryView');
-  var SearchView = require('modules/SearchView');
-  var LeaderboardView = require('modules/LeaderboardView');
-  var HomeView = require('modules/HomeView');
-  var WrongGenderView = require('modules/WrongGenderView');
-  var AddCharacterView = require('modules/AddCharacterView');
-  var StatsView = require('modules/StatsView');
-  var BrowseView = require('modules/BrowseView');
+  var CharacterModel = require('models/Character');
+  var BrowseCollection = require('collections/Browse');
+  var CharacterCollection = require('collections/Character');
+  var CharacterCollectionView = require('views/CharacterCollection');
+  var CharacterSummaryView = require('views/CharacterSummary');
+  var SearchView = require('views/Search');
+  var LeaderboardView = require('views/Leaderboard');
+  var HomeView = require('views/Home');
+  var WrongGenderView = require('views/WrongGender');
+  var AddCharacterView = require('views/AddCharacter');
+  var StatsView = require('views/StatsView');
+  var BrowseView = require('views/BrowseView');
 
   module.exports = Backbone.Router.extend({
     initialize: function() {

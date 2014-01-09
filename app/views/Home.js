@@ -2,8 +2,8 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterCollection = require('modules/CharacterCollection');
-  var CharacterThumbnailView = require('modules/CharacterThumbnailView');
+  var CharacterCollection = require('collections/Character');
+  var CharacterThumbnailView = require('views/CharacterThumbnail');
   var HomeTpl = require('text!templates/home.html');
   var alertify = require('alertify');
 

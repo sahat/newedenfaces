@@ -2,7 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var LeaderboardItemView = require('modules/LeaderboardItemView');
+  var LeaderboardItemView = require('views/LeaderboardItem');
 
   var LeaderboardView = Backbone.View.extend({
     tagName: 'ul',

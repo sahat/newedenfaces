@@ -1,4 +1,4 @@
-define(['underscore', 'jquery', 'backbone', 'modules/BrowseItemView',
+define(['../.', 'jquery', 'backbone', 'modules/BrowseItemView',
   'text!templates/browse.html', 'PageableCollection', 'alertify'], function(_, $, Backbone, BrowseItemView, BrowseTpl, PageableCollection, alertify) {
   var BrowseView = Backbone.View.extend({
     template: _.template(BrowseTpl),

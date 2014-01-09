@@ -1,6 +1,9 @@
+// TODO: If character in leaderboard, display a big 4-tile avatar
+// TODO: Draggable packery
+// TODO: FadeIn
 
 
-define(['underscore', 'jquery', 'backbone', 'photoset',
+define(['../.', 'jquery', 'backbone', 'photoset',
   'text!templates/browse-item.html'], function(_, $, Backbone, photoset, BrowseItemTpl) {
   var BrowseItemView = Backbone.View.extend({
 

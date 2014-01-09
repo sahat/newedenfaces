@@ -2,7 +2,7 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterView = require('modules/CharacterView');
+  var CharacterView = require('modules/Character');
   var MenuLeaderboardTpl = require('text!templates/menu-leaderboard.html');
 
   var CharacterCollectionGenderView = Backbone.View.extend({

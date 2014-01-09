@@ -2,13 +2,13 @@ define(function(require, exports, module) {
   var _ = require('underscore');
   var $ = require('jquery');
   var Backbone = require('backbone');
-  var CharacterGenderView = require('modules/CharacterGenderView');
+  var CharacterView = require('views/Character');
   var MenuLeaderboardTpl = require('text!templates/menu-leaderboard.html');
 
-  var WrongGenderView = Backbone.View.extend({
-    tagName: 'li',
+  var CharacterCollectionView = Backbone.View.extend({
+    tagName: 'ul',
 
-    className: 'media',
+    className: 'list-group list-group-flush m-t-n',
 
     template: _.template(MenuLeaderboardTpl),
 
@@ -20,16 +20,15 @@ define(function(require, exports, module) {
     },
 
     addOne: function(character, index) {
-      var characterView = new CharacterGenderView({ model: character, position: index + 1 });
+      var characterView = new CharacterView({ model: character, position: index + 1 });
       this.$el.append(characterView.render().el);
     },
 
     render: function() {
-      $('#content').html(this.template());
       this.collection.each(this.addOne, this);
       return this;
     }
   });
 
-  return WrongGenderView;
+  return CharacterCollectionView;
 });
