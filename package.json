@@ -1,23 +1,10 @@
 {
   "name": "newedenfaces",
-  "version": "1.4.0",
+  "version": "0.0.0",
   "homepage": "http://newedenfaces.com",
-  "repository": {
-    "type": "git",
-    "url": "https://gitub.com/sahat/newedenfaces"
-  },
-
-  "engines": {
-    "node": "0.8.23",
-    "npm": ">= 1.0.0"
-  },
-
-  "private": true,
   "scripts": {
-    "start": "node_modules/forever/bin/forever start server.js",
-    "test": "grunt karma:run coveralls"
+    "start": "node_modules/forever/bin/forever start server.js"
   },
-
   "dependencies": {
     "express": "*",
     "jade": "*",
